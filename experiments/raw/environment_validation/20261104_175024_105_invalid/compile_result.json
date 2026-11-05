@@ -1,0 +1,16 @@
+{
+  "success": false, 
+  "exception": "Traceback (most recent call last):\n  File \"E:\\works\\python\\codesys_script_stage\\compile_project.py\", line 142, in main\n    result[\"replaced_pou\"] = replace_pou_text(project)\n  File \"E:\\works\\python\\codesys_script_stage\\compile_project.py\", line 99, in replace_pou_text\n    raise RuntimeError(\nRuntimeError: Expected one POU named PLC_PRG, found 2\n", 
+  "replaced_pou": null, 
+  "messages": [
+    {
+      "severity": "information", 
+      "number": null, 
+      "text": "未安装离线帮助", 
+      "category": "Offline Help", 
+      "position": null, 
+      "object": null
+    }
+  ], 
+  "project_path": "G:\\浙大\\课程\\大三上\\Genai\\大作业\\experiments\\raw\\environment_validation\\20261104_175024_105_invalid\\candidate.project"
+}

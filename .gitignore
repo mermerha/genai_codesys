@@ -1,0 +1,17 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+config/local.yaml
+codesys/work/
+*.opt
+*.precompilecache
+*.~u
+experiments/tmp/
+*.log

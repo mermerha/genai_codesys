@@ -1,0 +1,13 @@
+{
+  "command": [
+    "F:\\genai\\CODESYS\\Common\\CODESYS.exe",
+    "--Profile=CODESYS V3.5 SP22 Patch 4",
+    "--runscript=G:\\Genai_codesys\\codesys\\scripts\\compile_project.py",
+    "--noUI"
+  ],
+  "returncode": 1,
+  "elapsed_seconds": 7.89,
+  "stdout": "",
+  "stderr": "�������� --noUIģʽ, ����ʹ�� --profile=\"profile name\" ָ�������ļ�.\n",
+  "timed_out": false
+}
