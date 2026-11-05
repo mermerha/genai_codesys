@@ -4,7 +4,7 @@
 
 ## 当前阶段
 
-项目治理和目录整理已完成初版。纯 Python CODESYS 自动编译与结构化错误提取已经通过最小验证，当前进入“最小接口冻结、模型 API 验证和单题生成—编译—修复闭环”。
+项目治理和目录整理已完成初版。真实 `FUNCTION_BLOCK` 创建、引用、自动编译与结构化错误提取已经通过验证；单 POU 模型输出接口已冻结。模型 A 已完成一次真实生成—编译闭环，模型 B 的服务路由连续两次超时。
 
 完整要求见 [`REQUIREMENTS.md`](REQUIREMENTS.md)，完整阶段流程见 [`WORKFLOW.md`](WORKFLOW.md)。本文件只记录当前事实、阻塞和近期行动。
 
@@ -22,6 +22,15 @@
 - 正确 ST 已验证为 0 错误、0 警告；故意缺少分号的错误 ST 已提取错误号、对象、位置和错误文本。
 - 已将完整项目迁移到纯英文根路径 `G:\Genai_codesys`，项目内部相对结构保持不变；迁移后正确和错误两个 CODESYS 样例均复验通过。
 - 纯 Python 正确/错误集成测试均已通过；项目不再使用或保留 `run_compile.ps1`。
+- 已验证脚本可在模板应用中创建 `MotorControl` 功能块，并由 `PLC_PRG` 自动实例化和调用，保证候选代码真正进入编译链。
+- 功能块正确样例编译为 0 错误；包含未定义标识符的错误样例返回错误号、对象、位置和文本。
+- `docs/DATA_CONTRACT.md` 0.2 已冻结首版单 POU 四字段模型输出接口。
+- 已实现无额外 SDK 的 DMXAPI 客户端、严格候选解析和单题生成—编译—修复闭环；10 项 Python 测试通过，2 项真实 CODESYS 测试按默认设置跳过。
+- Git 仓库已建立，`main` 跟踪 GitHub `origin/main`。
+- DMXAPI 模型列表已确认 `deepseek-v4.1-flash-1017` 和 `doubao-seed-2-1-pro-260628` 均为该密钥可见的准确 ID。
+- 模型 A `deepseek-v4.1-flash-1017` 已真实生成 `MotorStartStop` 功能块并首次编译通过：0 错误、0 警告、无修复，总耗时 33.234 秒；API 实际返回模型标识 `DeepSeek-V4.1-Flash-261017`，总 Token 1340。
+- 模型 A 候选经人工快速复核，满足停止/急停优先、启动置位和松开启动后保持三项样题行为。
+- 模型 B `doubao-seed-2-1-pro-260628` 在相同任务上分别于 120 秒和 300 秒达到读取超时，均未收到模型输出、未进入 CODESYS。
 
 ## 当前证据
 
@@ -36,20 +45,24 @@
 - 迁移后错误 ST 编译结果：`experiments/raw/environment_validation/20261105_102309_067_post_move_invalid/compile_result.json`。
 - 纯 Python 正确 ST 编译结果：`experiments/raw/environment_validation/20261105_104535_python_valid/compile_result.json`。
 - 纯 Python 错误 ST 编译结果：`experiments/raw/environment_validation/20261105_104535_python_invalid/compile_result.json`。
+- 功能块正确样例：`experiments/raw/environment_validation/20261105_192949_function_block_valid/compile_result.json`。
+- 功能块错误样例：`experiments/raw/environment_validation/20261105_192949_function_block_invalid/compile_result.json`。
+- 模型 A 真实闭环：`experiments/raw/development/20261105_195953_deepseek-v4.1-flash-1017/`。
+- 模型 B 120 秒超时：`experiments/raw/development/20261105_200039_doubao-seed-2-1-pro-260628/`。
+- 模型 B 300 秒超时：`experiments/raw/development/20261105_200337_doubao-seed-2-1-pro-260628/`。
 
 ## 当前阻塞
 
-- 尚未完成一次真实 DMXAPI 模型调用。
-- 模型 A、模型 B、现成 Agent 基线和正式实验参数尚未确定。
+- 模型 B 路由连续两次超时，需决定更换模型或联系 DMXAPI/助教排查。
+- 现成 Agent 基线和正式实验参数尚未确定。
 - 团队名单、技术负责人和正式实验机尚未记录。
-- 当前项目目录尚未检测到 Git 仓库。
 
 ## 接下来四步
 
-1. 用固定联调样例验证并冻结最小数据接口。
-2. 完成一次真实 DMXAPI 模型调用，但不保存真实密钥。
-3. 实现单题生成—编译—修复闭环。
-4. 确认两个模型和基线 Agent 候选。
+1. 决定模型 B 是更换为其他可用模型，还是先联系服务方排查当前路由。
+2. 确认现成 Agent 基线候选。
+3. 转换 20 道公共题，并由人工复核题意和接口。
+4. 分工设计、复核并冻结 LTL 与测试标准。
 
 ## 更新规则
 

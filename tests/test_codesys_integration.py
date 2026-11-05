@@ -49,6 +49,42 @@ class CodesysIntegrationTests(unittest.TestCase):
         self.assertEqual(invalid.errors[0].object_name, "PLC_PRG")
         self.assertIsNotNone(invalid.errors[0].position)
 
+    def test_function_block_valid_and_invalid_candidates(self):
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        evidence_root = (
+            PROJECT_ROOT
+            / "experiments"
+            / "raw"
+            / "environment_validation"
+        )
+        template = PROJECT_ROOT / "codesys" / "template" / "测试工程.project"
+        fixtures = PROJECT_ROOT / "tests" / "fixtures" / "codesys"
+
+        valid = compile_project(
+            template_project=template,
+            declaration_path=fixtures / "valid_fb_declaration.st",
+            implementation_path=fixtures / "valid_fb_implementation.st",
+            output_dir=evidence_root / f"{timestamp}_function_block_valid",
+            pou_name="MotorControl",
+            pou_type="FUNCTION_BLOCK",
+        )
+        self.assertTrue(valid.success)
+        self.assertEqual(valid.replaced_pou, "MotorControl")
+        self.assertEqual(valid.errors, ())
+
+        invalid = compile_project(
+            template_project=template,
+            declaration_path=fixtures / "invalid_fb_declaration.st",
+            implementation_path=fixtures / "invalid_fb_implementation.st",
+            output_dir=evidence_root / f"{timestamp}_function_block_invalid",
+            pou_name="MotorControl",
+            pou_type="FUNCTION_BLOCK",
+        )
+        self.assertFalse(invalid.success)
+        self.assertGreaterEqual(len(invalid.errors), 1)
+        self.assertEqual(invalid.errors[0].object_name, "MotorControl")
+        self.assertIsNotNone(invalid.errors[0].position)
+
 
 if __name__ == "__main__":
     unittest.main()

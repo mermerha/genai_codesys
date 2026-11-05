@@ -1,0 +1,14 @@
+{
+  "task_id": "fixture_motor_start_stop",
+  "model": "doubao-seed-2-1-pro-260628",
+  "final_status": "model_error",
+  "attempts": 1,
+  "repairs": 0,
+  "first_compile_pass": false,
+  "final_compile_pass": false,
+  "duration_seconds": 120.141,
+  "failure_reason": {
+    "type": "TimeoutError",
+    "message": "The read operation timed out"
+  }
+}

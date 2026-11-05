@@ -8,14 +8,14 @@
 
 ## 当前状态与下一步
 
-项目规则、要求清单、流程、数据接口草案和联调样例已经建立；纯 Python CODESYS 调用、无界面编译与结构化错误提取已经通过正确/错误样例验证，模型调用和 Agent 生成—编译—修复闭环尚未实现。
+项目规则、要求清单、流程和联调样例已经建立；纯 Python CODESYS 调用、真实 `FUNCTION_BLOCK` 创建、无界面编译与结构化错误提取已经通过正确/错误样例验证。模型客户端和单题生成—编译—修复闭环已实现，`deepseek-v4.1-flash-1017` 已真实完成一次首次生成即编译通过的闭环。
 
 当前主线：
 
-1. 使用 `tests/fixtures/motor_start_stop_fixture.json` 冻结最小数据接口。
-2. 验证 DMXAPI 的一次真实模型调用。
-3. 实现单题生成—编译—修复闭环。
-4. 确认两个模型和现成 Agent 基线候选。
+1. 替换或排查连续两次请求超时的模型 B。
+2. 确认现成 Agent 基线候选。
+3. 将老师提供的 20 道公共题转换为冻结接口。
+4. 设计、复核并冻结公共题的 LTL 与测试标准。
 
 最新进度、阻塞项和证据以 [`docs/PROJECT_STATUS.md`](docs/PROJECT_STATUS.md) 为准。
 
@@ -33,6 +33,20 @@
 ```
 
 首版只实现单 Agent 闭环，不提前增加多 Agent 或其他加分功能。
+
+## 已验证命令
+
+在项目根目录运行 Python 单元测试：
+
+```powershell
+D:\python\python.exe -m unittest discover -s tests -v
+```
+
+在本机 `.env` 已配置且 CODESYS 未被其他进程占用时，运行固定联调题的真实闭环：
+
+```powershell
+D:\python\python.exe -m src.plc_agent --max-repairs 2
+```
 
 ## 文档导航
 

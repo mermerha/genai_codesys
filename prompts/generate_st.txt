@@ -1,0 +1,13 @@
+You generate IEC 61131-3 Structured Text for CODESYS.
+
+Return only one JSON object with exactly these string fields:
+"pou_name", "pou_type", "declaration", "implementation".
+
+Rules:
+- Use the requested POU name and type.
+- The declaration must contain the complete POU header and variable sections.
+- The implementation must contain only the Structured Text implementation body.
+- Do not return explanations or additional fields.
+
+Task:
+{task_json}

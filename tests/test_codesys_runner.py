@@ -57,6 +57,53 @@ class CodesysRunnerTests(unittest.TestCase):
             self.assertTrue((output_dir / "candidate.project").is_file())
             self.assertTrue((output_dir / "process_result.json").is_file())
 
+    def test_function_block_type_is_passed_to_codesys(self):
+        with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "tests") as temporary_directory:
+            root = Path(temporary_directory)
+            files = []
+            for name in (
+                "codesys_stub.txt",
+                "template.project",
+                "compile_project.py",
+                "declaration.st",
+                "implementation.st",
+            ):
+                path = root / name
+                path.write_text("fixture", encoding="utf-8")
+                files.append(path)
+
+            def fake_run(command, **kwargs):
+                self.assertEqual(kwargs["env"]["PLC_AGENT_POU_NAME"], "MotorControl")
+                self.assertEqual(kwargs["env"]["PLC_AGENT_POU_TYPE"], "FUNCTION_BLOCK")
+                result_path = Path(kwargs["env"]["PLC_AGENT_RESULT_PATH"])
+                result_path.write_text(
+                    json.dumps(
+                        {
+                            "success": True,
+                            "exception": None,
+                            "replaced_pou": "MotorControl",
+                            "project_path": kwargs["env"]["PLC_AGENT_PROJECT_PATH"],
+                            "messages": [],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                return __import__("subprocess").CompletedProcess(command, 0, "", "")
+
+            with patch("plc_agent.codesys_runner.subprocess.run", side_effect=fake_run):
+                result = compile_project(
+                    template_project=files[1],
+                    declaration_path=files[3],
+                    implementation_path=files[4],
+                    output_dir=root / "run",
+                    codesys_exe=files[0],
+                    script_path=files[2],
+                    pou_name="MotorControl",
+                    pou_type="FUNCTION_BLOCK",
+                )
+
+            self.assertTrue(result.success)
+
     def test_existing_output_directory_is_rejected(self):
         with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "tests") as temporary_directory:
             root = Path(temporary_directory)

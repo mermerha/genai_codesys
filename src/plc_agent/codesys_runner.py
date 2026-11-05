@@ -129,12 +129,18 @@ def compile_project(
     profile: str = DEFAULT_PROFILE,
     script_path: str | Path | None = None,
     pou_name: str = "PLC_PRG",
+    pou_type: str = "PROGRAM",
     timeout_seconds: float = 120.0,
 ) -> CompileResult:
     """Compile one ST candidate in a private copy of the template project."""
 
     if timeout_seconds <= 0:
         raise ValueError("timeout_seconds must be positive")
+    normalized_pou_type = pou_type.upper()
+    if normalized_pou_type not in {"PROGRAM", "FUNCTION_BLOCK"}:
+        raise ValueError(f"unsupported pou_type: {pou_type}")
+    if normalized_pou_type == "PROGRAM" and pou_name != "PLC_PRG":
+        raise ValueError("PROGRAM candidates must use pou_name 'PLC_PRG'")
 
     root = Path(__file__).resolve().parents[2]
     resolved_script = _require_file(
@@ -167,6 +173,7 @@ def compile_project(
             "PLC_AGENT_DECLARATION_PATH": str(resolved_declaration),
             "PLC_AGENT_IMPLEMENTATION_PATH": str(resolved_implementation),
             "PLC_AGENT_POU_NAME": pou_name,
+            "PLC_AGENT_POU_TYPE": normalized_pou_type,
         }
     )
 

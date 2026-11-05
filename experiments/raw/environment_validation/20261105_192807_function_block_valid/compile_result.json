@@ -1,0 +1,56 @@
+{
+  "success": true, 
+  "exception": null, 
+  "replaced_pou": "MotorControl", 
+  "messages": [
+    {
+      "severity": "information", 
+      "number": null, 
+      "text": "未安装离线帮助", 
+      "category": "Offline Help", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "------ 开始构建应用程序 Device.Application -------", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "代码典型化...", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "编译完成 -- 0错误,0警告", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "其他代码检查...", 
+      "category": "附加代码检查", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "其他代码检查完成-0 个错误", 
+      "category": "附加代码检查", 
+      "position": null, 
+      "object": null
+    }
+  ], 
+  "project_path": "G:\\Genai_codesys\\experiments\\raw\\environment_validation\\20261105_192807_function_block_valid\\candidate.project"
+}

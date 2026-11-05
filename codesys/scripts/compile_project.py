@@ -82,7 +82,24 @@ def read_optional_text(path_variable):
         return input_file.read()
 
 
-def replace_pou_text(project):
+def reference_function_block(project, pou_name):
+    matches = project.find_ignore_transient_objects("PLC_PRG", recursive=True)
+    if len(matches) != 1:
+        raise RuntimeError(
+            "Expected one PROGRAM named PLC_PRG, found {0}".format(len(matches))
+        )
+
+    program = matches[0]
+    program.textual_declaration.replace(
+        "PROGRAM PLC_PRG\n"
+        "VAR\n"
+        "    candidateInstance : {0};\n"
+        "END_VAR\n".format(pou_name)
+    )
+    program.textual_implementation.replace("candidateInstance();\n")
+
+
+def replace_pou_text(project, application):
     declaration = read_optional_text("PLC_AGENT_DECLARATION_PATH")
     implementation = read_optional_text("PLC_AGENT_IMPLEMENTATION_PATH")
     if declaration is None and implementation is None:
@@ -94,15 +111,21 @@ def replace_pou_text(project):
         )
 
     pou_name = os.environ.get("PLC_AGENT_POU_NAME", "PLC_PRG")
+    pou_type = os.environ.get("PLC_AGENT_POU_TYPE", "PROGRAM").upper()
     matches = project.find_ignore_transient_objects(pou_name, recursive=True)
-    if len(matches) != 1:
+    if len(matches) == 0 and pou_type == "FUNCTION_BLOCK":
+        pou = application.create_function_block(name=pou_name)
+    elif len(matches) == 1:
+        pou = matches[0]
+    else:
         raise RuntimeError(
             "Expected one POU named {0}, found {1}".format(pou_name, len(matches))
         )
 
-    pou = matches[0]
     pou.textual_declaration.replace(declaration)
     pou.textual_implementation.replace(implementation)
+    if pou_type == "FUNCTION_BLOCK":
+        reference_function_block(project, pou_name)
     return pou_name
 
 
@@ -139,7 +162,7 @@ def main():
         if application is None:
             raise RuntimeError("The project has no active application")
 
-        result["replaced_pou"] = replace_pou_text(project)
+        result["replaced_pou"] = replace_pou_text(project, application)
         application.rebuild()
         result["messages"] = collect_messages()
         result["success"] = not any(

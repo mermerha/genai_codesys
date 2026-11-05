@@ -1,0 +1,42 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "{\"pou_name\":\"MotorStartStop\",\"pou_type\":\"FUNCTION_BLOCK\",\"declaration\":\"FUNCTION_BLOCK MotorStartStop\\nVAR_INPUT\\n    StartBtn : BOOL;\\n    StopBtn : BOOL;\\n    EStop : BOOL;\\nEND_VAR\\nVAR_OUTPUT\\n    Motor : BOOL;\\nEND_VAR\",\"implementation\":\"IF StopBtn OR EStop THEN\\n    Motor := FALSE;\\nELSIF StartBtn THEN\\n    Motor := TRUE;\\nEND_IF;\"}",
+        "reasoning_content": "We need answer only JSON object exactly fields. Need generate ST for FB MotorStartStop? Use requested POU name. Task id fixture_motor_start_stop but no explicit pou_name in task. Need infer name. We need choose POU name. Likely MotorStartStop or FB_MotorStartStop? \"Use requested POU name\" but request doesn't specify name explicitly. We need provide a name. Maybe use title-derived \"MotorStartStopControl\" or \"MotorStartStop\". Need declaration complete POU header and variable sections. POU type FUNCTION_BLOCK. Implementation ST body.\n\nNeed ensure behavior: initial stopped; only when StartBtn valid and StopBtn, EStop invalid then start; latch after release; Stop or EStop stop, priority over start. Emergency stop active? EStop input BOOL. Requirements: stop or estop invalid? \"启动有效且停止、急停无效时启动\" means Start active and Stop, EStop inactive. It says stop or emergency stop causes motor stop, priority higher than start. Need define EStop as true active? Usually EStop true means emergency stop active (NC/1? ambiguous). Wording \"急停无效\" = EStop invalid, likely EStop = TRUE means emergency stop? Need decide. Inputs StopBtn and EStop, likely TRUE active. Then to start: StartBtn AND NOT StopBtn AND NOT EStop. Stop if StopBtn OR EStop. Latch.\n\nNeed produce declaration with VAR_INPUT, VAR_OUTPUT. Implementation:\nIF StopBtn OR EStop THEN\n    Motor := FALSE;\nELSIF StartBtn THEN\n    Motor := TRUE;\nEND_IF;\nThis gives priority stop/estop over start. Initial false because FB output initialized? BOOL default false. Could explicitly initialize Motor? Outputs in VAR_OUTPUT cannot have initial? Can but not needed. Need \"initial stop\" maybe include initialization? FB instance output default false. Could include `Motor := FALSE;` at start? But if we do unconditional false each scan would prevent latch. We can use `IF NOT Motor THEN...`? No. The above without else holds. Initial is false by default. Could comment? no.\n\nNeed POU name. The task id \"fixture_motor_start_stop\". POU name should maybe be `MotorStartStop`. Use camel without spaces. The requested POU name? There is no field. Could derive from title \"Motor Start Stop Control\" => `MotorStartStopControl`. But the fixture id suggests `MotorStartStop`. Need likely accepted. We need ensure exactly fields string. JSON only.\n\nNeed declaration as string with newlines escaped. Implementation string.\n\nLet's construct:\n{\n\"pou_name\":\"MotorStartStop\",\n\"pou_type\":\"FUNCTION_BLOCK\",\n\"declaration\":\"FUNCTION_BLOCK MotorStartStop\\nVAR_INPUT\\n    StartBtn : BOOL;\\n    StopBtn : BOOL;\\n    EStop : BOOL;\\nEND_VAR\\nVAR_OUTPUT\\n    Motor : BOOL;\\nEND_VAR\",\n\"implementation\":\"IF StopBtn OR EStop THEN\\n    Motor := FALSE;\\nELSIF StartBtn THEN\\n    Motor := TRUE;\\nEND_IF;\"\n}\n\nNeed consider \"启动松开后保持\": this code holds. If Start false, Stop false, EStop false, Motor retains. Good.\n\nPotential issue EStop active high. If EStop is \"emergency stop inactive\" false, okay. If actual safety estop normally closed? But task states EStop input; \"急停无效\" means EStop false when no emergency. Good.\n\nNeed only JSON. No markdown. Ensure valid JSON. Strings can include \\n. Use no extra.\n\nNeed maybe declaration includes `VAR_INPUT ... END_VAR` and `VAR_OUTPUT ... END_VAR`. Complete POU header. POU type name case. Good.\n\nLet's answer. ",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1793880000,
+  "id": "021793879992985d3a5eaea6011fe6a16a81478091c729374b96d",
+  "model": "DeepSeek-V4.1-Flash-261017",
+  "service_tier": "default",
+  "object": "chat.completion",
+  "usage": {
+    "prompt_tokens": 424,
+    "completion_tokens": 916,
+    "total_tokens": 1340,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "text_tokens": 0,
+      "audio_tokens": 0,
+      "image_tokens": 0
+    },
+    "completion_tokens_details": {
+      "text_tokens": 0,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "reasoning_tokens": 807
+    },
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0,
+    "cost": "¥0.00323"
+  }
+}

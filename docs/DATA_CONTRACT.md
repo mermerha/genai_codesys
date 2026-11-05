@@ -1,7 +1,7 @@
 # 数据接口草案
 
-版本：0.1（草案）  
-状态：尚未冻结，应先用一道标准样题验证后再修改为正式版本。
+版本：0.2
+状态：单 POU 模型输出接口已冻结；正式题库、LTL 和测试接口仍为草案。
 
 目标是让题库、LTL、测试、Agent 和实验分析能够独立开发，通过文件接口集成。
 
@@ -96,21 +96,25 @@
 
 `tests/fixtures/` 中允许使用一个顶层对象包装 `task`、`spec` 和 `tests`，以便单文件完成集成测试；正式题库分别存放在 `data/tasks/public/`、`data/tasks/custom/`、`data/specs/` 和 `data/test_cases/`。
 
-## Agent 候选输出
+## Agent 候选输出（首版已冻结）
 
-建议模型返回可解析对象，至少区分声明和实现：
+首版模型必须只返回以下四个字符串字段：
 
 ```json
 {
   "pou_name": "FB_Example",
   "pou_type": "FUNCTION_BLOCK",
   "declaration": "...",
-  "implementation": "...",
-  "additional_objects": []
+  "implementation": "..."
 }
 ```
 
-具体格式需由 CODESYS 模板工程和脚本验证后冻结。
+- `pou_name` 必须是 IEC 标识符。
+- `pou_type` 首版只支持 `PROGRAM` 和 `FUNCTION_BLOCK`；`PROGRAM` 固定使用模板中的 `PLC_PRG`。
+- `declaration` 包含完整 POU 头和变量声明；`implementation` 只包含 ST 实现体。
+- 不接受解释文字或额外 JSON 字段；允许整个 JSON 外包一层 Markdown 代码围栏。
+- 编译 `FUNCTION_BLOCK` 时，harness 会在临时工程的 `PLC_PRG` 中自动实例化并调用候选对象，确保其真正进入 CODESYS 编译链。
+- 需要 DUT、GVL 或多个 POU 的题目在扩展接口前不得进入首版正式实验。
 
 ## 单次实验结果
 

@@ -1,0 +1,4 @@
+{
+  "type": "ModelApiError",
+  "message": "DMXAPI HTTP 503: {\"error\":{\"code\":\"model_not_found\",\"message\":\"分组 default 下模型 ds4.1 无可用渠道（distributor） (request id: 20261105115859612980576c14228f5l7xImHMP)\",\"type\":\"dmx_api_error\"}}"
+}
