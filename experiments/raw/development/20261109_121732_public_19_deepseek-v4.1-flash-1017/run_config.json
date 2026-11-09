@@ -1,0 +1,6 @@
+{
+  "model": "deepseek-v4.1-flash-1017",
+  "max_repairs": 2,
+  "model_timeout_seconds": 300.0,
+  "template_project": "G:\\Genai_codesys\\codesys\\template\\测试工程.project"
+}

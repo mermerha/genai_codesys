@@ -1,6 +1,6 @@
 # 数据接口草案
 
-版本：0.2
+版本：0.3
 状态：单 POU 模型输出接口已冻结；正式题库、LTL 和测试接口仍为草案。
 
 目标是让题库、LTL、测试、Agent 和实验分析能够独立开发，通过文件接口集成。
@@ -25,6 +25,7 @@
   "source_type": "provided",
   "source_reference": "大作业题库",
   "requirements": "自然语言需求",
+  "pou_name": "FB_Example",
   "pou_type": "FUNCTION_BLOCK",
   "interface": [],
   "custom_types": [],
@@ -37,6 +38,8 @@
 ```
 
 自建题还需记录：生成提示或原始链接、人工修改、PLC 场景合理性、多样性标签和审核过程。
+
+`pou_name` 是该题要求模型使用的固定 IEC 标识符；同一道题在全部实验设置下保持一致。
 
 ## LTL 规约记录
 

@@ -4,7 +4,7 @@
 
 ## 当前阶段
 
-项目治理和目录整理已完成初版。真实 `FUNCTION_BLOCK` 创建、引用、自动编译与结构化错误提取已经通过验证；单 POU 模型输出接口已冻结。模型 A 和模型 B 候选均已在固定联调题上完成一次真实首次生成—编译通过；模型 B 尚待不同难度题预验证后冻结。
+项目治理和目录整理已完成初版。真实 `FUNCTION_BLOCK` 创建、引用、自动编译与结构化错误提取已经通过验证；单 POU 模型输出接口已冻结。模型 A 已通过简单、中等和困难公共题的编译预验证。当前模型 B 候选已改为 `qwen3.8-flash`，但该模型只通过简单题，并在中等题上于 300 秒超时，尚不能冻结。
 
 完整要求见 [`REQUIREMENTS.md`](REQUIREMENTS.md)，完整阶段流程见 [`WORKFLOW.md`](WORKFLOW.md)。本文件只记录当前事实、阻塞和近期行动。
 
@@ -24,7 +24,7 @@
 - 纯 Python 正确/错误集成测试均已通过；项目不再使用或保留 `run_compile.ps1`。
 - 已验证脚本可在模板应用中创建 `MotorControl` 功能块，并由 `PLC_PRG` 自动实例化和调用，保证候选代码真正进入编译链。
 - 功能块正确样例编译为 0 错误；包含未定义标识符的错误样例返回错误号、对象、位置和文本。
-- `docs/DATA_CONTRACT.md` 0.2 已冻结首版单 POU 四字段模型输出接口。
+- `docs/DATA_CONTRACT.md` 0.3 已冻结首版单 POU 四字段模型输出接口，并补充题目固定 `pou_name` 字段。
 - 已实现无额外 SDK 的 DMXAPI 客户端、严格候选解析和单题生成—编译—修复闭环；10 项 Python 测试通过，2 项真实 CODESYS 测试按默认设置跳过。
 - Git 仓库已建立，`main` 跟踪 GitHub `origin/main`。
 - DMXAPI 模型列表已确认 `deepseek-v4.1-flash-1017` 和 `doubao-seed-2-1-pro-260628` 均为该密钥可见的准确 ID。
@@ -36,6 +36,10 @@
 - 加强提示词后，`qwen3.5-flash` 在固定联调题上首次生成即编译通过：0 错误、0 警告、无修复，总耗时 112.734 秒，其中 CODESYS 编译 36.516 秒。
 - Qwen 候选经人工快速复核，满足停止/急停优先、启动置位和松开启动后保持；尚未执行自动功能测试。
 - 已修复 Windows GBK 控制台无法打印模型费用中的 `¥` 字符而导致 CLI 在结果保存后崩溃的问题；控制台 JSON 改用 ASCII 转义，原始结果文件仍保持 UTF-8。
+- 已将公共题 `public_03`、`public_09`、`public_19` 转换为简单、中等和困难开发预验证题；三题均标记为待正式人工复核，尚未冻结 LTL 和测试标准。
+- 模型 A `deepseek-v4.1-flash-1017` 在三道预验证题上均首次编译通过：`public_03` 52.609 秒、`public_09` 83.625 秒、`public_19` 116.625 秒；尚未执行功能测试。
+- 按用户选择，模型 B 候选改为 `qwen3.8-flash`。该模型在 `public_03` 上首次编译通过，耗时 51.813 秒，API 返回标识为 `qwen3.8-flash`。
+- `qwen3.8-flash` 在 `public_09` 上于 300 秒读取超时，没有收到模型输出，未进入 CODESYS；按预验证门槛未继续运行困难题 `public_19`，因此模型 B 仍未冻结。
 
 ## 当前证据
 
@@ -58,19 +62,25 @@
 - Qwen 初次验证及修复超时：`experiments/raw/development/20261109_111450_qwen3.5-flash/`。
 - Qwen 首轮提示词加强后的三轮编译失败：`experiments/raw/development/20261109_113815_qwen3.5-flash/`。
 - Qwen 最终首次编译通过：`experiments/raw/development/20261109_114422_qwen3.5-flash/`。
+- qwen3.8 简单题首次编译通过：`experiments/raw/development/20261109_120817_public_03_qwen3.8-flash/`。
+- qwen3.8 中等题 300 秒超时：`experiments/raw/development/20261109_120924_public_09_qwen3.8-flash/`。
+- 模型 A 中等题首次编译通过：`experiments/raw/development/20261109_121451_public_09_deepseek-v4.1-flash-1017/`。
+- 模型 A 困难题首次编译通过：`experiments/raw/development/20261109_121732_public_19_deepseek-v4.1-flash-1017/`。
+- 模型 A 简单题首次编译通过：`experiments/raw/development/20261109_122132_public_03_deepseek-v4.1-flash-1017/`。
 
 ## 当前阻塞
 
-- `qwen3.5-flash` 只通过了一道简单联调题，尚不能据此冻结为正式模型 B。
+- `qwen3.8-flash` 只通过简单题，并在中等题上于 300 秒无输出，尚不能冻结为正式模型 B。
+- 真实模型调用尚未产生一次“首次编译失败、根据 CODESYS 错误修复后编译成功”的完整证据。
 - 现成 Agent 基线和正式实验参数尚未确定。
 - 团队名单、技术负责人和正式实验机尚未记录。
 
 ## 接下来四步
 
-1. 用少量简单、中等和较难题预验证 `qwen3.5-flash`，再决定是否冻结为模型 B。
-2. 确认现成 Agent 基线候选。
-3. 转换 20 道公共题，并由人工复核题意和接口。
-4. 分工设计、复核并冻结 LTL 与测试标准。
+1. 排查 `qwen3.8-flash` 中等题 300 秒无输出问题；在问题解决前不冻结模型 B，也不执行困难题调用。
+2. 用真实模型调用补齐一次 CODESYS 编译错误反馈后的成功修复证据。
+3. 确认现成 Agent 基线候选，并验证其能使用相同两个模型和保存等价证据。
+4. 审计 20 道公共题的接口兼容性，重点处理自定义 DUT、数组、`VAR_IN_OUT` 和 `VARIANT`，再继续转换和设计 LTL、测试标准。
 
 ## 更新规则
 
