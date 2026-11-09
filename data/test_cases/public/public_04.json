@@ -1,0 +1,188 @@
+{
+  "task_id": "public_04",
+  "tests": [
+    {
+      "id": "public_04_tc01",
+      "task_id": "public_04",
+      "name": "粘度防抖后启动",
+      "initial_state": {
+        "VFD_RUN": false,
+        "PUMP_RUNTIME_ACC": "LTIME#0s",
+        "PUMP_MAINT_DUE": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "VISCOSITY_OK": true,
+            "PASTE_E_STOP_NC": true,
+            "DebounceTime": "T#2s",
+            "CycleTime": "T#1s"
+          },
+          "expected_outputs": {
+            "VFD_RUN": false
+          },
+          "check": "开始防抖"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 1000,
+          "inputs": {
+            "VISCOSITY_OK": true,
+            "PASTE_E_STOP_NC": true,
+            "DebounceTime": "T#2s",
+            "CycleTime": "T#1s"
+          },
+          "expected_outputs": {
+            "VFD_RUN": false
+          },
+          "check": "1 秒未到"
+        },
+        {
+          "cycle": 2,
+          "advance_ms": 1000,
+          "inputs": {
+            "VISCOSITY_OK": true,
+            "PASTE_E_STOP_NC": true,
+            "DebounceTime": "T#2s",
+            "CycleTime": "T#1s"
+          },
+          "expected_outputs": {
+            "VFD_RUN": true
+          },
+          "check": "2 秒后运行"
+        }
+      ],
+      "coverage": [
+        "debounce",
+        "normal_start"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_04_tc02",
+      "task_id": "public_04",
+      "name": "急停立即停止并重置防抖",
+      "initial_state": {
+        "VFD_RUN": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "VISCOSITY_OK": true,
+            "PASTE_E_STOP_NC": true,
+            "DebounceTime": "T#1s",
+            "CycleTime": "T#1s"
+          },
+          "expected_outputs": {
+            "VFD_RUN": false
+          },
+          "check": "开始防抖"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 1000,
+          "inputs": {
+            "VISCOSITY_OK": true,
+            "PASTE_E_STOP_NC": true,
+            "DebounceTime": "T#1s",
+            "CycleTime": "T#1s"
+          },
+          "expected_outputs": {
+            "VFD_RUN": true
+          },
+          "check": "防抖完成"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "VISCOSITY_OK": true,
+            "PASTE_E_STOP_NC": false,
+            "DebounceTime": "T#1s",
+            "CycleTime": "T#1s"
+          },
+          "expected_outputs": {
+            "VFD_RUN": false
+          },
+          "check": "急停立即关闭"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "VISCOSITY_OK": true,
+            "PASTE_E_STOP_NC": true,
+            "DebounceTime": "T#1s",
+            "CycleTime": "T#1s"
+          },
+          "expected_outputs": {
+            "VFD_RUN": false
+          },
+          "check": "恢复许可后重新防抖"
+        }
+      ],
+      "coverage": [
+        "emergency_stop",
+        "debounce_reset"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_04_tc03",
+      "task_id": "public_04",
+      "name": "累计 500 小时提示维护",
+      "initial_state": {
+        "PUMP_RUNTIME_ACC": "LTIME#0s",
+        "PUMP_MAINT_DUE": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "VISCOSITY_OK": true,
+            "PASTE_E_STOP_NC": true,
+            "DebounceTime": "T#500ms",
+            "CycleTime": "T#500h"
+          },
+          "expected_outputs": {
+            "VFD_RUN": false
+          },
+          "check": "开始最短防抖"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 500,
+          "inputs": {
+            "VISCOSITY_OK": true,
+            "PASTE_E_STOP_NC": true,
+            "DebounceTime": "T#500ms",
+            "CycleTime": "T#500h"
+          },
+          "expected_outputs": {
+            "VFD_RUN": true,
+            "PUMP_RUNTIME_ACC": "LTIME#500h",
+            "PUMP_MAINT_DUE": true
+          },
+          "check": "运行累计达到维护阈值"
+        }
+      ],
+      "coverage": [
+        "runtime_accumulation",
+        "maintenance_threshold"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

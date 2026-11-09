@@ -1,0 +1,14 @@
+{
+  "task_id": "public_19",
+  "model": "qwen3.8-flash",
+  "final_status": "model_error",
+  "attempts": 1,
+  "repairs": 0,
+  "first_compile_pass": false,
+  "final_compile_pass": false,
+  "duration_seconds": 300.172,
+  "failure_reason": {
+    "type": "ModelApiError",
+    "message": "DMXAPI request timed out after 300.0 seconds"
+  }
+}

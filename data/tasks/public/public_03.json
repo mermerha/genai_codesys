@@ -59,11 +59,11 @@
   ],
   "custom_types": [],
   "review": {
-    "status": "pending",
-    "reviewer": null,
+    "status": "frozen",
+    "reviewer": "Codex",
     "notes": [
-      "Converted first as an easy development prevalidation task; formal dataset review is still required.",
-      "The source omits an explicit success status. 16#0000 is used provisionally and must be confirmed before dataset freeze."
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests.",
+      "The source omits an explicit success status; 16#0000 is frozen as the shared success convention."
     ]
   }
 }

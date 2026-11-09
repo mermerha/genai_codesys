@@ -1,0 +1,235 @@
+{
+  "task_id": "public_08",
+  "tests": [
+    {
+      "id": "public_08_tc01",
+      "task_id": "public_08",
+      "name": "线性单极性与双极性换算",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "count": 2,
+            "analogValues": [
+              13824,
+              0
+            ],
+            "channels": [
+              {
+                "enable": true,
+                "hiLIM": 100,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 0,
+                "retVal": "16#0000",
+                "outputValue": 0
+              },
+              {
+                "enable": true,
+                "hiLIM": 10,
+                "loLIM": -10,
+                "bipolar": true,
+                "measuringMode": 0,
+                "retVal": "16#0000",
+                "outputValue": 0
+              }
+            ]
+          },
+          "expected_outputs": {
+            "channels": [
+              {
+                "enable": true,
+                "hiLIM": 100,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 0,
+                "retVal": "16#0000",
+                "outputValue": 50
+              },
+              {
+                "enable": true,
+                "hiLIM": 10,
+                "loLIM": -10,
+                "bipolar": true,
+                "measuringMode": 0,
+                "retVal": "16#0000",
+                "outputValue": 0
+              }
+            ]
+          },
+          "check": "分别得到 50 和 0"
+        }
+      ],
+      "coverage": [
+        "linear_scaling",
+        "unipolar",
+        "bipolar"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_08_tc02",
+      "task_id": "public_08",
+      "name": "两种温度换算",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "count": 2,
+            "analogValues": [
+              250,
+              2345
+            ],
+            "channels": [
+              {
+                "enable": true,
+                "hiLIM": 100,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 1,
+                "retVal": "16#0000",
+                "outputValue": 0
+              },
+              {
+                "enable": true,
+                "hiLIM": 100,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 2,
+                "retVal": "16#0000",
+                "outputValue": 0
+              }
+            ]
+          },
+          "expected_outputs": {
+            "channels": [
+              {
+                "enable": true,
+                "hiLIM": 100,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 1,
+                "retVal": "16#0000",
+                "outputValue": 25
+              },
+              {
+                "enable": true,
+                "hiLIM": 100,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 2,
+                "retVal": "16#0000",
+                "outputValue": 23.45
+              }
+            ]
+          },
+          "check": "标准温度除以 10，气候温度除以 100"
+        }
+      ],
+      "coverage": [
+        "temperature_modes"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_08_tc03",
+      "task_id": "public_08",
+      "name": "禁用和错误配置",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "count": 3,
+            "analogValues": [
+              100,
+              100,
+              100
+            ],
+            "channels": [
+              {
+                "enable": false,
+                "hiLIM": 100,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 0,
+                "retVal": "16#1111",
+                "outputValue": 7
+              },
+              {
+                "enable": true,
+                "hiLIM": 100,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 9,
+                "retVal": "16#0000",
+                "outputValue": 0
+              },
+              {
+                "enable": true,
+                "hiLIM": 0,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 0,
+                "retVal": "16#0000",
+                "outputValue": 0
+              }
+            ]
+          },
+          "expected_outputs": {
+            "channels": [
+              {
+                "enable": false,
+                "hiLIM": 100,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 0,
+                "retVal": "16#1111",
+                "outputValue": 7
+              },
+              {
+                "enable": true,
+                "hiLIM": 100,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 9,
+                "retVal": "16#8001",
+                "outputValue": 0
+              },
+              {
+                "enable": true,
+                "hiLIM": 0,
+                "loLIM": 0,
+                "bipolar": false,
+                "measuringMode": 0,
+                "retVal": "16#8002",
+                "outputValue": 0
+              }
+            ]
+          },
+          "check": "禁用通道不变，非法模式和限值分别报错"
+        }
+      ],
+      "coverage": [
+        "disabled_channel",
+        "invalid_mode",
+        "invalid_limits"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

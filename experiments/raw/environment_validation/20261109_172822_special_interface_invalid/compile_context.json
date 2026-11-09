@@ -1,0 +1,29 @@
+{
+  "custom_types": [
+    {
+      "name": "ST_Pump",
+      "kind": "STRUCT",
+      "fields": [
+        {
+          "name": "priority",
+          "data_type": "INT"
+        },
+        {
+          "name": "selection",
+          "data_type": "BOOL"
+        },
+        {
+          "name": "RunComd",
+          "data_type": "BOOL"
+        }
+      ]
+    }
+  ],
+  "inout_bindings": [
+    {
+      "parameter": "pumpGroup",
+      "variable": "candidatePumpGroup",
+      "data_type": "ARRAY[1..5] OF ST_Pump"
+    }
+  ]
+}

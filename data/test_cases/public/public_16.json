@@ -1,0 +1,357 @@
+{
+  "task_id": "public_16",
+  "tests": [
+    {
+      "id": "public_16_tc01",
+      "task_id": "public_16",
+      "name": "按顺序向右输送",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "processLength": 2,
+            "sensor1": true,
+            "sensor2": false,
+            "sensor3": false,
+            "sensor4": false,
+            "sensor5": false,
+            "station1Start": true,
+            "station2Complete": false,
+            "station3Complete": false,
+            "station4Complete": false,
+            "processSequence": [
+              2,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "conveyorLeft": false,
+            "conveyorRight": true
+          },
+          "check": "从 1 前往 2"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "processLength": 2,
+            "sensor1": false,
+            "sensor2": true,
+            "sensor3": false,
+            "sensor4": false,
+            "sensor5": false,
+            "station1Start": false,
+            "station2Complete": false,
+            "station3Complete": false,
+            "station4Complete": false,
+            "processSequence": [
+              2,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "conveyorLeft": false,
+            "conveyorRight": false
+          },
+          "check": "到达 2 停止"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "processLength": 2,
+            "sensor1": false,
+            "sensor2": true,
+            "sensor3": false,
+            "sensor4": false,
+            "sensor5": false,
+            "station1Start": false,
+            "station2Complete": true,
+            "station3Complete": false,
+            "station4Complete": false,
+            "processSequence": [
+              2,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "conveyorLeft": false,
+            "conveyorRight": true
+          },
+          "check": "2 完成后前往 5"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "processLength": 2,
+            "sensor1": false,
+            "sensor2": false,
+            "sensor3": false,
+            "sensor4": false,
+            "sensor5": true,
+            "station1Start": false,
+            "station2Complete": false,
+            "station3Complete": false,
+            "station4Complete": false,
+            "processSequence": [
+              2,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "conveyorLeft": false,
+            "conveyorRight": false
+          },
+          "check": "到达 5 结束"
+        }
+      ],
+      "coverage": [
+        "sequence",
+        "right_motion",
+        "completion"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_16_tc02",
+      "task_id": "public_16",
+      "name": "包含反向移动的工艺顺序",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "processLength": 3,
+            "sensor1": true,
+            "sensor2": false,
+            "sensor3": false,
+            "sensor4": false,
+            "sensor5": false,
+            "station1Start": true,
+            "station2Complete": false,
+            "station3Complete": false,
+            "station4Complete": false,
+            "processSequence": [
+              4,
+              2,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "conveyorLeft": false,
+            "conveyorRight": true
+          },
+          "check": "从 1 前往 4"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "processLength": 3,
+            "sensor1": false,
+            "sensor2": false,
+            "sensor3": false,
+            "sensor4": true,
+            "sensor5": false,
+            "station1Start": false,
+            "station2Complete": false,
+            "station3Complete": false,
+            "station4Complete": false,
+            "processSequence": [
+              4,
+              2,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "conveyorLeft": false,
+            "conveyorRight": false
+          },
+          "check": "到达 4"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "processLength": 3,
+            "sensor1": false,
+            "sensor2": false,
+            "sensor3": false,
+            "sensor4": true,
+            "sensor5": false,
+            "station1Start": false,
+            "station2Complete": false,
+            "station3Complete": false,
+            "station4Complete": true,
+            "processSequence": [
+              4,
+              2,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "conveyorLeft": true,
+            "conveyorRight": false
+          },
+          "check": "4 完成后向左前往 2"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "processLength": 3,
+            "sensor1": false,
+            "sensor2": true,
+            "sensor3": false,
+            "sensor4": false,
+            "sensor5": false,
+            "station1Start": false,
+            "station2Complete": false,
+            "station3Complete": false,
+            "station4Complete": false,
+            "processSequence": [
+              4,
+              2,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "conveyorLeft": false,
+            "conveyorRight": false
+          },
+          "check": "到达 2"
+        },
+        {
+          "cycle": 4,
+          "inputs": {
+            "processLength": 3,
+            "sensor1": false,
+            "sensor2": true,
+            "sensor3": false,
+            "sensor4": false,
+            "sensor5": false,
+            "station1Start": false,
+            "station2Complete": true,
+            "station3Complete": false,
+            "station4Complete": false,
+            "processSequence": [
+              4,
+              2,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "conveyorLeft": false,
+            "conveyorRight": true
+          },
+          "check": "2 完成后向右前往 5"
+        }
+      ],
+      "coverage": [
+        "left_motion",
+        "direction_change"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_16_tc03",
+      "task_id": "public_16",
+      "name": "未启动时保持停止",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "processLength": 2,
+            "sensor1": true,
+            "sensor2": false,
+            "sensor3": false,
+            "sensor4": false,
+            "sensor5": false,
+            "station1Start": false,
+            "station2Complete": false,
+            "station3Complete": false,
+            "station4Complete": false,
+            "processSequence": [
+              2,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "conveyorLeft": false,
+            "conveyorRight": false
+          },
+          "check": "未按启动按钮不运行"
+        }
+      ],
+      "coverage": [
+        "idle",
+        "safety"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

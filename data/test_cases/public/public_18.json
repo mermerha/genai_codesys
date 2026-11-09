@@ -1,0 +1,375 @@
+{
+  "task_id": "public_18",
+  "tests": [
+    {
+      "id": "public_18_tc01",
+      "task_id": "public_18",
+      "name": "入队沿与先进先出",
+      "initial_state": {
+        "elementCount": 0,
+        "buffer": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "enqueue": true,
+            "dequeue": false,
+            "reset": false,
+            "item": 10,
+            "buffer": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "elementCount": 1,
+            "status": "16#0000",
+            "buffer": [
+              10,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "check": "10 入队"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "enqueue": true,
+            "dequeue": false,
+            "reset": false,
+            "item": 10,
+            "buffer": [
+              10,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "elementCount": 1,
+            "buffer": [
+              10,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "check": "按住 enqueue 不重复"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "enqueue": false,
+            "dequeue": false,
+            "reset": false,
+            "item": 20,
+            "buffer": [
+              10,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "elementCount": 1
+          },
+          "check": "释放 enqueue"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "enqueue": true,
+            "dequeue": false,
+            "reset": false,
+            "item": 20,
+            "buffer": [
+              10,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "elementCount": 2,
+            "status": "16#0000",
+            "buffer": [
+              10,
+              20,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "check": "20 入队"
+        },
+        {
+          "cycle": 4,
+          "inputs": {
+            "enqueue": false,
+            "dequeue": false,
+            "reset": false,
+            "item": 0,
+            "buffer": [
+              10,
+              20,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "elementCount": 2
+          },
+          "check": "释放 enqueue"
+        },
+        {
+          "cycle": 5,
+          "inputs": {
+            "enqueue": false,
+            "dequeue": true,
+            "reset": false,
+            "item": 0,
+            "buffer": [
+              10,
+              20,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "item": 10,
+            "elementCount": 1,
+            "status": "16#0000"
+          },
+          "check": "先返回最早入队的 10"
+        }
+      ],
+      "coverage": [
+        "enqueue_edge",
+        "dequeue_edge",
+        "fifo_order"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_18_tc02",
+      "task_id": "public_18",
+      "name": "空队列出队和复位优先",
+      "initial_state": {
+        "elementCount": 0
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "enqueue": false,
+            "dequeue": true,
+            "reset": false,
+            "item": 7,
+            "buffer": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "item": 7,
+            "elementCount": 0,
+            "status": "16#8001"
+          },
+          "check": "空队列拒绝出队"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "enqueue": true,
+            "dequeue": true,
+            "reset": true,
+            "item": 9,
+            "buffer": [
+              1,
+              2,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "expected_outputs": {
+            "elementCount": 0,
+            "status": "16#0000"
+          },
+          "check": "复位优先清空"
+        }
+      ],
+      "coverage": [
+        "empty_error",
+        "reset_priority"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_18_tc03",
+      "task_id": "public_18",
+      "name": "满队列拒绝入队",
+      "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"enqueue": true, "dequeue": false, "reset": false, "item": 1}, "expected_outputs": {"elementCount": 1}, "check": "入队 1"},
+        {"cycle": 1, "inputs": {"enqueue": false, "dequeue": false, "reset": false, "item": 1}, "expected_outputs": {"elementCount": 1}, "check": "释放入队信号"},
+        {"cycle": 2, "inputs": {"enqueue": true, "dequeue": false, "reset": false, "item": 2}, "expected_outputs": {"elementCount": 2}, "check": "入队 2"},
+        {"cycle": 3, "inputs": {"enqueue": false, "dequeue": false, "reset": false, "item": 2}, "expected_outputs": {"elementCount": 2}, "check": "释放入队信号"},
+        {"cycle": 4, "inputs": {"enqueue": true, "dequeue": false, "reset": false, "item": 3}, "expected_outputs": {"elementCount": 3}, "check": "入队 3"},
+        {"cycle": 5, "inputs": {"enqueue": false, "dequeue": false, "reset": false, "item": 3}, "expected_outputs": {"elementCount": 3}, "check": "释放入队信号"},
+        {"cycle": 6, "inputs": {"enqueue": true, "dequeue": false, "reset": false, "item": 4}, "expected_outputs": {"elementCount": 4}, "check": "入队 4"},
+        {"cycle": 7, "inputs": {"enqueue": false, "dequeue": false, "reset": false, "item": 4}, "expected_outputs": {"elementCount": 4}, "check": "释放入队信号"},
+        {"cycle": 8, "inputs": {"enqueue": true, "dequeue": false, "reset": false, "item": 5}, "expected_outputs": {"elementCount": 5}, "check": "入队 5"},
+        {"cycle": 9, "inputs": {"enqueue": false, "dequeue": false, "reset": false, "item": 5}, "expected_outputs": {"elementCount": 5}, "check": "释放入队信号"},
+        {"cycle": 10, "inputs": {"enqueue": true, "dequeue": false, "reset": false, "item": 6}, "expected_outputs": {"elementCount": 6}, "check": "入队 6"},
+        {"cycle": 11, "inputs": {"enqueue": false, "dequeue": false, "reset": false, "item": 6}, "expected_outputs": {"elementCount": 6}, "check": "释放入队信号"},
+        {"cycle": 12, "inputs": {"enqueue": true, "dequeue": false, "reset": false, "item": 7}, "expected_outputs": {"elementCount": 7}, "check": "入队 7"},
+        {"cycle": 13, "inputs": {"enqueue": false, "dequeue": false, "reset": false, "item": 7}, "expected_outputs": {"elementCount": 7}, "check": "释放入队信号"},
+        {"cycle": 14, "inputs": {"enqueue": true, "dequeue": false, "reset": false, "item": 8}, "expected_outputs": {"elementCount": 8}, "check": "入队 8"},
+        {"cycle": 15, "inputs": {"enqueue": false, "dequeue": false, "reset": false, "item": 8}, "expected_outputs": {"elementCount": 8}, "check": "释放入队信号"},
+        {"cycle": 16, "inputs": {"enqueue": true, "dequeue": false, "reset": false, "item": 9}, "expected_outputs": {"elementCount": 9}, "check": "入队 9"},
+        {"cycle": 17, "inputs": {"enqueue": false, "dequeue": false, "reset": false, "item": 9}, "expected_outputs": {"elementCount": 9}, "check": "释放入队信号"},
+        {"cycle": 18, "inputs": {"enqueue": true, "dequeue": false, "reset": false, "item": 10}, "expected_outputs": {"elementCount": 10}, "check": "入队 10，队列已满"},
+        {"cycle": 19, "inputs": {"enqueue": false, "dequeue": false, "reset": false, "item": 10}, "expected_outputs": {"elementCount": 10}, "check": "释放入队信号"},
+        {
+          "cycle": 20,
+          "inputs": {
+            "enqueue": true,
+            "dequeue": false,
+            "reset": false,
+            "item": 99,
+            "buffer": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ]
+          },
+          "expected_outputs": {
+            "item": 99,
+            "elementCount": 10,
+            "status": "16#8002",
+            "buffer": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ]
+          },
+          "check": "满队列保持不变"
+        }
+      ],
+      "coverage": [
+        "full_error",
+        "state_preservation"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

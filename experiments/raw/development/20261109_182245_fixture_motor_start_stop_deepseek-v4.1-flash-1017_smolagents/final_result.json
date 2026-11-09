@@ -1,0 +1,19 @@
+{
+  "task_id": "fixture_motor_start_stop",
+  "framework": "smolagents_codeagent",
+  "framework_version": "1.26.0",
+  "model": "deepseek-v4.1-flash-1017",
+  "final_status": "compile_success",
+  "attempts": 1,
+  "repairs": 0,
+  "first_compile_pass": true,
+  "final_compile_pass": true,
+  "agent_state": "success",
+  "usage": {
+    "input_tokens": 9319,
+    "output_tokens": 1327,
+    "total_tokens": 10646
+  },
+  "duration_seconds": 100.141,
+  "failure_reason": []
+}

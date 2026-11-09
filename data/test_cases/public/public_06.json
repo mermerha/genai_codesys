@@ -1,0 +1,209 @@
+{
+  "task_id": "public_06",
+  "tests": [
+    {
+      "id": "public_06_tc01",
+      "task_id": "public_06",
+      "name": "低氧延时启动",
+      "initial_state": {
+        "BLOWER_RUN": false,
+        "AERATION_BLOWER_CYCLE_COUNT": 0
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "DO_LOW": true,
+            "AERATION_E_STOP_NC": true
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": false,
+            "AERATION_BLOWER_CYCLE_COUNT": 0
+          },
+          "check": "开始 5 秒延时"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 4000,
+          "inputs": {
+            "DO_LOW": true,
+            "AERATION_E_STOP_NC": true
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": false,
+            "AERATION_BLOWER_CYCLE_COUNT": 0
+          },
+          "check": "未满 5 秒"
+        },
+        {
+          "cycle": 2,
+          "advance_ms": 1000,
+          "inputs": {
+            "DO_LOW": true,
+            "AERATION_E_STOP_NC": true
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": true,
+            "AERATION_BLOWER_CYCLE_COUNT": 1
+          },
+          "check": "延时完成并计一次启动"
+        }
+      ],
+      "coverage": [
+        "start_delay",
+        "start_counter"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_06_tc02",
+      "task_id": "public_06",
+      "name": "需求消失后重新完整延时",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "DO_LOW": true,
+            "AERATION_E_STOP_NC": true
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": false,
+            "AERATION_BLOWER_CYCLE_COUNT": 0
+          },
+          "check": "先通过公开输入建立第一次启动"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 5000,
+          "inputs": {
+            "DO_LOW": true,
+            "AERATION_E_STOP_NC": true
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": true,
+            "AERATION_BLOWER_CYCLE_COUNT": 1
+          },
+          "check": "第一次延时完成并计数"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "DO_LOW": false,
+            "AERATION_E_STOP_NC": true
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": false,
+            "AERATION_BLOWER_CYCLE_COUNT": 1
+          },
+          "check": "需求消失立即停止"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "DO_LOW": true,
+            "AERATION_E_STOP_NC": true
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": false
+          },
+          "check": "新需求重新计时"
+        },
+        {
+          "cycle": 4,
+          "advance_ms": 5000,
+          "inputs": {
+            "DO_LOW": true,
+            "AERATION_E_STOP_NC": true
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": true,
+            "AERATION_BLOWER_CYCLE_COUNT": 2
+          },
+          "check": "再次满 5 秒后启动"
+        }
+      ],
+      "coverage": [
+        "delay_reset",
+        "cycle_count"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_06_tc03",
+      "task_id": "public_06",
+      "name": "急停优先",
+      "initial_state": {
+        "BLOWER_RUN": false,
+        "AERATION_BLOWER_CYCLE_COUNT": 0
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "DO_LOW": true,
+            "AERATION_E_STOP_NC": true
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": false
+          },
+          "check": "开始延时"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 3000,
+          "inputs": {
+            "DO_LOW": true,
+            "AERATION_E_STOP_NC": false
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": false,
+            "AERATION_BLOWER_CYCLE_COUNT": 0
+          },
+          "check": "急停保持停止"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "DO_LOW": true,
+            "AERATION_E_STOP_NC": true
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": false
+          },
+          "check": "恢复后重新完整延时"
+        },
+        {
+          "cycle": 3,
+          "advance_ms": 5000,
+          "inputs": {
+            "DO_LOW": true,
+            "AERATION_E_STOP_NC": true
+          },
+          "expected_outputs": {
+            "BLOWER_RUN": true,
+            "AERATION_BLOWER_CYCLE_COUNT": 1
+          },
+          "check": "恢复 5 秒后启动"
+        }
+      ],
+      "coverage": [
+        "emergency_stop",
+        "delay_reset"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

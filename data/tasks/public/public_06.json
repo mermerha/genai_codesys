@@ -1,0 +1,44 @@
+{
+  "id": "public_06",
+  "title": "Aeration Blower Delayed Start",
+  "difficulty": "easy",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, easy[5]",
+  "requirements": "Control a wastewater-treatment aeration blower with a low-dissolved-oxygen demand, a 5-second start delay, emergency-stop priority and start-cycle counting.\n\n1. Start delay timing when both DO_LOW and AERATION_E_STOP_NC are TRUE. Allow BLOWER_RUN to become TRUE only after these conditions have remained satisfied for 5 seconds.\n2. If DO_LOW becomes FALSE or an emergency stop occurs, immediately disable BLOWER_RUN and reset the start timer, whether timing is incomplete or complete. A new demand must wait the full 5 seconds again.\n3. Increment AERATION_BLOWER_CYCLE_COUNT once on each FALSE-to-TRUE transition of BLOWER_RUN. Do not count repeatedly during continuous operation.\n4. At power-up, initialize the blower to OFF and the start count to zero. The start delay gates a BOOL enable; no continuous speed ramp is required.",
+  "pou_name": "FB_AerationBlower",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "DO_LOW",
+      "data_type": "BOOL",
+      "description": "Dissolved oxygen is below its threshold and aeration is needed."
+    },
+    {
+      "direction": "input",
+      "name": "AERATION_E_STOP_NC",
+      "data_type": "BOOL",
+      "description": "TRUE means the emergency stop is inactive; FALSE means it is active."
+    },
+    {
+      "direction": "output",
+      "name": "BLOWER_RUN",
+      "data_type": "BOOL",
+      "description": "Blower motor-contactor run command."
+    },
+    {
+      "direction": "output",
+      "name": "AERATION_BLOWER_CYCLE_COUNT",
+      "data_type": "UINT",
+      "description": "Count of actual blower starts."
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests."
+    ]
+  }
+}

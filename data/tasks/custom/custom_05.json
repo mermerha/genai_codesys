@@ -1,0 +1,30 @@
+{
+  "id": "custom_05",
+  "title": "Dual Pump Duty Standby",
+  "difficulty": "medium",
+  "source_type": "custom",
+  "source_reference": "经验改编：双泵轮值与故障切换",
+  "requirements": "Control two duty/standby pumps. When enable and levelHigh are TRUE, run exactly one healthy pump. The initial duty pump is pump 1. If the duty pump is faulty while demand is active, immediately use the other healthy pump. When levelHigh returns FALSE, stop both pumps and alternate the preferred duty for the next demand cycle. Set bothFailed when both fault inputs are TRUE. Never run a pump whose fault input is TRUE.",
+  "pou_name": "FB_DualPump",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {"direction": "input", "name": "enable", "data_type": "BOOL", "description": "Controller enable"},
+    {"direction": "input", "name": "levelHigh", "data_type": "BOOL", "description": "Pump demand"},
+    {"direction": "input", "name": "pump1Fault", "data_type": "BOOL", "description": "Pump 1 fault"},
+    {"direction": "input", "name": "pump2Fault", "data_type": "BOOL", "description": "Pump 2 fault"},
+    {"direction": "output", "name": "pump1Run", "data_type": "BOOL", "description": "Pump 1 run command"},
+    {"direction": "output", "name": "pump2Run", "data_type": "BOOL", "description": "Pump 2 run command"},
+    {"direction": "output", "name": "bothFailed", "data_type": "BOOL", "description": "Both pumps unavailable"}
+  ],
+  "custom_types": [],
+  "provenance": {
+    "source_type": "experience_based",
+    "source_url": null,
+    "creation_process": ["根据集水井双泵控制经验整理轮值、备用切换和双故障规则"],
+    "human_modifications": ["把轮值切换点限定在一次需求结束时，明确初始首选泵"],
+    "review_process": ["检查任何状态下两泵不同时运行", "检查故障泵不会收到运行命令"]
+  },
+  "plc_rationale": "双泵轮值用于均衡磨损，故障切换提高可用性，属于水处理 PLC 的常见控制任务。",
+  "diversity_tags": ["冗余控制", "轮值", "故障切换", "medium"],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+}

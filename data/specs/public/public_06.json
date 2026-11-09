@@ -1,0 +1,50 @@
+{
+  "task_id": "public_06",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "permit": "AERATION_E_STOP_NC 为 TRUE",
+    "demand": "DO_LOW",
+    "delay_done": "需求与许可连续保持 5 秒",
+    "run": "BLOWER_RUN",
+    "run_rise": "BLOWER_RUN 从 FALSE 变 TRUE",
+    "count_incremented": "启动计数增加 1"
+  },
+  "assumptions": [],
+  "properties": [
+    {
+      "id": "public_06_p01",
+      "type": "priority",
+      "description": "急停或需求消失立即停止风机",
+      "ltl": "G((!permit || !demand) -> X(!run))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_06_p02",
+      "type": "response",
+      "description": "需求和许可持续 5 秒后启动",
+      "ltl": "G((permit && demand && delay_done) -> X(run))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_06_p03",
+      "type": "safety",
+      "description": "延时未完成前不得启动",
+      "ltl": "G((permit && demand && !delay_done) -> X(!run))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_06_p04",
+      "type": "accounting",
+      "description": "每次实际启动仅增加一次计数",
+      "ltl": "G(run_rise -> X(count_incremented))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

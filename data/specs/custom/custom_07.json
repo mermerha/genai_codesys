@@ -1,0 +1,23 @@
+{
+  "task_id": "custom_07",
+  "state_semantics": "每个步骤执行一次 PLC 扫描，数值输出允许测试执行器使用小量浮点容差。",
+  "propositions": {
+    "below_range": "rawValue < 0",
+    "above_range": "rawValue > 27648",
+    "valid_range": "0 <= rawValue <= 27648",
+    "scaled": "pressure = rawValue * 16.0 / 27648.0",
+    "pressure_zero": "pressure = 0.0",
+    "pressure_full": "pressure = 16.0",
+    "high": "pressure >= highLimit",
+    "fault": "sensorFault 为真",
+    "alarm": "highAlarm 为真"
+  },
+  "assumptions": [],
+  "properties": [
+    {"id": "custom_07_p01", "type": "functional", "description": "有效计数线性换算", "ltl": "G(valid_range -> X(scaled && !fault))", "tool_expression": null},
+    {"id": "custom_07_p02", "type": "safety", "description": "下越界故障并钳位为零", "ltl": "G(below_range -> X(fault && pressure_zero && !alarm))", "tool_expression": null},
+    {"id": "custom_07_p03", "type": "safety", "description": "上越界故障并钳位为满量程", "ltl": "G(above_range -> X(fault && pressure_full && !alarm))", "tool_expression": null},
+    {"id": "custom_07_p04", "type": "response", "description": "有效信号超过阈值时报警", "ltl": "G((valid_range && high) -> X(alarm))", "tool_expression": null}
+  ],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["实际执行时压力比较使用浮点容差。"]}
+}

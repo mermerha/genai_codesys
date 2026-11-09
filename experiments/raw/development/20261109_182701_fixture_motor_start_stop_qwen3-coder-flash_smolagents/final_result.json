@@ -1,0 +1,19 @@
+{
+  "task_id": "fixture_motor_start_stop",
+  "framework": "smolagents_codeagent",
+  "framework_version": "1.26.0",
+  "model": "qwen3-coder-flash",
+  "final_status": "compile_success",
+  "attempts": 2,
+  "repairs": 1,
+  "first_compile_pass": false,
+  "final_compile_pass": true,
+  "agent_state": "success",
+  "usage": {
+    "input_tokens": 9399,
+    "output_tokens": 559,
+    "total_tokens": 9958
+  },
+  "duration_seconds": 37.766,
+  "failure_reason": []
+}

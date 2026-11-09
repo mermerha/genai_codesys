@@ -8,14 +8,11 @@
 
 ## 当前状态与下一步
 
-项目规则、要求清单、流程和联调样例已经建立；纯 Python CODESYS 调用、真实 `FUNCTION_BLOCK` 创建、无界面编译与结构化错误提取已经通过正确/错误样例验证。模型客户端和单题生成—编译—修复闭环已实现。模型 A `deepseek-v4.1-flash-1017` 与模型 B `qwen3.8-flash` 均已在简单、中等和困难公共题上完成编译预验证；模型 B 固定使用 `reasoning_effort=none`，避免默认高强度推理导致开发运行超时。
+项目规则、要求清单、流程和联调样例已经建立；纯 Python CODESYS 调用、真实 `FUNCTION_BLOCK` 创建、无界面编译与结构化错误提取已经通过正确/错误样例验证。模型客户端和单题生成—编译—修复闭环已实现。模型 A 为 `deepseek-v4.1-flash-1017`，模型 B 暂定为 `qwen3-coder-flash`。
 
-当前主线：
+题库阶段已经完成：20 道公共题和 10 道自建题均已配套冻结的 LTL 与共享测试标准；特殊 DUT、数组和 `VAR_IN_OUT` 题使用最小编译上下文支持。自建题包含来源、人工改编、审核过程、PLC 合理性与多样性记录。
 
-1. 用少量不同难度题预验证并冻结模型 B。
-2. 确认现成 Agent 基线候选。
-3. 将老师提供的 20 道公共题转换为冻结接口。
-4. 设计、复核并冻结公共题的 LTL 与测试标准。
+现成 Agent 基线已更换为 `Codex CLI`。统一测试方式为 CODESYS Simulation 自动执行，并已接入自研 harness 与基线 Agent：Codex CLI 生成结构化候选，外部循环完成编译反馈；候选编译成功后，测试脚本复位应用、写入公开输入、读取公开输出并保存逐步骤结果。四种设置的小规模预跑已经完成，下一步进行 30 道题的正式实验。
 
 最新进度、阻塞项和证据以 [`docs/PROJECT_STATUS.md`](docs/PROJECT_STATUS.md) 为准。
 
@@ -46,6 +43,12 @@ D:\python\python.exe -m unittest discover -s tests -v
 
 ```powershell
 D:\python\python.exe -m src.plc_agent --max-repairs 2
+```
+
+运行现成 Agent 基线：
+
+```powershell
+D:\python\python.exe -m src.plc_agent.codex_baseline_cli --model qwen3-coder-flash --task tests/fixtures/motor_start_stop_fixture.json --model-timeout 300
 ```
 
 ## 文档导航

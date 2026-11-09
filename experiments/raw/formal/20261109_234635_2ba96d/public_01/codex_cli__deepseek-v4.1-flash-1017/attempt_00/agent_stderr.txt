@@ -1,0 +1,13 @@
+2026-11-09T15:49:05.513399Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.
+2026-11-09T15:49:05.522169Z  WARN codex_core::shell_snapshot: Failed to create shell snapshot for powershell: Shell snapshot not supported yet for PowerShell
+2026-11-09T15:49:05.639493Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.
+2026-11-09T15:49:05.644794Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.
+2026-11-09T15:49:05.645368Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.
+2026-11-09T15:49:05.653097Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.
+2026-11-09T15:49:05.663093Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.
+2026-11-09T15:49:05.663428Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.
+2026-11-09T15:49:05.663862Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.
+2026-11-09T15:49:05.678380Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.
+2026-11-09T15:49:05.689304Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.
+2026-11-09T15:49:07.087126Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.
+2026-11-09T15:49:07.088130Z  WARN codex_models_manager::model_info: Unknown model deepseek-v4.1-flash-1017 is used. This will use fallback model metadata.

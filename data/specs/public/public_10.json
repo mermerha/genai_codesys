@@ -1,0 +1,60 @@
+{
+  "task_id": "public_10",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "sensor_fault": "温度小于 0 或大于 100",
+    "below_set": "实际温度低于设定值",
+    "above_set": "实际温度高于设定值",
+    "heater": "HeaterOutput",
+    "protection": "OverheatProtection",
+    "heated_5s": "加热连续达到 5 秒",
+    "cooldown_3s": "保护持续达到 3 秒"
+  },
+  "assumptions": [
+    "温度等于设定值时保持加热关闭。"
+  ],
+  "properties": [
+    {
+      "id": "public_10_p01",
+      "type": "priority",
+      "description": "传感器故障时加热器关闭",
+      "ltl": "G(sensor_fault -> X(!heater))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_10_p02",
+      "type": "safety",
+      "description": "过热保护期间加热器关闭",
+      "ltl": "G(protection -> X(!heater))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_10_p03",
+      "type": "response",
+      "description": "低于设定值且无故障、无保护时启动加热",
+      "ltl": "G((below_set && !sensor_fault && !protection) -> X(heater))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_10_p04",
+      "type": "response",
+      "description": "连续加热 5 秒触发保护",
+      "ltl": "G(heated_5s -> X(protection && !heater))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_10_p05",
+      "type": "recovery",
+      "description": "保护至少保持 3 秒后解除",
+      "ltl": "G((protection && !cooldown_3s) -> X(protection)) && G((protection && cooldown_3s) -> X(!protection))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "custom_05",
+  "tests": [
+    {
+      "id": "custom_05_tc01", "task_id": "custom_05", "name": "相邻周期轮值", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"enable": true, "levelHigh": true, "pump1Fault": false, "pump2Fault": false}, "expected_outputs": {"pump1Run": true, "pump2Run": false, "bothFailed": false}, "check": "首周期泵一运行"},
+        {"cycle": 1, "inputs": {"enable": true, "levelHigh": false, "pump1Fault": false, "pump2Fault": false}, "expected_outputs": {"pump1Run": false, "pump2Run": false}, "check": "需求结束并轮换"},
+        {"cycle": 2, "inputs": {"enable": true, "levelHigh": true, "pump1Fault": false, "pump2Fault": false}, "expected_outputs": {"pump1Run": false, "pump2Run": true}, "check": "次周期泵二运行"}
+      ],
+      "coverage": ["duty_alternation", "mutual_exclusion"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_05_tc02", "task_id": "custom_05", "name": "运行中故障切换", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"enable": true, "levelHigh": true, "pump1Fault": false, "pump2Fault": false}, "expected_outputs": {"pump1Run": true, "pump2Run": false}, "check": "泵一运行"},
+        {"cycle": 1, "inputs": {"enable": true, "levelHigh": true, "pump1Fault": true, "pump2Fault": false}, "expected_outputs": {"pump1Run": false, "pump2Run": true}, "check": "切换到健康备用泵"}
+      ],
+      "coverage": ["failover", "fault_interlock"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_05_tc03", "task_id": "custom_05", "name": "双泵故障", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"enable": true, "levelHigh": true, "pump1Fault": true, "pump2Fault": true}, "expected_outputs": {"pump1Run": false, "pump2Run": false, "bothFailed": true}, "check": "双故障停泵报警"},
+        {"cycle": 1, "inputs": {"enable": true, "levelHigh": true, "pump1Fault": false, "pump2Fault": true}, "expected_outputs": {"pump1Run": true, "pump2Run": false, "bothFailed": false}, "check": "一台恢复后可运行"}
+      ],
+      "coverage": ["both_failed", "recovery"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    }
+  ]
+}

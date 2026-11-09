@@ -1,0 +1,32 @@
+{
+  "task_id": "custom_03",
+  "tests": [
+    {
+      "id": "custom_03_tc01", "task_id": "custom_03", "name": "跳闸后延迟重启", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"demand": true, "trip": false, "reset": false}, "expected_outputs": {"compressorRun": true, "tripLatched": false, "startCount": 1}, "check": "首次需求立即启动"},
+        {"cycle": 1, "inputs": {"demand": true, "trip": true, "reset": false}, "expected_outputs": {"compressorRun": false, "tripLatched": true, "startCount": 1}, "check": "跳闸停机"},
+        {"cycle": 2, "advance_ms": 4000, "inputs": {"demand": true, "trip": false, "reset": true}, "expected_outputs": {"compressorRun": false, "tripLatched": false, "startCount": 1}, "check": "复位但延时未完成"},
+        {"cycle": 3, "advance_ms": 1000, "inputs": {"demand": true, "trip": false, "reset": false}, "expected_outputs": {"compressorRun": true, "tripLatched": false, "startCount": 2}, "check": "五秒后重启"}
+      ],
+      "coverage": ["restart_delay", "trip_latch", "start_count"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_03_tc02", "task_id": "custom_03", "name": "带故障复位无效", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"demand": false, "trip": true, "reset": false}, "expected_outputs": {"compressorRun": false, "tripLatched": true}, "check": "锁存跳闸"},
+        {"cycle": 1, "inputs": {"demand": false, "trip": true, "reset": true}, "expected_outputs": {"tripLatched": true}, "check": "trip 仍在时不清除"}
+      ],
+      "coverage": ["reset_interlock"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_03_tc03", "task_id": "custom_03", "name": "需求撤销不增加计数", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"demand": true, "trip": false, "reset": false}, "expected_outputs": {"compressorRun": true, "startCount": 1}, "check": "第一次启动"},
+        {"cycle": 1, "inputs": {"demand": false, "trip": false, "reset": false}, "expected_outputs": {"compressorRun": false, "startCount": 1}, "check": "需求撤销停机"},
+        {"cycle": 2, "inputs": {"demand": true, "trip": false, "reset": false}, "expected_outputs": {"compressorRun": true, "startCount": 2}, "check": "第二次启动计数"}
+      ],
+      "coverage": ["demand", "counter_edge"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    }
+  ]
+}

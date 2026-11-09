@@ -1,0 +1,20 @@
+{
+  "task_id": "custom_01",
+  "state_semantics": "每个步骤执行一次 PLC 扫描，X 表示该扫描后的输出状态。",
+  "propositions": {
+    "safe_start": "start 且 stop、emergencyStop、overload 和 fault 均为假",
+    "stop_request": "stop 或 emergencyStop",
+    "overload": "过载输入为真",
+    "valid_reset": "reset 为真且 overload 为假",
+    "motor_run": "motorRun 为真",
+    "fault": "fault 为真"
+  },
+  "assumptions": [],
+  "properties": [
+    {"id": "custom_01_p01", "type": "safety", "description": "停止或急停立即关闭电机", "ltl": "G(stop_request -> X(!motor_run))", "tool_expression": null},
+    {"id": "custom_01_p02", "type": "safety", "description": "过载停机并锁存故障", "ltl": "G(overload -> X(!motor_run && fault))", "tool_expression": null},
+    {"id": "custom_01_p03", "type": "response", "description": "安全启动使电机运行", "ltl": "G(safe_start -> X(motor_run))", "tool_expression": null},
+    {"id": "custom_01_p04", "type": "response", "description": "只在有效复位时清除故障", "ltl": "G(valid_reset -> X(!fault)) && G((fault && !valid_reset) -> X(fault))", "tool_expression": null}
+  ],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["按工具无关 LTL 冻结。"]}
+}

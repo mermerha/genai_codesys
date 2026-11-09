@@ -1,0 +1,22 @@
+{
+  "task_id": "custom_03",
+  "state_semantics": "每个步骤执行一次 PLC 扫描；advance_ms 表示扫描前经过的时间，X 表示扫描后的输出。",
+  "propositions": {
+    "initial_demand": "上电后尚未发生 trip 且 demand 为真",
+    "trip": "trip 输入为真",
+    "valid_reset": "reset 为真且 trip 为假",
+    "delay_elapsed": "自最近一次 trip 起已满 5 秒",
+    "demand": "demand 为真",
+    "run": "compressorRun 为真",
+    "latched": "tripLatched 为真",
+    "count_inc": "startCount 在本扫描增加 1"
+  },
+  "assumptions": [],
+  "properties": [
+    {"id": "custom_03_p01", "type": "response", "description": "首次需求立即启动并计数", "ltl": "G(initial_demand -> X(run && count_inc))", "tool_expression": null},
+    {"id": "custom_03_p02", "type": "safety", "description": "跳闸立即停机并锁存", "ltl": "G(trip -> X(!run && latched))", "tool_expression": null},
+    {"id": "custom_03_p03", "type": "safety", "description": "延时未到不得重启", "ltl": "G((demand && !delay_elapsed) -> X(!run))", "tool_expression": null},
+    {"id": "custom_03_p04", "type": "response", "description": "有效复位且延时完成后允许重启", "ltl": "G((demand && valid_reset && delay_elapsed) -> X(run && !latched))", "tool_expression": null}
+  ],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["计时命题依据 advance_ms 解释。"]}
+}

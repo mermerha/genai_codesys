@@ -1,0 +1,316 @@
+{
+  "task_id": "public_07",
+  "tests": [
+    {
+      "id": "public_07_tc01",
+      "task_id": "public_07",
+      "name": "手动选择泵启停",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "mode": false,
+            "start": true,
+            "stop": false,
+            "pumpGroup": [
+              {
+                "priority": 1,
+                "selection": true,
+                "RunComd": false
+              },
+              {
+                "priority": 2,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 3,
+                "selection": true,
+                "RunComd": false
+              },
+              {
+                "priority": 4,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 5,
+                "selection": false,
+                "RunComd": false
+              }
+            ]
+          },
+          "expected_outputs": {
+            "pumpGroup": [
+              {
+                "priority": 1,
+                "selection": true,
+                "RunComd": true
+              },
+              {
+                "priority": 2,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 3,
+                "selection": true,
+                "RunComd": true
+              },
+              {
+                "priority": 4,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 5,
+                "selection": false,
+                "RunComd": false
+              }
+            ]
+          },
+          "check": "只运行手动选择的泵"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "mode": false,
+            "start": true,
+            "stop": true,
+            "pumpGroup": [
+              {
+                "priority": 1,
+                "selection": true,
+                "RunComd": true
+              },
+              {
+                "priority": 2,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 3,
+                "selection": true,
+                "RunComd": true
+              },
+              {
+                "priority": 4,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 5,
+                "selection": false,
+                "RunComd": false
+              }
+            ]
+          },
+          "expected_outputs": {
+            "pumpGroup": [
+              {
+                "priority": 1,
+                "selection": true,
+                "RunComd": false
+              },
+              {
+                "priority": 2,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 3,
+                "selection": true,
+                "RunComd": false
+              },
+              {
+                "priority": 4,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 5,
+                "selection": false,
+                "RunComd": false
+              }
+            ]
+          },
+          "check": "停止优先关闭全部泵"
+        }
+      ],
+      "coverage": [
+        "manual_mode",
+        "stop_priority"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_07_tc02",
+      "task_id": "public_07",
+      "name": "自动选择三个最高优先级泵",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "mode": true,
+            "start": true,
+            "stop": false,
+            "pumpGroup": [
+              {
+                "priority": 5,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 10,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 3,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 8,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 7,
+                "selection": false,
+                "RunComd": false
+              }
+            ]
+          },
+          "expected_outputs": {
+            "pumpGroup": [
+              {
+                "priority": 5,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 10,
+                "selection": false,
+                "RunComd": true
+              },
+              {
+                "priority": 3,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 8,
+                "selection": false,
+                "RunComd": true
+              },
+              {
+                "priority": 7,
+                "selection": false,
+                "RunComd": true
+              }
+            ]
+          },
+          "check": "运行优先级 10、8、7 的三台泵"
+        }
+      ],
+      "coverage": [
+        "automatic_mode",
+        "priority_selection"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_07_tc03",
+      "task_id": "public_07",
+      "name": "相同优先级按下标选择",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "mode": true,
+            "start": true,
+            "stop": false,
+            "pumpGroup": [
+              {
+                "priority": 10,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 10,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 10,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 5,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 1,
+                "selection": false,
+                "RunComd": false
+              }
+            ]
+          },
+          "expected_outputs": {
+            "pumpGroup": [
+              {
+                "priority": 10,
+                "selection": false,
+                "RunComd": true
+              },
+              {
+                "priority": 10,
+                "selection": false,
+                "RunComd": true
+              },
+              {
+                "priority": 10,
+                "selection": false,
+                "RunComd": true
+              },
+              {
+                "priority": 5,
+                "selection": false,
+                "RunComd": false
+              },
+              {
+                "priority": 1,
+                "selection": false,
+                "RunComd": false
+              }
+            ]
+          },
+          "check": "并列时选择下标最小的三台"
+        }
+      ],
+      "coverage": [
+        "tie_break",
+        "determinism"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

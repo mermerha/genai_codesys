@@ -1,0 +1,231 @@
+{
+  "task_id": "public_12",
+  "tests": [
+    {
+      "id": "public_12_tc01",
+      "task_id": "public_12",
+      "name": "报警最短保持 500 毫秒",
+      "initial_state": {
+        "THICKNESS_ALARM": false,
+        "Slab_Fault_Counter": 0,
+        "Slab_Fault_History": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "THICKNESS_FAULT": true,
+            "THICKNESS_SIGNAL_VALID": true,
+            "CUTTING_RUN": false,
+            "FaultTimestamp": 100,
+            "CycleTime": "T#100ms"
+          },
+          "expected_outputs": {
+            "THICKNESS_ALARM": true,
+            "Slab_Fault_Counter": 1,
+            "Slab_Fault_History": [
+              100,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "check": "故障上升沿立即报警并记录"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 100,
+          "inputs": {
+            "THICKNESS_FAULT": false,
+            "THICKNESS_SIGNAL_VALID": true,
+            "CUTTING_RUN": false,
+            "FaultTimestamp": 100,
+            "CycleTime": "T#100ms"
+          },
+          "expected_outputs": {
+            "THICKNESS_ALARM": true
+          },
+          "check": "触发后 100 毫秒仍保持"
+        },
+        {
+          "cycle": 2,
+          "advance_ms": 400,
+          "inputs": {
+            "THICKNESS_FAULT": false,
+            "THICKNESS_SIGNAL_VALID": true,
+            "CUTTING_RUN": false,
+            "FaultTimestamp": 100,
+            "CycleTime": "T#400ms"
+          },
+          "expected_outputs": {
+            "THICKNESS_ALARM": false
+          },
+          "check": "累计 500 毫秒后清除"
+        }
+      ],
+      "coverage": [
+        "alarm_hold",
+        "fault_counter",
+        "history"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_12_tc02",
+      "task_id": "public_12",
+      "name": "故障历史新记录置顶",
+      "initial_state": {
+        "THICKNESS_ALARM": false,
+        "Slab_Fault_Counter": 0,
+        "Slab_Fault_History": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "THICKNESS_FAULT": true,
+            "THICKNESS_SIGNAL_VALID": true,
+            "CUTTING_RUN": false,
+            "FaultTimestamp": 100,
+            "CycleTime": "T#500ms"
+          },
+          "expected_outputs": {
+            "Slab_Fault_Counter": 1,
+            "Slab_Fault_History": [
+              100,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "check": "记录第一次故障"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 500,
+          "inputs": {
+            "THICKNESS_FAULT": false,
+            "THICKNESS_SIGNAL_VALID": true,
+            "CUTTING_RUN": false,
+            "FaultTimestamp": 100,
+            "CycleTime": "T#500ms"
+          },
+          "expected_outputs": {
+            "THICKNESS_ALARM": false
+          },
+          "check": "清除故障"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "THICKNESS_FAULT": true,
+            "THICKNESS_SIGNAL_VALID": true,
+            "CUTTING_RUN": false,
+            "FaultTimestamp": 200,
+            "CycleTime": "T#100ms"
+          },
+          "expected_outputs": {
+            "Slab_Fault_Counter": 2,
+            "Slab_Fault_History": [
+              200,
+              100,
+              0,
+              0,
+              0
+            ]
+          },
+          "check": "第二次故障置顶并后移旧记录"
+        }
+      ],
+      "coverage": [
+        "history_shift",
+        "edge_count"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_12_tc03",
+      "task_id": "public_12",
+      "name": "仅正常切割累计运行时间",
+      "initial_state": {
+        "Slab_Runtime_Accumulator": "LTIME#0s"
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "THICKNESS_FAULT": false,
+            "THICKNESS_SIGNAL_VALID": true,
+            "CUTTING_RUN": true,
+            "FaultTimestamp": 0,
+            "CycleTime": "T#1s"
+          },
+          "expected_outputs": {
+            "Slab_Runtime_Accumulator": "LTIME#1s"
+          },
+          "check": "正常切割累计 1 秒"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "THICKNESS_FAULT": true,
+            "THICKNESS_SIGNAL_VALID": true,
+            "CUTTING_RUN": true,
+            "FaultTimestamp": 1,
+            "CycleTime": "T#1s"
+          },
+          "expected_outputs": {
+            "Slab_Runtime_Accumulator": "LTIME#1s"
+          },
+          "check": "故障时不累计"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "THICKNESS_FAULT": false,
+            "THICKNESS_SIGNAL_VALID": false,
+            "CUTTING_RUN": true,
+            "FaultTimestamp": 1,
+            "CycleTime": "T#1s"
+          },
+          "expected_outputs": {
+            "Slab_Runtime_Accumulator": "LTIME#1s",
+            "THICKNESS_ALARM": false
+          },
+          "check": "信号无效时不累计并清除报警"
+        }
+      ],
+      "coverage": [
+        "runtime_accumulation",
+        "invalid_signal"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "task_id": "public_05",
+  "tests": [
+    {
+      "id": "public_05_tc01",
+      "task_id": "public_05",
+      "name": "上电五秒抑制",
+      "initial_state": {
+        "Operator_Alert": false,
+        "Weld_Soft_Start_Active": true
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "Gap_Exceeded": true,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#1s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false,
+            "Weld_Soft_Start_Active": true
+          },
+          "check": "上电仍抑制"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 4000,
+          "inputs": {
+            "Gap_Exceeded": true,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#1s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false,
+            "Weld_Soft_Start_Active": true
+          },
+          "check": "未满 5 秒"
+        },
+        {
+          "cycle": 2,
+          "advance_ms": 1000,
+          "inputs": {
+            "Gap_Exceeded": false,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#1s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false,
+            "Weld_Soft_Start_Active": false
+          },
+          "check": "5 秒后结束抑制"
+        }
+      ],
+      "coverage": [
+        "initialization_delay"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_05_tc02",
+      "task_id": "public_05",
+      "name": "正常监控防抖报警",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "Gap_Exceeded": false,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#2s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false,
+            "Weld_Soft_Start_Active": true
+          },
+          "check": "通过公开输入经历上电抑制"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 5000,
+          "inputs": {
+            "Gap_Exceeded": false,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#2s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false,
+            "Weld_Soft_Start_Active": false
+          },
+          "check": "五秒后进入正常监控"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "Gap_Exceeded": true,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#2s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false,
+            "Weld_Soft_Start_Active": false
+          },
+          "check": "开始报警防抖"
+        },
+        {
+          "cycle": 3,
+          "advance_ms": 2000,
+          "inputs": {
+            "Gap_Exceeded": true,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#2s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": true
+          },
+          "check": "达到防抖时间"
+        },
+        {
+          "cycle": 4,
+          "inputs": {
+            "Gap_Exceeded": false,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#2s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false
+          },
+          "check": "信号恢复立即清除"
+        }
+      ],
+      "coverage": [
+        "debounce",
+        "alarm_clear"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_05_tc03",
+      "task_id": "public_05",
+      "name": "急停清除未完成防抖",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "Gap_Exceeded": false,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#2s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false,
+            "Weld_Soft_Start_Active": true
+          },
+          "check": "通过公开输入经历上电抑制"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 5000,
+          "inputs": {
+            "Gap_Exceeded": false,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#2s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false,
+            "Weld_Soft_Start_Active": false
+          },
+          "check": "五秒后进入正常监控"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "Gap_Exceeded": true,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#2s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false
+          },
+          "check": "开始防抖"
+        },
+        {
+          "cycle": 3,
+          "advance_ms": 1000,
+          "inputs": {
+            "Gap_Exceeded": true,
+            "Weld_E_Stop_NC": false,
+            "DebounceTime": "T#2s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false
+          },
+          "check": "急停清除防抖"
+        },
+        {
+          "cycle": 4,
+          "inputs": {
+            "Gap_Exceeded": true,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#2s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": false
+          },
+          "check": "恢复后重新计时"
+        },
+        {
+          "cycle": 5,
+          "advance_ms": 2000,
+          "inputs": {
+            "Gap_Exceeded": true,
+            "Weld_E_Stop_NC": true,
+            "DebounceTime": "T#2s"
+          },
+          "expected_outputs": {
+            "Operator_Alert": true
+          },
+          "check": "重新满 2 秒后报警"
+        }
+      ],
+      "coverage": [
+        "emergency_stop",
+        "debounce_reset"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

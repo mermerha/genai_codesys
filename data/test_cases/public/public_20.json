@@ -1,0 +1,398 @@
+{
+  "task_id": "public_20",
+  "tests": [
+    {
+      "id": "public_20_tc01",
+      "task_id": "public_20",
+      "name": "手动正反转互锁",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "Mode": false,
+            "ForwardButton": true,
+            "ReverseButton": false,
+            "SensorFeed": false,
+            "SensorWash": false,
+            "SensorWeight": false,
+            "SensorFiring": false,
+            "SensorOutput": false,
+            "washComplete": false,
+            "weightComplete": false,
+            "weight": 0,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "MotorForward": true,
+            "MotorReverse": false
+          },
+          "check": "手动正转"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "Mode": false,
+            "ForwardButton": false,
+            "ReverseButton": true,
+            "SensorFeed": false,
+            "SensorWash": false,
+            "SensorWeight": false,
+            "SensorFiring": false,
+            "SensorOutput": false,
+            "washComplete": false,
+            "weightComplete": false,
+            "weight": 0,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "MotorForward": false,
+            "MotorReverse": true
+          },
+          "check": "手动反转"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "Mode": false,
+            "ForwardButton": true,
+            "ReverseButton": true,
+            "SensorFeed": false,
+            "SensorWash": false,
+            "SensorWeight": false,
+            "SensorFiring": false,
+            "SensorOutput": false,
+            "washComplete": false,
+            "weightComplete": false,
+            "weight": 0,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "MotorForward": false,
+            "MotorReverse": false
+          },
+          "check": "冲突时互锁"
+        }
+      ],
+      "coverage": [
+        "manual_mode",
+        "direction_interlock"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_20_tc02",
+      "task_id": "public_20",
+      "name": "合格产品完整自动流程",
+      "initial_state": {
+        "CompletionLight": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "Mode": true,
+            "ForwardButton": false,
+            "ReverseButton": false,
+            "SensorFeed": true,
+            "SensorWash": false,
+            "SensorWeight": false,
+            "SensorFiring": false,
+            "SensorOutput": false,
+            "washComplete": false,
+            "weightComplete": false,
+            "weight": 0,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "MotorForward": true,
+            "MotorReverse": false,
+            "kick": false,
+            "CompletionLight": false
+          },
+          "check": "上料后前进"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "Mode": true,
+            "ForwardButton": false,
+            "ReverseButton": false,
+            "SensorFeed": false,
+            "SensorWash": true,
+            "SensorWeight": false,
+            "SensorFiring": false,
+            "SensorOutput": false,
+            "washComplete": false,
+            "weightComplete": false,
+            "weight": 0,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "MotorForward": false
+          },
+          "check": "到清洗站停止"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "Mode": true,
+            "ForwardButton": false,
+            "ReverseButton": false,
+            "SensorFeed": false,
+            "SensorWash": true,
+            "SensorWeight": false,
+            "SensorFiring": false,
+            "SensorOutput": false,
+            "washComplete": true,
+            "weightComplete": false,
+            "weight": 0,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "MotorForward": true
+          },
+          "check": "清洗完成后前进"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "Mode": true,
+            "ForwardButton": false,
+            "ReverseButton": false,
+            "SensorFeed": false,
+            "SensorWash": false,
+            "SensorWeight": true,
+            "SensorFiring": false,
+            "SensorOutput": false,
+            "washComplete": false,
+            "weightComplete": false,
+            "weight": 150,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "MotorForward": false
+          },
+          "check": "到称重站停止"
+        },
+        {
+          "cycle": 4,
+          "inputs": {
+            "Mode": true,
+            "ForwardButton": false,
+            "ReverseButton": false,
+            "SensorFeed": false,
+            "SensorWash": false,
+            "SensorWeight": true,
+            "SensorFiring": false,
+            "SensorOutput": false,
+            "washComplete": false,
+            "weightComplete": true,
+            "weight": 150,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "MotorForward": true,
+            "kick": false,
+            "firingTemp": 525
+          },
+          "check": "合格品计算温度并前进"
+        },
+        {
+          "cycle": 5,
+          "inputs": {
+            "Mode": true,
+            "ForwardButton": false,
+            "ReverseButton": false,
+            "SensorFeed": false,
+            "SensorWash": false,
+            "SensorWeight": false,
+            "SensorFiring": true,
+            "SensorOutput": false,
+            "washComplete": false,
+            "weightComplete": false,
+            "weight": 150,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "MotorForward": false
+          },
+          "check": "到烧制站停止"
+        },
+        {
+          "cycle": 6,
+          "inputs": {
+            "Mode": true,
+            "ForwardButton": false,
+            "ReverseButton": false,
+            "SensorFeed": false,
+            "SensorWash": false,
+            "SensorWeight": false,
+            "SensorFiring": true,
+            "SensorOutput": false,
+            "washComplete": false,
+            "weightComplete": false,
+            "weight": 150,
+            "firingComplete": true
+          },
+          "expected_outputs": {
+            "MotorForward": true
+          },
+          "check": "烧制完成后前进"
+        },
+        {
+          "cycle": 7,
+          "inputs": {
+            "Mode": true,
+            "ForwardButton": false,
+            "ReverseButton": false,
+            "SensorFeed": false,
+            "SensorWash": false,
+            "SensorWeight": false,
+            "SensorFiring": false,
+            "SensorOutput": true,
+            "washComplete": false,
+            "weightComplete": false,
+            "weight": 150,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "MotorForward": false,
+            "CompletionLight": true
+          },
+          "check": "到成品站点亮完成灯"
+        },
+        {
+          "cycle": 8,
+          "inputs": {
+            "Mode": true,
+            "ForwardButton": false,
+            "ReverseButton": false,
+            "SensorFeed": false,
+            "SensorWash": false,
+            "SensorWeight": false,
+            "SensorFiring": false,
+            "SensorOutput": false,
+            "washComplete": false,
+            "weightComplete": false,
+            "weight": 150,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "CompletionLight": false
+          },
+          "check": "产品取走后熄灭"
+        }
+      ],
+      "coverage": [
+        "automatic_sequence",
+        "qualified_weight",
+        "temperature_mapping",
+        "completion"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_20_tc03",
+      "task_id": "public_20",
+      "name": "低于下限产品剔除",
+      "initial_state": {
+        "CompletionLight": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "Mode": true,
+            "ForwardButton": false,
+            "ReverseButton": false,
+            "SensorFeed": true,
+            "SensorWash": false,
+            "SensorWeight": false,
+            "SensorFiring": false,
+            "SensorOutput": false,
+            "washComplete": false,
+            "weightComplete": false,
+            "weight": 0,
+            "firingComplete": false
+          },
+          "expected_outputs": {
+            "MotorForward": true,
+            "kick": false
+          },
+          "check": "通过公开输入从上料站开始"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "SensorFeed": false,
+            "SensorWash": true
+          },
+          "expected_outputs": {
+            "MotorForward": false
+          },
+          "check": "到达清洗站"
+        },
+        {
+          "cycle": 2,
+          "inputs": {"washComplete": true},
+          "expected_outputs": {"MotorForward": true},
+          "check": "清洗完成后前进"
+        },
+        {
+          "cycle": 3,
+          "inputs": {"SensorWash": false, "washComplete": false, "SensorWeight": true, "weight": 99},
+          "expected_outputs": {"MotorForward": false},
+          "check": "到达称重站"
+        },
+        {
+          "cycle": 4,
+          "inputs": {"weightComplete": true},
+          "expected_outputs": {"MotorForward": false, "kick": true},
+          "check": "低于下限剔除"
+        }
+      ],
+      "coverage": [
+        "reject_low"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_20_tc04",
+      "task_id": "public_20",
+      "name": "高于上限产品剔除",
+      "initial_state": {"CompletionLight": false},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "Mode": true, "ForwardButton": false, "ReverseButton": false,
+            "SensorFeed": true, "SensorWash": false, "SensorWeight": false,
+            "SensorFiring": false, "SensorOutput": false,
+            "washComplete": false, "weightComplete": false, "weight": 0, "firingComplete": false
+          },
+          "expected_outputs": {"MotorForward": true, "kick": false},
+          "check": "通过公开输入从上料站开始"
+        },
+        {"cycle": 1, "inputs": {"SensorFeed": false, "SensorWash": true}, "expected_outputs": {"MotorForward": false}, "check": "到达清洗站"},
+        {"cycle": 2, "inputs": {"washComplete": true}, "expected_outputs": {"MotorForward": true}, "check": "清洗完成后前进"},
+        {"cycle": 3, "inputs": {"SensorWash": false, "washComplete": false, "SensorWeight": true, "weight": 201}, "expected_outputs": {"MotorForward": false}, "check": "到达称重站"},
+        {"cycle": 4, "inputs": {"weightComplete": true}, "expected_outputs": {"MotorForward": false, "kick": true}, "check": "高于上限剔除"}
+      ],
+      "coverage": ["reject_high"],
+      "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    }
+  ]
+}

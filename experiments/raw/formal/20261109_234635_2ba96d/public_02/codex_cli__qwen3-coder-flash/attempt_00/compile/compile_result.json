@@ -1,0 +1,176 @@
+{
+  "success": false, 
+  "exception": null, 
+  "replaced_pou": "FB_DWordEdgeDetection", 
+  "messages": [
+    {
+      "severity": "information", 
+      "number": null, 
+      "text": "未安装离线帮助", 
+      "category": "Offline Help", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "------ 开始构建应用程序 Device.Application -------", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "代码典型化...", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "error", 
+      "number": "32", 
+      "text": "不能将类型 'UDINT' 转换为类型'BOOL'", 
+      "category": "编译", 
+      "position": "行2,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": null, 
+      "text": "Internal error in _IStatement: FOR i := 0 TO 31 BY 1 DO\r\n\tIF risingBits[i] THEN\r\n\t\tnoOfRisingBits := (noOfRisingBits + USINT#1);\r\n\tEND_IF;\r\n\r\n;\r\nEND_FOR;\r\n", 
+      "category": "编译", 
+      "position": "行13,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": null, 
+      "text": "Exception text: System.NullReferenceException: 未将对象引用设置到对象的实例。\r\n   在 _3S.CoDeSys.Compiler35220.Phase4_TypeCheck.TypeCheckerVisitor.\u0001(_IForStatement \u0002)\r\n   在 _3S.CoDeSys.Compiler35220.Phase4_TypeCheck.TypeCheckerVisitor.\u0001(_ISequenceStatement \u0002)", 
+      "category": "编译", 
+      "position": "行13,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": "46", 
+      "text": "没有定义标识符'i' ", 
+      "category": "编译", 
+      "position": "行13,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": "18", 
+      "text": "'i'是无效的赋值目标", 
+      "category": "编译", 
+      "position": "行13,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": "231", 
+      "text": "此处需要有类型 'BOOL'的表达式", 
+      "category": "编译", 
+      "position": "行14,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": "47", 
+      "text": "无法使用[]将索引应用于类型'DWORD'的表达式", 
+      "category": "编译", 
+      "position": "行14,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": "46", 
+      "text": "没有定义标识符'i' ", 
+      "category": "编译", 
+      "position": "行14,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": null, 
+      "text": "Internal error in _IStatement: FOR i := 0 TO 31 BY 1 DO\r\n\tIF fallingBits[i] THEN\r\n\t\tnoOfFallingBits := (noOfFallingBits + USINT#1);\r\n\tEND_IF;\r\n\r\n;\r\nEND_FOR;\r\n", 
+      "category": "编译", 
+      "position": "行23,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": null, 
+      "text": "Exception text: System.NullReferenceException: 未将对象引用设置到对象的实例。\r\n   在 _3S.CoDeSys.Compiler35220.Phase4_TypeCheck.TypeCheckerVisitor.\u0001(_IForStatement \u0002)\r\n   在 _3S.CoDeSys.Compiler35220.Phase4_TypeCheck.TypeCheckerVisitor.\u0001(_ISequenceStatement \u0002)", 
+      "category": "编译", 
+      "position": "行23,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": "46", 
+      "text": "没有定义标识符'i' ", 
+      "category": "编译", 
+      "position": "行23,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": "18", 
+      "text": "'i'是无效的赋值目标", 
+      "category": "编译", 
+      "position": "行23,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": "231", 
+      "text": "此处需要有类型 'BOOL'的表达式", 
+      "category": "编译", 
+      "position": "行24,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": "47", 
+      "text": "无法使用[]将索引应用于类型'DWORD'的表达式", 
+      "category": "编译", 
+      "position": "行24,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": "46", 
+      "text": "没有定义标识符'i' ", 
+      "category": "编译", 
+      "position": "行24,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "编译完成--15错误,0警告", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "其他代码检查...", 
+      "category": "附加代码检查", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "其他代码检查完成-0 个错误", 
+      "category": "附加代码检查", 
+      "position": null, 
+      "object": null
+    }
+  ], 
+  "project_path": "G:\\Genai_codesys\\experiments\\raw\\formal\\20261109_234635_2ba96d\\public_02\\codex_cli__qwen3-coder-flash\\attempt_00\\compile\\candidate.project"
+}

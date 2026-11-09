@@ -1,0 +1,53 @@
+{
+  "task_id": "fixture_motor_start_stop",
+  "framework": "codex_cli",
+  "framework_version": "codex-cli 0.167.0-alpha.3.2",
+  "model": "qwen3-coder-flash",
+  "final_status": "compile_failure",
+  "attempts": 3,
+  "repairs": 2,
+  "first_compile_pass": false,
+  "final_compile_pass": false,
+  "usage_by_attempt": [
+    {
+      "input_tokens": 54017,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 98,
+      "reasoning_output_tokens": 0
+    },
+    {
+      "input_tokens": 54256,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 121,
+      "reasoning_output_tokens": 0
+    },
+    {
+      "input_tokens": 54280,
+      "cached_input_tokens": 51456,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 121,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "duration_seconds": 116.016,
+  "failure_reason": [
+    {
+      "category": "编译",
+      "severity": "error",
+      "number": "77",
+      "text": "未知的类型: 'MotorControl'",
+      "object_name": "PLC_PRG",
+      "position": "3行 (Decl)"
+    },
+    {
+      "category": "编译",
+      "severity": "error",
+      "number": "35",
+      "text": "需要程序名、函数或功能块实例替代 'candidateInstance'",
+      "object_name": "PLC_PRG",
+      "position": "行1,列1 (Impl)"
+    }
+  ]
+}

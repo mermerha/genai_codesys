@@ -1,0 +1,358 @@
+{
+  "task_id": "public_15",
+  "tests": [
+    {
+      "id": "public_15_tc01",
+      "task_id": "public_15",
+      "name": "手动按钮上升沿切换与急停",
+      "initial_state": {
+        "valveARun": false,
+        "valveBRun": false,
+        "valveCRun": false,
+        "valveDRun": false,
+        "mixMotorRun": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "estop": true,
+            "opeMode": false,
+            "valveAStart": true,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": false,
+            "levelSensor": 0,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveARun": true
+          },
+          "check": "第一次上升沿打开 A"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "estop": true,
+            "opeMode": false,
+            "valveAStart": true,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": false,
+            "levelSensor": 0,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveARun": true
+          },
+          "check": "按住按钮不重复切换"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "estop": true,
+            "opeMode": false,
+            "valveAStart": false,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": false,
+            "levelSensor": 0,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveARun": true
+          },
+          "check": "释放按钮"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "estop": true,
+            "opeMode": false,
+            "valveAStart": true,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": false,
+            "levelSensor": 0,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveARun": false
+          },
+          "check": "第二次上升沿关闭 A"
+        },
+        {
+          "cycle": 4,
+          "inputs": {
+            "estop": false,
+            "opeMode": false,
+            "valveAStart": false,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": false,
+            "levelSensor": 0,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveARun": false,
+            "valveBRun": false,
+            "valveCRun": false,
+            "valveDRun": false,
+            "mixMotorRun": false
+          },
+          "check": "急停关闭全部设备"
+        }
+      ],
+      "coverage": [
+        "manual_toggle",
+        "emergency_stop"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_15_tc02",
+      "task_id": "public_15",
+      "name": "自动两种物料流程",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "estop": true,
+            "opeMode": true,
+            "valveAStart": false,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": true,
+            "processMode": false,
+            "levelSensor": 0,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveARun": true,
+            "valveBRun": false,
+            "valveCRun": false,
+            "mixMotorRun": false
+          },
+          "check": "自动启动打开 A"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "estop": true,
+            "opeMode": true,
+            "valveAStart": false,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": false,
+            "levelSensor": 50,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveARun": false,
+            "valveBRun": true
+          },
+          "check": "50 cm 切换到 B"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "estop": true,
+            "opeMode": true,
+            "valveAStart": false,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": false,
+            "levelSensor": 80,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveBRun": false,
+            "valveCRun": false,
+            "mixMotorRun": true
+          },
+          "check": "80 cm 直接混合"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "estop": true,
+            "opeMode": true,
+            "valveAStart": false,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": false,
+            "levelSensor": 80,
+            "mixMotorComplete": true
+          },
+          "expected_outputs": {
+            "mixMotorRun": false,
+            "valveDRun": true
+          },
+          "check": "混合完成打开 D"
+        }
+      ],
+      "coverage": [
+        "automatic_two_material",
+        "stage_transition"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_15_tc03",
+      "task_id": "public_15",
+      "name": "自动三种物料流程",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "estop": true,
+            "opeMode": true,
+            "valveAStart": false,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": true,
+            "processMode": true,
+            "levelSensor": 0,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveARun": true
+          },
+          "check": "启动 A"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "estop": true,
+            "opeMode": true,
+            "valveAStart": false,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": true,
+            "levelSensor": 50,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveARun": false,
+            "valveBRun": true
+          },
+          "check": "50 cm 切换 B"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "estop": true,
+            "opeMode": true,
+            "valveAStart": false,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": true,
+            "levelSensor": 80,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveBRun": false,
+            "valveCRun": true,
+            "mixMotorRun": false
+          },
+          "check": "80 cm 打开 C"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "estop": true,
+            "opeMode": true,
+            "valveAStart": false,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": true,
+            "levelSensor": 100,
+            "mixMotorComplete": false
+          },
+          "expected_outputs": {
+            "valveCRun": false,
+            "mixMotorRun": true
+          },
+          "check": "100 cm 开始混合"
+        },
+        {
+          "cycle": 4,
+          "inputs": {
+            "estop": true,
+            "opeMode": true,
+            "valveAStart": false,
+            "valveBStart": false,
+            "valveCStart": false,
+            "valveDStart": false,
+            "mixMotorStart": false,
+            "autoStart": false,
+            "processMode": true,
+            "levelSensor": 100,
+            "mixMotorComplete": true
+          },
+          "expected_outputs": {
+            "mixMotorRun": false,
+            "valveDRun": true
+          },
+          "check": "完成后打开 D"
+        }
+      ],
+      "coverage": [
+        "automatic_three_material",
+        "stage_transition"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

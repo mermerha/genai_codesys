@@ -1,0 +1,32 @@
+{
+  "task_id": "custom_01",
+  "tests": [
+    {
+      "id": "custom_01_tc01", "task_id": "custom_01", "name": "启动保持与停止", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"start": true, "stop": false, "emergencyStop": false, "overload": false, "reset": false}, "expected_outputs": {"motorRun": true, "fault": false}, "check": "安全条件下启动"},
+        {"cycle": 1, "inputs": {"start": false, "stop": false, "emergencyStop": false, "overload": false, "reset": false}, "expected_outputs": {"motorRun": true}, "check": "启动保持"},
+        {"cycle": 2, "inputs": {"start": false, "stop": true, "emergencyStop": false, "overload": false, "reset": false}, "expected_outputs": {"motorRun": false}, "check": "停止命令优先"}
+      ],
+      "coverage": ["start_latch", "stop"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_01_tc02", "task_id": "custom_01", "name": "过载锁存与安全复位", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"start": true, "stop": false, "emergencyStop": false, "overload": false, "reset": false}, "expected_outputs": {"motorRun": true}, "check": "先运行"},
+        {"cycle": 1, "inputs": {"start": false, "stop": false, "emergencyStop": false, "overload": true, "reset": false}, "expected_outputs": {"motorRun": false, "fault": true}, "check": "过载停机并锁存"},
+        {"cycle": 2, "inputs": {"start": false, "stop": false, "emergencyStop": false, "overload": true, "reset": true}, "expected_outputs": {"fault": true}, "check": "过载仍在时不能复位"},
+        {"cycle": 3, "inputs": {"start": false, "stop": false, "emergencyStop": false, "overload": false, "reset": true}, "expected_outputs": {"motorRun": false, "fault": false}, "check": "安全条件下复位"}
+      ],
+      "coverage": ["overload", "fault_latch", "reset_interlock"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_01_tc03", "task_id": "custom_01", "name": "急停阻止启动", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"start": true, "stop": false, "emergencyStop": true, "overload": false, "reset": false}, "expected_outputs": {"motorRun": false}, "check": "急停时拒绝启动"},
+        {"cycle": 1, "inputs": {"start": true, "stop": false, "emergencyStop": false, "overload": false, "reset": false}, "expected_outputs": {"motorRun": true}, "check": "急停解除后允许启动"}
+      ],
+      "coverage": ["emergency_stop", "restart"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "id": "public_16",
+  "title": "Flexible Processing Control",
+  "difficulty": "hard",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, hard[1]",
+  "requirements": "An automated production line consists of 5 workstations: numbered 1# to 5# from left to right. The 1# station is used for raw material loading, stations 2# to 4# are used for product processing, and the 5# station is used for finished product output and storage.\nThere is a motor in the production line, responsible for moving the product from one workstation to the next. Each workstation has a sensor (used to detect if the product has arrived).\nEach product has a different sequence and number of processing steps, specified by the process sequence 'processSequence'. The processSequence is an array type, storing the sequence numbers of the workstations, and the system automatically sends the raw materials to the corresponding workstation for processing based on the station number.\nControl requirements:\nAt the start of production, when the sensor at the 1# station (sensor1) detects the raw material, the start button at the 1# station (station1Start) is pressed. The system queries the first element of the process sequence 'processSequence', starts the conveyor to move the raw material to the corresponding workstation, and stops after delivery. Upon receiving the processing completion signal from the corresponding workstation (station2Complete to station4Complete), it continues to query the next element of the process sequence 'processSequence', determines the direction of the conveyor, and starts the conveyor (conveyorLeft, conveyorRight). This continues until the product is delivered to the 5# workstation.\n\nprocessLength specifies the active sequence length, from 1 through 8, starting at processSequence[1]. The final active entry is output station 5; other active entries are processing stations 2 through 4. The caller supplies a sequence satisfying this contract.",
+  "pou_name": "FB_FlexibleProcessing",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "processLength",
+      "data_type": "USINT",
+      "description": "Active process-sequence length, 1..8; the final active entry must be station 5."
+    },
+    {
+      "direction": "input",
+      "name": "sensor1",
+      "data_type": "BOOL",
+      "description": "Sensor at 1# station"
+    },
+    {
+      "direction": "input",
+      "name": "sensor2",
+      "data_type": "BOOL",
+      "description": "Sensor at 2# station"
+    },
+    {
+      "direction": "input",
+      "name": "sensor3",
+      "data_type": "BOOL",
+      "description": "Sensor at 3# station"
+    },
+    {
+      "direction": "input",
+      "name": "sensor4",
+      "data_type": "BOOL",
+      "description": "Sensor at 4# station"
+    },
+    {
+      "direction": "input",
+      "name": "sensor5",
+      "data_type": "BOOL",
+      "description": "Sensor at 5# station"
+    },
+    {
+      "direction": "input",
+      "name": "station1Start",
+      "data_type": "BOOL",
+      "description": "Start button at 1# station"
+    },
+    {
+      "direction": "input",
+      "name": "station2Complete",
+      "data_type": "BOOL",
+      "description": "Processing completion signal at 2# station"
+    },
+    {
+      "direction": "input",
+      "name": "station3Complete",
+      "data_type": "BOOL",
+      "description": "Processing completion signal at 3# station"
+    },
+    {
+      "direction": "input",
+      "name": "station4Complete",
+      "data_type": "BOOL",
+      "description": "Processing completion signal at 4# station"
+    },
+    {
+      "direction": "input",
+      "name": "processSequence",
+      "data_type": "ARRAY[1..8] OF USINT",
+      "description": "Processing sequence"
+    },
+    {
+      "direction": "output",
+      "name": "conveyorLeft",
+      "data_type": "BOOL",
+      "description": "Conveyor turns left"
+    },
+    {
+      "direction": "output",
+      "name": "conveyorRight",
+      "data_type": "BOOL",
+      "description": "Conveyor turns right"
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests.",
+      "The fixed-size array input is retained in the frozen interface; candidate execution remains to be checked during the formal pre-run."
+    ]
+  }
+}

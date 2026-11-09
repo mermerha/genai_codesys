@@ -1,0 +1,39 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "{\n  \"pou_name\": \"FB_DWordEdgeDetection\",\n  \"pou_type\": \"FUNCTION_BLOCK\",\n  \"declaration\": \"FUNCTION_BLOCK FB_DWordEdgeDetection\\nVAR_INPUT\\n    value : DWORD;\\nEND_VAR\\nVAR_OUTPUT\\n    hasChanged : BOOL;\\n    hasRisingEdges : BOOL;\\n    risingBits : DWORD;\\n    noOfRisingBits : USINT;\\n    hasFallingEdges : BOOL;\\n    fallingBits : DWORD;\\n    noOfFallingBits : USINT;\\nEND_VAR\",\n  \"implementation\": \"IF value <> value__prev THEN\\n    hasChanged := TRUE;\\nELSE\\n    hasChanged := FALSE;\\nEND_IF;\\n\\nrisingBits := (value AND NOT value__prev);\\nfallingBits := (value__prev AND NOT value);\\n\\nhasRisingEdges := risingBits <> 0;\\nhasFallingEdges := fallingBits <> 0;\\n\\nnoOfRisingBits := 0;\\nFOR i := 0 TO 31 DO\\n    IF (risingBits AND (1 << i)) <> 0 THEN\\n        noOfRisingBits := noOfRisingBits + 1;\\n    END_IF;\\nEND_FOR;\\n\\nnoOfFallingBits := 0;\\nFOR i := 0 TO 31 DO\\n    IF (fallingBits AND (1 << i)) <> 0 THEN\\n        noOfFallingBits := noOfFallingBits + 1;\\n    END_IF;\\nEND_FOR;\\n\\nvalue__prev := value;\"\n}",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1794239583,
+  "id": "chatcmpl-5c597ffb-496f-9875-8222-9bfda73c3cdf",
+  "model": "qwen3-coder-flash",
+  "object": "chat.completion",
+  "usage": {
+    "prompt_tokens": 840,
+    "completion_tokens": 337,
+    "total_tokens": 1177,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "text_tokens": 0,
+      "audio_tokens": 0,
+      "image_tokens": 0
+    },
+    "completion_tokens_details": {
+      "text_tokens": 0,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0,
+    "cost": "¥0.003282"
+  }
+}

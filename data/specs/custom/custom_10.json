@@ -1,0 +1,26 @@
+{
+  "task_id": "custom_10",
+  "state_semantics": "每个步骤执行一次 PLC 扫描，X 表示该扫描后的加热与故障输出。",
+  "propositions": {
+    "invalid_config": "highTripLimit <= setpoint",
+    "trip_temperature": "temperature >= highTripLimit",
+    "low_band": "temperature < setpoint - 10.0",
+    "middle_band": "setpoint - 10.0 <= temperature < setpoint",
+    "at_setpoint": "temperature >= setpoint",
+    "enabled_safe": "enable 且非 highTrip 且配置合法",
+    "valid_reset": "reset 且非 enable 且 temperature < setpoint",
+    "h1": "heater1 为真",
+    "h2": "heater2 为真",
+    "trip": "highTrip 为真",
+    "error": "configError 为真"
+  },
+  "assumptions": [],
+  "properties": [
+    {"id": "custom_10_p01", "type": "safety", "description": "配置错误关闭加热", "ltl": "G(invalid_config -> X(error && !h1 && !h2))", "tool_expression": null},
+    {"id": "custom_10_p02", "type": "safety", "description": "超温锁存跳闸并关闭加热", "ltl": "G(trip_temperature -> X(trip && !h1 && !h2))", "tool_expression": null},
+    {"id": "custom_10_p03", "type": "functional", "description": "低温启用两级加热", "ltl": "G((enabled_safe && low_band) -> X(h1 && h2))", "tool_expression": null},
+    {"id": "custom_10_p04", "type": "functional", "description": "中间温区只启用一级", "ltl": "G((enabled_safe && middle_band) -> X(h1 && !h2))", "tool_expression": null},
+    {"id": "custom_10_p05", "type": "response", "description": "达到设定点停热且有效条件可复位", "ltl": "G(at_setpoint -> X(!h1 && !h2)) && G(valid_reset -> X(!trip))", "tool_expression": null}
+  ],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["安全跳闸和配置错误优先于分级控制。"]}
+}

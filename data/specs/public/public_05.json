@@ -1,0 +1,59 @@
+{
+  "task_id": "public_05",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "permit": "Weld_E_Stop_NC 为 TRUE",
+    "init_active": "上电抑制期未满 5 秒",
+    "gap_raw": "Gap_Exceeded",
+    "gap_valid": "超差信号连续满足 DebounceTime",
+    "alert": "Operator_Alert",
+    "soft_start": "Weld_Soft_Start_Active"
+  },
+  "assumptions": [
+    "DebounceTime 为正值。"
+  ],
+  "properties": [
+    {
+      "id": "public_05_p01",
+      "type": "priority",
+      "description": "急停立即清除报警",
+      "ltl": "G(!permit -> X(!alert))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_05_p02",
+      "type": "safety",
+      "description": "初始化抑制期内不报警且软启动标志有效",
+      "ltl": "G(init_active -> X(!alert && soft_start))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_05_p03",
+      "type": "response",
+      "description": "正常监控时防抖完成触发报警",
+      "ltl": "G((permit && !init_active && gap_valid) -> X(alert))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_05_p04",
+      "type": "reset",
+      "description": "超差信号恢复后立即清除报警和防抖",
+      "ltl": "G(!gap_raw -> X(!alert))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_05_p05",
+      "type": "invariant",
+      "description": "软启动标志只表示初始化抑制期",
+      "ltl": "G(soft_start <-> init_active)",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

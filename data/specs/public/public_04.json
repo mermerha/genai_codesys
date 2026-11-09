@@ -1,0 +1,61 @@
+{
+  "task_id": "public_04",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "permit": "PASTE_E_STOP_NC 为 TRUE",
+    "viscosity_raw": "VISCOSITY_OK 为 TRUE",
+    "viscosity_valid": "粘度信号已连续满足 DebounceTime",
+    "run": "VFD_RUN",
+    "runtime_unchanged": "累计运行时间未改变",
+    "runtime_incremented": "累计时间增加 CycleTime",
+    "runtime_500h": "累计时间至少 500 小时",
+    "maint_due": "维护提示"
+  },
+  "assumptions": [
+    "DebounceTime 和 CycleTime 均为正值。"
+  ],
+  "properties": [
+    {
+      "id": "public_04_p01",
+      "type": "priority",
+      "description": "急停立即停止泵",
+      "ltl": "G(!permit -> X(!run))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_04_p02",
+      "type": "safety",
+      "description": "运行必须同时满足急停许可和防抖完成",
+      "ltl": "G(run -> (permit && viscosity_valid))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_04_p03",
+      "type": "response",
+      "description": "粘度持续有效达到防抖时间后运行",
+      "ltl": "G((permit && viscosity_valid) -> X(run))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_04_p04",
+      "type": "accounting",
+      "description": "仅运行时累计 CycleTime，停止时保持",
+      "ltl": "G(run -> X(runtime_incremented)) && G(!run -> X(runtime_unchanged))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_04_p05",
+      "type": "response",
+      "description": "累计达到 500 小时后维护提示置位",
+      "ltl": "G(runtime_500h -> X(maint_due))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

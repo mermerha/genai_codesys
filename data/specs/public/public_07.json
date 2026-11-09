@@ -1,0 +1,55 @@
+{
+  "task_id": "public_07",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "manual": "mode 为 FALSE",
+    "automatic": "mode 为 TRUE",
+    "start": "启动按钮",
+    "stop": "停止按钮",
+    "selected_runs": "手动选择的泵运行且未选择泵停止",
+    "top_three_run": "优先级最高的三台泵运行",
+    "at_most_three_run": "运行泵数量不超过三台",
+    "all_stopped": "五台泵均停止"
+  },
+  "assumptions": [
+    "priority 相同时数组下标较小者优先；stop 优先于 start。"
+  ],
+  "properties": [
+    {
+      "id": "public_07_p01",
+      "type": "priority",
+      "description": "停止按钮使所有泵停止",
+      "ltl": "G(stop -> X(all_stopped))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_07_p02",
+      "type": "functional",
+      "description": "手动启动时只运行已选择泵",
+      "ltl": "G((manual && start && !stop) -> X(selected_runs))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_07_p03",
+      "type": "functional",
+      "description": "自动启动时运行优先级最高的三台泵",
+      "ltl": "G((automatic && start && !stop) -> X(top_three_run))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_07_p04",
+      "type": "safety",
+      "description": "自动模式最多运行三台泵",
+      "ltl": "G(automatic -> X(at_most_three_run))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。",
+      "at_most_three_run 表示 RunComd=TRUE 的记录数不超过 3。"
+    ]
+  }
+}

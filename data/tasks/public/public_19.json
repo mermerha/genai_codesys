@@ -4,7 +4,7 @@
   "difficulty": "hard",
   "source_type": "provided",
   "source_reference": "大作业题库json/大作业题库.json, hard[4]",
-  "requirements": "Implement a mechanical-arm control function block with mutually exclusive manual, single-step, single-cycle, and continuous modes. The arm has down, grip, up, right, down, release, up, and left as its automatic handling sequence, starting from the top-left position. In manual mode, each button commands only its matching action and only while the corresponding limit switch is not active. In single-step mode, each rising edge of Start permits the next automatic action; stop that action when its matching completion limit is reached, then wait for another Start rising edge. In single-cycle mode, one Start rising edge runs the entire automatic sequence and stops after returning to the top-left position. In continuous mode, one Start rising edge begins repeated automatic cycles. GripLimitSwitch and ReleaseLimitSwitch are the completion feedback for grip and release. EmergencyStop is active-low: when FALSE, immediately set all six action outputs to FALSE and do not advance the automatic sequence. Never command opposing directions at the same time.",
+  "requirements": "Implement a mechanical-arm control function block with mutually exclusive manual, single-step, single-cycle, and continuous modes. Exactly one mode is selected during a test. The arm has down, grip, up, right, down, release, up, and left as its automatic handling sequence, starting from the top-left position. In manual mode, each button commands only its matching action and only while the corresponding limit switch is not active. In single-step mode, each rising edge of Start permits the next automatic action; stop that action when its matching completion limit is reached, then wait for another Start rising edge. In single-cycle mode, one Start rising edge runs the entire automatic sequence and stops after returning to the top-left position. In continuous mode, one Start rising edge begins repeated automatic cycles. GripLimitSwitch and ReleaseLimitSwitch are the completion feedback for grip and release. EmergencyStop is active-low: when FALSE, immediately set all six action outputs to FALSE and pause without advancing the current automatic step; when it returns TRUE, the current step resumes. Never command opposing directions at the same time.",
   "pou_name": "FB_MechanicalArm",
   "pou_type": "FUNCTION_BLOCK",
   "interface": [
@@ -155,11 +155,11 @@
   ],
   "custom_types": [],
   "review": {
-    "status": "pending",
-    "reviewer": null,
+    "status": "frozen",
+    "reviewer": "Codex",
     "notes": [
-      "Converted first as a hard development prevalidation task; formal dataset review is still required.",
-      "The source does not fully define mode-change behavior, Start edge semantics, or whether an emergency stop resets or pauses the sequence; these must be frozen before formal testing."
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests.",
+      "Frozen clarification: test inputs keep exactly one mode selected, Start is rising-edge triggered, and emergency stop pauses rather than resets the automatic step."
     ]
   }
 }

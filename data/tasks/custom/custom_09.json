@@ -1,0 +1,29 @@
+{
+  "id": "custom_09",
+  "title": "Conveyor Jam Detection",
+  "difficulty": "hard",
+  "source_type": "custom",
+  "source_reference": "经验改编：输送机到位脉冲看门狗",
+  "requirements": "Run the conveyor when runCommand is TRUE, emergencyStop is FALSE and jamAlarm is FALSE. While motorRun is TRUE, require sensorPulse to become TRUE at least once every 2 seconds. Each TRUE sensorPulse restarts the 2 second watchdog. If the watchdog expires, stop the motor and latch jamAlarm. reset clears jamAlarm only when runCommand and emergencyStop are both FALSE. emergencyStop always stops the motor immediately but does not clear jamAlarm.",
+  "pou_name": "FB_JamMonitor",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {"direction": "input", "name": "runCommand", "data_type": "BOOL", "description": "Conveyor run command"},
+    {"direction": "input", "name": "sensorPulse", "data_type": "BOOL", "description": "Product movement pulse"},
+    {"direction": "input", "name": "emergencyStop", "data_type": "BOOL", "description": "Emergency stop"},
+    {"direction": "input", "name": "reset", "data_type": "BOOL", "description": "Jam reset command"},
+    {"direction": "output", "name": "motorRun", "data_type": "BOOL", "description": "Conveyor motor output"},
+    {"direction": "output", "name": "jamAlarm", "data_type": "BOOL", "description": "Latched jam alarm"}
+  ],
+  "custom_types": [],
+  "provenance": {
+    "source_type": "experience_based",
+    "source_url": null,
+    "creation_process": ["根据输送机运动传感器看门狗逻辑定义两秒无脉冲故障"],
+    "human_modifications": ["明确每次脉冲重启计时，增加安全复位条件和急停优先级"],
+    "review_process": ["用正常周期脉冲、超时和复位三个场景检查", "确认报警锁存后电机不能自行恢复"]
+  },
+  "plc_rationale": "运动脉冲看门狗可发现堵料、皮带打滑或传感器异常，是输送系统常见 PLC 诊断方式。",
+  "diversity_tags": ["看门狗", "故障诊断", "定时", "状态锁存", "hard"],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+}

@@ -1,0 +1,14 @@
+{
+  "task_id": "fixture_motor_start_stop",
+  "framework": "codex_cli",
+  "framework_version": "codex-cli 0.167.0-alpha.3.2",
+  "model": "qwen3-coder-flash",
+  "final_status": "compile_failure",
+  "attempts": 0,
+  "repairs": 0,
+  "first_compile_pass": false,
+  "final_compile_pass": false,
+  "usage": {},
+  "duration_seconds": 0.391,
+  "failure_reason": "no_candidate_submitted"
+}

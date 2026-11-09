@@ -1,0 +1,131 @@
+You repair IEC 61131-3 Structured Text for CODESYS.
+
+Return only one corrected JSON object with exactly these string fields:
+"pou_name", "pou_type", "declaration", "implementation".
+
+Rules:
+- Keep the requested interface and behavior.
+- Correct the reported parsing or compiler errors.
+- Use a plain IEC identifier for the POU name without quotes.
+- The declaration must contain the complete POU header and variable sections.
+- For a FUNCTION_BLOCK, start the declaration with FUNCTION_BLOCK <pou_name> and stop after the final END_VAR. Do not add END_FUNCTION_BLOCK.
+- The implementation must contain only the Structured Text implementation body.
+- Start the implementation directly with executable statements. Do not wrap the whole body in BEGIN ... END; control-structure terminators such as END_IF are allowed.
+- Use CODESYS terminators with underscores, for example END_IF;, END_CASE;, END_FOR;, END_WHILE;, and END_REPEAT;. Never write forms such as END IF;.
+- Do not return explanations or additional fields.
+
+Task:
+{
+  "id": "public_01",
+  "title": "Automated Filling Line Control",
+  "difficulty": "easy",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, easy[0]",
+  "requirements": "An automated filling line responsible for cleaning, filling, capping, and packaging bottles. Each step of the production line is controlled by PLC and triggered by signals from sensors and operators.\nControl requirements:\nWhen the sensor bottleSensor detects a bottle, it triggers the start of the cleaning pump and continues to work.\nAfter cleaning is completed, the operator operates the button cleaningConfirmButton to trigger the cleaning completion signal, automatically starting the filling valve for filling.\nAfter filling is completed, the operator operates the button fillingConfirmButton to trigger the filling completion signal, automatically starting the capping machine for capping.\nAfter capping is completed, the operator operates the button cappingConfirmButton to trigger the capping completion signal, starting the packing machine for packaging.\nAfter packaging is completed, the operator operates the button packingConfirmButton to trigger the packaging completion signal, lighting up the packaging completion indicator light.\nAfter the operator picks up the packaged bottle, they press the confirmation button finishedButton to reset the indicator light and prepare for the next bottle's production cycle.",
+  "pou_name": "FB_AutomatedFillingLine",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "bottleSensor",
+      "data_type": "BOOL",
+      "description": "The bottle reaches the sensor, triggering a signal when a bottle is detected"
+    },
+    {
+      "direction": "input",
+      "name": "cleaningConfirmButton",
+      "data_type": "BOOL",
+      "description": "Operator confirmation button, used to confirm the completion of the cleaning process"
+    },
+    {
+      "direction": "input",
+      "name": "fillingConfirmButton",
+      "data_type": "BOOL",
+      "description": "Operator confirmation button, used to confirm the completion of the filling process"
+    },
+    {
+      "direction": "input",
+      "name": "cappingConfirmButton",
+      "data_type": "BOOL",
+      "description": "Operator confirmation button, used to confirm the completion of the capping process"
+    },
+    {
+      "direction": "input",
+      "name": "packingConfirmButton",
+      "data_type": "BOOL",
+      "description": "Operator confirmation button, used to confirm the completion of the packaging process"
+    },
+    {
+      "direction": "input",
+      "name": "finishedButton",
+      "data_type": "BOOL",
+      "description": "Operator confirmation button, used to confirm that the bottle has been picked up"
+    },
+    {
+      "direction": "output",
+      "name": "Pump_Motor",
+      "data_type": "BOOL",
+      "description": "Control output for the operation of the cleaning pump motor"
+    },
+    {
+      "direction": "output",
+      "name": "Filling_Valve",
+      "data_type": "BOOL",
+      "description": "Control output for the operation of the filling valve"
+    },
+    {
+      "direction": "output",
+      "name": "Capping_Machine",
+      "data_type": "BOOL",
+      "description": "Control output for the operation of the capping machine"
+    },
+    {
+      "direction": "output",
+      "name": "Packing_Machine",
+      "data_type": "BOOL",
+      "description": "Control output for the operation of the packing machine"
+    },
+    {
+      "direction": "output",
+      "name": "Completion_Light",
+      "data_type": "BOOL",
+      "description": "Indicator light for packaging completion"
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests."
+    ]
+  }
+}
+
+Previous model output:
+{
+  "pou_name": "FB_AutomatedFillingLine",
+  "pou_type": "FUNCTION_BLOCK",
+  "declaration": "FUNCTION_BLOCK FB_AutomatedFillingLine\nVAR_INPUT\n    bottleSensor : BOOL;\n    cleaningConfirmButton : BOOL;\n    fillingConfirmButton : BOOL;\n    cappingConfirmButton : BOOL;\n    packingConfirmButton : BOOL;\n    finishedButton : BOOL;\nEND_VAR\nVAR_OUTPUT\n    Pump_Motor : BOOL;\n    Filling_Valve : BOOL;\n    Capping_Machine : BOOL;\n    Packing_Machine : BOOL;\n    Completion_Light : BOOL;\nEND_VAR\nVAR\n    state : INT := 0;\nEND_VAR",
+  "implementation": "IF bottleSensor THEN\n    state := 1;\nEND_IF;\n\nCASE state OF\n    1:\n        Pump_Motor := TRUE;\n        IF cleaningConfirmButton THEN\n            state := 2;\n        END_IF;\n    2:\n        Pump_Motor := FALSE;\n        Filling_Valve := TRUE;\n        IF fillingConfirmButton THEN\n            state := 3;\n        END_IF;\n    3:\n        Filling_Valve := FALSE;\n        Capping_Machine := TRUE;\n        IF cappingConfirmButton THEN\n            state := 4;\n        END_IF;\n    4:\n        Capping_Machine := FALSE;\n        Packing_Machine := TRUE;\n        IF packingConfirmButton THEN\n            state := 5;\n        END_IF;\n    5:\n        Packing_Machine := FALSE;\n        Completion_Light := TRUE;\n        IF finishedButton THEN\n            state := 0;\n            Completion_Light := FALSE;\n        END_IF;\n    ELSE:\n        Pump_Motor := FALSE;\n        Filling_Valve := FALSE;\n        Capping_Machine := FALSE;\n        Packing_Machine := FALSE;\n        Completion_Light := FALSE;\nEND_CASE;"
+}
+
+Errors:
+[
+  {
+    "category": "编译",
+    "severity": "error",
+    "number": "9",
+    "text": "发现非预期的记号':' ",
+    "object_name": "FB_AutomatedFillingLine",
+    "position": "行36,列1 (Impl)"
+  },
+  {
+    "category": "编译",
+    "severity": "error",
+    "number": "189",
+    "text": "应该用';' 替换'Pump_Motor'",
+    "object_name": "FB_AutomatedFillingLine",
+    "position": "行37,列1 (Impl)"
+  }
+]

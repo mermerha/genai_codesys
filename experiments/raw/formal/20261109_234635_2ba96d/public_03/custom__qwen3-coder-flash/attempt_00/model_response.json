@@ -1,0 +1,39 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "{\n  \"pou_name\": \"FB_AlarmHandling\",\n  \"pou_type\": \"FUNCTION_BLOCK\",\n  \"declaration\": \"FUNCTION_BLOCK FB_AlarmHandling\\nVAR_INPUT\\n    Value : REAL;\\n    hiLevel : REAL;\\n    loLevel : REAL;\\n    hystWindow : REAL;\\nEND_VAR\\nVAR_OUTPUT\\n    hiAlarm : BOOL;\\n    loAlarm : BOOL;\\n    error : BOOL;\\n    status : WORD;\\nEND_VAR\",\n  \"implementation\": \"IF loLevel >= hiLevel THEN\\n    error := TRUE;\\n    status := 16#8001;\\n    RETURN;\\nEND_IF;\\n\\nIF hystWindow >= hiLevel - loLevel THEN\\n    error := TRUE;\\n    status := 16#8002;\\n    RETURN;\\nEND_IF;\\n\\nerror := FALSE;\\nstatus := 16#0000;\\n\\nIF Value > hiLevel THEN\\n    hiAlarm := TRUE;\\nELSIF Value < (hiLevel - hystWindow) THEN\\n    hiAlarm := FALSE;\\nEND_IF;\\n\\nIF Value < loLevel THEN\\n    loAlarm := TRUE;\\nELSIF Value > (loLevel + hystWindow) THEN\\n    loAlarm := FALSE;\\nEND_IF;\"\n}",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1794239951,
+  "id": "chatcmpl-c7124f8b-890c-93d3-afb3-aed6e9fca679",
+  "model": "qwen3-coder-flash",
+  "object": "chat.completion",
+  "usage": {
+    "prompt_tokens": 907,
+    "completion_tokens": 279,
+    "total_tokens": 1186,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "text_tokens": 0,
+      "audio_tokens": 0,
+      "image_tokens": 0
+    },
+    "completion_tokens_details": {
+      "text_tokens": 0,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0,
+    "cost": "¥0.003034"
+  }
+}

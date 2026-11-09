@@ -1,0 +1,33 @@
+{
+  "task_id": "custom_06",
+  "tests": [
+    {
+      "id": "custom_06_tc01", "task_id": "custom_06", "name": "完整批处理周期", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"start": true, "stop": false, "highLevel": false, "lowLevel": false}, "expected_outputs": {"fillValve": true, "mixer": false, "drainValve": false, "done": false}, "check": "开始灌装"},
+        {"cycle": 1, "inputs": {"start": false, "stop": false, "highLevel": true, "lowLevel": false}, "expected_outputs": {"fillValve": false, "mixer": true, "drainValve": false}, "check": "满液位进入搅拌"},
+        {"cycle": 2, "advance_ms": 5000, "inputs": {"start": false, "stop": false, "highLevel": true, "lowLevel": false}, "expected_outputs": {"fillValve": false, "mixer": false, "drainValve": true}, "check": "五秒后排放"},
+        {"cycle": 3, "inputs": {"start": false, "stop": false, "highLevel": false, "lowLevel": true}, "expected_outputs": {"drainValve": false, "done": true}, "check": "排空完成"},
+        {"cycle": 4, "inputs": {"start": false, "stop": false, "highLevel": false, "lowLevel": true}, "expected_outputs": {"done": false}, "check": "完成信号仅一扫描"}
+      ],
+      "coverage": ["full_sequence", "mix_timer", "done_pulse"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_06_tc02", "task_id": "custom_06", "name": "灌装中止", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"start": true, "stop": false, "highLevel": false, "lowLevel": false}, "expected_outputs": {"fillValve": true}, "check": "开始灌装"},
+        {"cycle": 1, "inputs": {"start": false, "stop": true, "highLevel": false, "lowLevel": false}, "expected_outputs": {"fillValve": false, "mixer": false, "drainValve": false, "done": false}, "check": "停止中止"}
+      ],
+      "coverage": ["abort", "safe_outputs"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_06_tc03", "task_id": "custom_06", "name": "搅拌未满时间不排放", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"start": true, "stop": false, "highLevel": false, "lowLevel": false}, "expected_outputs": {"fillValve": true}, "check": "启动进入灌装"},
+        {"cycle": 1, "inputs": {"start": false, "stop": false, "highLevel": true, "lowLevel": false}, "expected_outputs": {"mixer": true, "drainValve": false}, "check": "进入搅拌"},
+        {"cycle": 2, "advance_ms": 4000, "inputs": {"start": false, "stop": false, "highLevel": true, "lowLevel": false}, "expected_outputs": {"mixer": true, "drainValve": false}, "check": "未满五秒保持搅拌"}
+      ],
+      "coverage": ["timer_boundary", "actuator_exclusion"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    }
+  ]
+}

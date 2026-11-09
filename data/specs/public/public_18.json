@@ -1,0 +1,65 @@
+{
+  "task_id": "public_18",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "enqueue_rise": "enqueue 上升沿",
+    "dequeue_rise": "dequeue 上升沿",
+    "reset": "reset",
+    "empty": "elementCount=0",
+    "full": "elementCount=10",
+    "status_ok": "status=16#0000",
+    "status_empty": "status=16#8001",
+    "status_full": "status=16#8002",
+    "count_incremented": "elementCount 增加 1",
+    "count_decremented": "elementCount 减少 1",
+    "front_returned": "item 返回最早入队值",
+    "queue_unchanged": "队列、计数和 item 不变"
+  },
+  "assumptions": [
+    "enqueue 与 dequeue 不在同一扫描同时产生上升沿；该环境适配版元素类型为 DINT、容量为 10。"
+  ],
+  "properties": [
+    {
+      "id": "public_18_p01",
+      "type": "priority",
+      "description": "复位清空队列并返回成功",
+      "ltl": "G(reset -> X(empty && status_ok))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_18_p02",
+      "type": "functional",
+      "description": "非满队列入队成功并增加计数",
+      "ltl": "G((enqueue_rise && !full && !reset) -> X(count_incremented && status_ok))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_18_p03",
+      "type": "functional",
+      "description": "非空队列出队返回队首并减少计数",
+      "ltl": "G((dequeue_rise && !empty && !reset) -> X(front_returned && count_decremented && status_ok))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_18_p04",
+      "type": "error",
+      "description": "空队列出队返回 16#8001 且不改变状态",
+      "ltl": "G((dequeue_rise && empty && !reset) -> X(status_empty && queue_unchanged))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_18_p05",
+      "type": "error",
+      "description": "满队列入队返回 16#8002 且不改变状态",
+      "ltl": "G((enqueue_rise && full && !reset) -> X(status_full && queue_unchanged))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

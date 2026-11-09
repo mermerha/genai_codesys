@@ -1,0 +1,61 @@
+{
+  "task_id": "public_02",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "changed": "当前 value 与上一扫描不同",
+    "rising_exists": "至少一位从 0 变为 1",
+    "falling_exists": "至少一位从 1 变为 0",
+    "has_changed": "hasChanged 输出",
+    "has_rising": "hasRisingEdges 输出",
+    "has_falling": "hasFallingEdges 输出",
+    "rising_report_correct": "risingBits 与上升位及数量一致",
+    "falling_report_correct": "fallingBits 与下降位及数量一致"
+  },
+  "assumptions": [
+    "首次调用前的历史值按 DWORD#0 处理。"
+  ],
+  "properties": [
+    {
+      "id": "public_02_p01",
+      "type": "invariant",
+      "description": "变化标志准确反映输入是否变化",
+      "ltl": "G(changed <-> X(has_changed))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_02_p02",
+      "type": "invariant",
+      "description": "上升沿存在标志准确",
+      "ltl": "G(rising_exists <-> X(has_rising))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_02_p03",
+      "type": "invariant",
+      "description": "下降沿存在标志准确",
+      "ltl": "G(falling_exists <-> X(has_falling))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_02_p04",
+      "type": "functional",
+      "description": "上升位图和数量正确",
+      "ltl": "G(X(rising_report_correct))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_02_p05",
+      "type": "functional",
+      "description": "下降位图和数量正确",
+      "ltl": "G(X(falling_report_correct))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+```json
+{
+  "pou_name": "MotorControl",
+  "pou_type": "FUNCTION_BLOCK",
+  "declaration": "FUNCTION_BLOCK MotorControl\n    VAR_INPUT\n        StartBtn : BOOL;\n        StopBtn : BOOL;\n        EStop : BOOL;\n    END_VAR\n    \n    VAR_OUTPUT\n        Motor : BOOL;\n    END_VAR\nEND_FUNCTION_BLOCK",
+  "implementation": "IF EStop THEN\n    Motor := FALSE;\nELSIF StopBtn THEN\n    Motor := FALSE;\nELSIF StartBtn THEN\n    Motor := TRUE;\nEND_IF;"
+}
+```

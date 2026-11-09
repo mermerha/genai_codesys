@@ -1,0 +1,75 @@
+{
+  "id": "public_12",
+  "title": "Slab Thickness Alarm and Fault History",
+  "difficulty": "medium",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, medium[5]",
+  "requirements": "Monitor slab-thickness faults on a stone-cutting line, including minimum alarm holding, fault counting, normal-cutting runtime accumulation and a history of the five most recent faults.\n\n1. When THICKNESS_SIGNAL_VALID is TRUE, THICKNESS_FAULT indicates that thickness deviation exceeds tolerance. Activate THICKNESS_ALARM immediately when the fault becomes TRUE, and hold each triggered alarm for at least 500 ms. Keep the alarm active while the fault persists.\n2. On each FALSE-to-TRUE transition of a valid fault signal, increment Slab_Fault_Counter and store the current FaultTimestamp in element 0 of Slab_Fault_History. Shift older entries toward higher indices, retaining only the five most recent entries.\n3. Accumulate Slab_Runtime_Accumulator using CycleTime only while CUTTING_RUN is TRUE, the thickness signal is valid and no thickness fault is present. Otherwise preserve the accumulated value.\n4. At power-up or whenever THICKNESS_SIGNAL_VALID is FALSE, switch off the alarm and clear its holding state. Do not add fault records or accumulate normal runtime while the signal is invalid.\n5. At power-up, initialize the fault count, accumulated runtime and all five history entries to zero. Statistics and history are for observation and maintenance only; they must not alter the cutting equipment's operating permissive, and external callers must not modify history entries.",
+  "pou_name": "FB_SlabThicknessAlarm",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "THICKNESS_FAULT",
+      "data_type": "BOOL",
+      "description": "Thickness deviation exceeds the permitted tolerance."
+    },
+    {
+      "direction": "input",
+      "name": "THICKNESS_SIGNAL_VALID",
+      "data_type": "BOOL",
+      "description": "Thickness-signal validity; FALSE means the signal is lost or unavailable."
+    },
+    {
+      "direction": "input",
+      "name": "CUTTING_RUN",
+      "data_type": "BOOL",
+      "description": "Actual cutting-equipment running status."
+    },
+    {
+      "direction": "input",
+      "name": "FaultTimestamp",
+      "data_type": "DINT",
+      "description": "Current timestamp in seconds, used as the fault-record identifier."
+    },
+    {
+      "direction": "input",
+      "name": "CycleTime",
+      "data_type": "TIME",
+      "description": "Actual elapsed interval represented by this invocation; must be positive."
+    },
+    {
+      "direction": "output",
+      "name": "THICKNESS_ALARM",
+      "data_type": "BOOL",
+      "description": "Thickness alarm with a minimum 500 ms hold duration."
+    },
+    {
+      "direction": "output",
+      "name": "Slab_Fault_Counter",
+      "data_type": "UINT",
+      "description": "Number of valid thickness-fault occurrences."
+    },
+    {
+      "direction": "output",
+      "name": "Slab_Runtime_Accumulator",
+      "data_type": "LTIME",
+      "description": "Accumulated normal-cutting runtime."
+    },
+    {
+      "direction": "output",
+      "name": "Slab_Fault_History",
+      "data_type": "ARRAY[0..4] OF DINT",
+      "description": "Five most recent fault timestamps; index 0 is newest; read-only to callers."
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests.",
+      "The fixed-size array output is retained in the frozen interface; candidate execution remains to be checked during the formal pre-run."
+    ]
+  }
+}

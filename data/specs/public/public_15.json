@@ -1,0 +1,68 @@
+{
+  "task_id": "public_15",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "permit": "estop 为 TRUE",
+    "manual": "opeMode 为 FALSE",
+    "automatic": "opeMode 为 TRUE",
+    "auto_start": "autoStart 上升沿",
+    "level50": "液位至少 50",
+    "level80": "液位至少 80",
+    "level100": "液位至少 100",
+    "mode_extra_c": "processMode 为 TRUE",
+    "mix_done": "mixMotorComplete",
+    "valve_a": "valveARun",
+    "valve_b": "valveBRun",
+    "valve_c": "valveCRun",
+    "valve_d": "valveDRun",
+    "mixer": "mixMotorRun",
+    "all_off": "全部五个输出关闭"
+  },
+  "assumptions": [
+    "自动流程开始时液位低于 50 cm；按钮按上升沿处理。"
+  ],
+  "properties": [
+    {
+      "id": "public_15_p01",
+      "type": "priority",
+      "description": "急停立即关闭全部设备",
+      "ltl": "G(!permit -> X(all_off))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_15_p02",
+      "type": "response",
+      "description": "自动启动首先打开 A 阀",
+      "ltl": "G((permit && automatic && auto_start) -> X(valve_a))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_15_p03",
+      "type": "transition",
+      "description": "50 cm 时切换 A 到 B，80 cm 时关闭 B",
+      "ltl": "G((automatic && level50 && valve_a) -> X(!valve_a && valve_b)) && G((automatic && level80 && valve_b) -> X(!valve_b))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_15_p04",
+      "type": "transition",
+      "description": "需要第三种物料时经 C 阀到 100 cm 后混合",
+      "ltl": "G((automatic && mode_extra_c && level80) -> X(valve_c)) && G((automatic && mode_extra_c && level100) -> X(!valve_c && mixer))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_15_p05",
+      "type": "transition",
+      "description": "混合完成后停止电机并打开 D 阀",
+      "ltl": "G((automatic && mixer && mix_done) -> X(!mixer && valve_d))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

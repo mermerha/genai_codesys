@@ -1,0 +1,65 @@
+{
+  "task_id": "public_01",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "bottle": "检测到瓶子",
+    "clean_ok": "清洗确认",
+    "fill_ok": "灌装确认",
+    "cap_ok": "旋盖确认",
+    "pack_ok": "包装确认",
+    "finished": "成品取走确认",
+    "pump": "清洗泵运行",
+    "filling": "灌装阀运行",
+    "capping": "旋盖机运行",
+    "packing": "包装机运行",
+    "complete": "完成灯亮",
+    "all_off": "四个执行设备均停止"
+  },
+  "assumptions": [
+    "确认按钮只在对应工序完成后触发；确认后独占切换到下一工序。"
+  ],
+  "properties": [
+    {
+      "id": "public_01_p01",
+      "type": "safety",
+      "description": "任意时刻最多一个工序执行设备运行",
+      "ltl": "G(!((pump && filling) || (pump && capping) || (pump && packing) || (filling && capping) || (filling && packing) || (capping && packing)))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_01_p02",
+      "type": "response",
+      "description": "检测到新瓶后启动清洗",
+      "ltl": "G((bottle && all_off && !complete) -> X(pump))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_01_p03",
+      "type": "transition",
+      "description": "各确认信号使流程进入下一工序",
+      "ltl": "G((pump && clean_ok) -> X(!pump && filling)) && G((filling && fill_ok) -> X(!filling && capping)) && G((capping && cap_ok) -> X(!capping && packing))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_01_p04",
+      "type": "response",
+      "description": "包装确认后停止设备并点亮完成灯",
+      "ltl": "G((packing && pack_ok) -> X(all_off && complete))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_01_p05",
+      "type": "reset",
+      "description": "成品取走确认复位流程",
+      "ltl": "G(finished -> X(all_off && !complete))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

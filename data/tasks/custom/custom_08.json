@@ -1,0 +1,31 @@
+{
+  "id": "custom_08",
+  "title": "Two Door Airlock Interlock",
+  "difficulty": "hard",
+  "source_type": "custom",
+  "source_reference": "自主构思：洁净区双门互锁气闸",
+  "requirements": "Control an airlock with inner and outer doors. In idle both lock outputs are TRUE. Accept an innerRequest only when outerClosed is TRUE, then unlock the inner door for up to 5 seconds; symmetrically accept outerRequest only when innerClosed is TRUE. Never unlock both doors together. If both requests are TRUE, give innerRequest priority. Relock a selected door as soon as its closed sensor becomes FALSE or after 5 seconds. emergency locks both doors and cancels any active request. Set sensorFault if both closed sensors are FALSE.",
+  "pou_name": "FB_Airlock",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {"direction": "input", "name": "innerRequest", "data_type": "BOOL", "description": "Inner door release request"},
+    {"direction": "input", "name": "outerRequest", "data_type": "BOOL", "description": "Outer door release request"},
+    {"direction": "input", "name": "innerClosed", "data_type": "BOOL", "description": "Inner door closed sensor"},
+    {"direction": "input", "name": "outerClosed", "data_type": "BOOL", "description": "Outer door closed sensor"},
+    {"direction": "input", "name": "emergency", "data_type": "BOOL", "description": "Emergency lock command"},
+    {"direction": "output", "name": "innerLock", "data_type": "BOOL", "description": "TRUE locks inner door"},
+    {"direction": "output", "name": "outerLock", "data_type": "BOOL", "description": "TRUE locks outer door"},
+    {"direction": "output", "name": "sensorFault", "data_type": "BOOL", "description": "Both doors reported open"}
+  ],
+  "custom_types": [],
+  "provenance": {
+    "source_type": "self_conceived",
+    "source_url": null,
+    "creation_process": ["围绕双门不能同时释放的安全约束设计请求状态机"],
+    "human_modifications": ["增加双请求优先级、超时复锁、紧急锁定和传感器故障规则"],
+    "review_process": ["枚举空闲、内门释放、外门释放和紧急状态", "检查所有分支均满足双门不同时解锁"]
+  },
+  "plc_rationale": "洁净区或安全区气闸需要 PLC 实现双门互锁、超时复锁和异常处理，具有明确现场输入输出。",
+  "diversity_tags": ["安全状态机", "互锁", "优先级", "定时", "hard"],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+}

@@ -1,0 +1,50 @@
+{
+  "id": "public_05",
+  "title": "Weld Gap Alarm and Startup Inhibition",
+  "difficulty": "easy",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, easy[4]",
+  "requirements": "Control a weld-gap alarm with power-up monitoring inhibition, input debouncing during normal monitoring and emergency-stop priority.\n\n1. Gap_Exceeded indicates that the scanner has detected a weld gap exceeding the permitted 1.5 mm value.\n2. Begin with a 5-second initialization inhibition period after power-up. During this period, Operator_Alert is FALSE, Weld_Soft_Start_Active is TRUE, and gap-signal debounce time does not accumulate.\n3. Resume gap monitoring after initialization. Allow the alarm only after Gap_Exceeded has remained TRUE for DebounceTime. When the signal becomes FALSE, switch off the alarm and clear debounce timing.\n4. When Weld_E_Stop_NC is FALSE, the emergency stop takes priority over initialization and normal monitoring. Operator_Alert must immediately become FALSE and any incomplete debounce timing must be cleared.\n5. Weld_Soft_Start_Active indicates only the power-up inhibition period; it does not represent a continuous speed ramp.",
+  "pou_name": "FB_WeldGapAlarm",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "Gap_Exceeded",
+      "data_type": "BOOL",
+      "description": "Scanner indication that the gap exceeds 1.5 mm."
+    },
+    {
+      "direction": "input",
+      "name": "Weld_E_Stop_NC",
+      "data_type": "BOOL",
+      "description": "TRUE means the emergency stop is inactive; FALSE means it is active."
+    },
+    {
+      "direction": "input",
+      "name": "DebounceTime",
+      "data_type": "TIME",
+      "description": "Gap-signal debounce duration during normal monitoring; must be positive."
+    },
+    {
+      "direction": "output",
+      "name": "Operator_Alert",
+      "data_type": "BOOL",
+      "description": "Audible and visual alarm command."
+    },
+    {
+      "direction": "output",
+      "name": "Weld_Soft_Start_Active",
+      "data_type": "BOOL",
+      "description": "Monitoring-inhibition status during the 5-second power-up initialization."
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests."
+    ]
+  }
+}

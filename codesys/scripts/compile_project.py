@@ -82,24 +82,70 @@ def read_optional_text(path_variable):
         return input_file.read()
 
 
-def reference_function_block(project, pou_name):
+def read_compile_context():
+    path = os.environ.get("PLC_AGENT_COMPILE_CONTEXT_PATH")
+    if not path:
+        return {"custom_types": [], "inout_bindings": []}
+    with io.open(path, "r", encoding="utf-8") as input_file:
+        return json.loads(input_file.read())
+
+
+def create_custom_types(project, application, context):
+    for custom_type in context.get("custom_types", []):
+        name = custom_type["name"]
+        matches = project.find_ignore_transient_objects(name, recursive=True)
+        if len(matches) == 0:
+            dut = application.create_dut(name=name)
+        elif len(matches) == 1:
+            dut = matches[0]
+        else:
+            raise RuntimeError(
+                "Expected at most one DUT named {0}, found {1}".format(
+                    name, len(matches)
+                )
+            )
+
+        lines = ["TYPE {0} :".format(name), "STRUCT"]
+        for field in custom_type.get("fields", []):
+            lines.append(
+                "    {0} : {1};".format(field["name"], field["data_type"])
+            )
+        lines.extend(["END_STRUCT", "END_TYPE"])
+        dut.textual_declaration.replace("\n".join(lines) + "\n")
+
+
+def reference_function_block(project, pou_name, context):
     matches = project.find_ignore_transient_objects("PLC_PRG", recursive=True)
     if len(matches) != 1:
         raise RuntimeError(
             "Expected one PROGRAM named PLC_PRG, found {0}".format(len(matches))
         )
 
+    declaration_lines = [
+        "PROGRAM PLC_PRG",
+        "VAR",
+        "    candidateInstance : {0};".format(pou_name),
+    ]
+    arguments = []
+    for binding in context.get("inout_bindings", []):
+        declaration_lines.append(
+            "    {0} : {1};".format(binding["variable"], binding["data_type"])
+        )
+        arguments.append(
+            "{0} := {1}".format(binding["parameter"], binding["variable"])
+        )
+    declaration_lines.append("END_VAR")
+
     program = matches[0]
-    program.textual_declaration.replace(
-        "PROGRAM PLC_PRG\n"
-        "VAR\n"
-        "    candidateInstance : {0};\n"
-        "END_VAR\n".format(pou_name)
+    program.textual_declaration.replace("\n".join(declaration_lines) + "\n")
+    program.textual_implementation.replace(
+        "candidateInstance({0});\n".format(", ".join(arguments))
+        if arguments
+        else "candidateInstance();\n"
     )
-    program.textual_implementation.replace("candidateInstance();\n")
 
 
-def replace_pou_text(project, application):
+def replace_pou_text(project, application, context):
     declaration = read_optional_text("PLC_AGENT_DECLARATION_PATH")
     implementation = read_optional_text("PLC_AGENT_IMPLEMENTATION_PATH")
     if declaration is None and implementation is None:
@@ -125,7 +171,7 @@ def replace_pou_text(project, application):
     pou.textual_declaration.replace(declaration)
     pou.textual_implementation.replace(implementation)
     if pou_type == "FUNCTION_BLOCK":
-        reference_function_block(project, pou_name)
+        reference_function_block(project, pou_name, context)
     return pou_name
 
 
@@ -162,7 +208,9 @@ def main():
         if application is None:
             raise RuntimeError("The project has no active application")
 
-        result["replaced_pou"] = replace_pou_text(project, application)
+        context = read_compile_context()
+        create_custom_types(project, application, context)
+        result["replaced_pou"] = replace_pou_text(project, application, context)
         application.rebuild()
         result["messages"] = collect_messages()
         result["success"] = not any(

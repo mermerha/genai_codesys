@@ -1,0 +1,31 @@
+{
+  "id": "custom_06",
+  "title": "Batch Fill Mix Drain",
+  "difficulty": "medium",
+  "source_type": "custom",
+  "source_reference": "经验改编：批处理罐进料、搅拌、排料顺序",
+  "requirements": "Implement a batch sequence. A start pulse in IDLE begins FILL by opening fillValve. highLevel changes to MIX: close fillValve and run mixer for 5 seconds. After 5 seconds, stop mixer and enter DRAIN by opening drainValve. lowLevel completes the batch, closes drainValve, pulses done for one scan and returns to IDLE. stop aborts any stage, turns all actuators off and returns to IDLE. Only one actuator output may be TRUE at a time.",
+  "pou_name": "FB_BatchTank",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {"direction": "input", "name": "start", "data_type": "BOOL", "description": "Batch start command"},
+    {"direction": "input", "name": "stop", "data_type": "BOOL", "description": "Abort command"},
+    {"direction": "input", "name": "highLevel", "data_type": "BOOL", "description": "Tank full switch"},
+    {"direction": "input", "name": "lowLevel", "data_type": "BOOL", "description": "Tank empty switch"},
+    {"direction": "output", "name": "fillValve", "data_type": "BOOL", "description": "Fill valve command"},
+    {"direction": "output", "name": "mixer", "data_type": "BOOL", "description": "Mixer command"},
+    {"direction": "output", "name": "drainValve", "data_type": "BOOL", "description": "Drain valve command"},
+    {"direction": "output", "name": "done", "data_type": "BOOL", "description": "One-scan completion pulse"}
+  ],
+  "custom_types": [],
+  "provenance": {
+    "source_type": "experience_based",
+    "source_url": null,
+    "creation_process": ["从批处理设备常见顺序抽象出四状态流程"],
+    "human_modifications": ["固定搅拌时间为 5 秒，增加停止中止和单扫描完成脉冲"],
+    "review_process": ["检查液位输入对应的阶段迁移方向", "检查各执行器输出互斥"]
+  },
+  "plc_rationale": "灌装、搅拌和排放是典型批处理顺控，能真实检验 PLC 状态机、定时器与中止逻辑。",
+  "diversity_tags": ["批处理", "顺序控制", "定时状态机", "medium"],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+}

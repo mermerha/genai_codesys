@@ -1,0 +1,32 @@
+{
+  "id": "custom_10",
+  "title": "Two Stage Boiler Heating",
+  "difficulty": "hard",
+  "source_type": "custom",
+  "source_reference": "经验改编：两级加热与超温跳闸",
+  "requirements": "Control two heating stages. When enable is TRUE, no trip is latched and temperature is below setpoint minus 10.0, turn on heater1 and heater2. When temperature is at least setpoint minus 10.0 but below setpoint, turn on heater1 only. At or above setpoint, turn both off. If temperature is greater than or equal to highTripLimit, turn both off and latch highTrip. reset clears highTrip only when enable is FALSE and temperature is below setpoint. Invalid configuration highTripLimit less than or equal to setpoint sets configError and forces both heaters off.",
+  "pou_name": "FB_BoilerHeat",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {"direction": "input", "name": "enable", "data_type": "BOOL", "description": "Heating enable"},
+    {"direction": "input", "name": "temperature", "data_type": "REAL", "description": "Measured temperature"},
+    {"direction": "input", "name": "setpoint", "data_type": "REAL", "description": "Temperature setpoint"},
+    {"direction": "input", "name": "highTripLimit", "data_type": "REAL", "description": "High temperature trip limit"},
+    {"direction": "input", "name": "reset", "data_type": "BOOL", "description": "Trip reset command"},
+    {"direction": "output", "name": "heater1", "data_type": "BOOL", "description": "First heating stage"},
+    {"direction": "output", "name": "heater2", "data_type": "BOOL", "description": "Second heating stage"},
+    {"direction": "output", "name": "highTrip", "data_type": "BOOL", "description": "Latched high temperature trip"},
+    {"direction": "output", "name": "configError", "data_type": "BOOL", "description": "Invalid limit configuration"}
+  ],
+  "custom_types": [],
+  "provenance": {
+    "source_type": "experience_based",
+    "source_url": null,
+    "creation_process": ["从分级加热控制抽象出双级输出、设定点停机和独立超温保护"],
+    "human_modifications": ["增加配置错误、跳闸锁存和受限复位条件"],
+    "review_process": ["检查三个温度区间的输出", "检查超温和配置错误均优先关闭加热器"]
+  },
+  "plc_rationale": "分级加热可降低功率冲击，独立超温跳闸和受限复位符合工业加热设备的安全控制思路。",
+  "diversity_tags": ["模拟量分段控制", "安全跳闸", "配置校验", "hard"],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+}

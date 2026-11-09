@@ -1,0 +1,30 @@
+{
+  "id": "custom_04",
+  "title": "Pedestrian Traffic Light Sequence",
+  "difficulty": "medium",
+  "source_type": "custom",
+  "source_reference": "规则合成：行人请求触发的交通灯时序",
+  "requirements": "Implement a traffic-light sequence. When disabled, vehicleRed and pedestrianRed are TRUE and all other lamps are FALSE. When enabled, the normal state is vehicleGreen and pedestrianRed. Latch pedestrianRequest. A latched request starts 3 seconds of vehicleYellow, then 7 seconds of vehicleRed with pedestrianGreen, then returns to the normal state and clears the request. Conflicting green lamps must never be TRUE together.",
+  "pou_name": "FB_TrafficLight",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {"direction": "input", "name": "enable", "data_type": "BOOL", "description": "Sequence enable"},
+    {"direction": "input", "name": "pedestrianRequest", "data_type": "BOOL", "description": "Pedestrian push button"},
+    {"direction": "output", "name": "vehicleRed", "data_type": "BOOL", "description": "Vehicle red lamp"},
+    {"direction": "output", "name": "vehicleYellow", "data_type": "BOOL", "description": "Vehicle yellow lamp"},
+    {"direction": "output", "name": "vehicleGreen", "data_type": "BOOL", "description": "Vehicle green lamp"},
+    {"direction": "output", "name": "pedestrianRed", "data_type": "BOOL", "description": "Pedestrian red lamp"},
+    {"direction": "output", "name": "pedestrianGreen", "data_type": "BOOL", "description": "Pedestrian green lamp"}
+  ],
+  "custom_types": [],
+  "provenance": {
+    "source_type": "synthetic",
+    "source_url": null,
+    "creation_process": ["组合请求锁存、两段固定定时和互斥输出三个规则生成题目", "将阶段顺序限定为绿色、黄色、全红行人绿、恢复绿色"],
+    "human_modifications": ["增加禁用安全状态和绿灯互斥要求"],
+    "review_process": ["逐阶段检查灯色无冲突", "核对短按请求能够被锁存至完整周期结束"]
+  },
+  "plc_rationale": "交通灯是典型 PLC 定时状态机，可检验请求锁存、阶段迁移与安全互锁。",
+  "diversity_tags": ["时序状态机", "定时控制", "互斥输出", "medium"],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+}

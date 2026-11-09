@@ -1,0 +1,189 @@
+{
+  "task_id": "public_10",
+  "tests": [
+    {
+      "id": "public_10_tc01",
+      "task_id": "public_10",
+      "name": "正常温控",
+      "initial_state": {
+        "OverheatProtection": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "TemperatureSensorInput": 20,
+            "SetTemperature": 25
+          },
+          "expected_outputs": {
+            "CurrentTemperature": 20,
+            "SetTempDisplay": 25,
+            "HeaterOutput": true,
+            "HeaterStatus": true,
+            "OverheatProtection": false
+          },
+          "check": "低于设定值加热"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "TemperatureSensorInput": 26,
+            "SetTemperature": 25
+          },
+          "expected_outputs": {
+            "HeaterOutput": false,
+            "HeaterStatus": false,
+            "OverheatProtection": false
+          },
+          "check": "高于设定值停止"
+        }
+      ],
+      "coverage": [
+        "normal_heating",
+        "display"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_10_tc02",
+      "task_id": "public_10",
+      "name": "连续加热触发并保持保护",
+      "initial_state": {
+        "OverheatProtection": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "TemperatureSensorInput": 20,
+            "SetTemperature": 25
+          },
+          "expected_outputs": {
+            "HeaterOutput": true,
+            "OverheatProtection": false
+          },
+          "check": "开始加热"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 4000,
+          "inputs": {
+            "TemperatureSensorInput": 20,
+            "SetTemperature": 25
+          },
+          "expected_outputs": {
+            "HeaterOutput": true,
+            "OverheatProtection": false
+          },
+          "check": "未满 5 秒"
+        },
+        {
+          "cycle": 2,
+          "advance_ms": 1000,
+          "inputs": {
+            "TemperatureSensorInput": 20,
+            "SetTemperature": 25
+          },
+          "expected_outputs": {
+            "HeaterOutput": false,
+            "OverheatProtection": true
+          },
+          "check": "满 5 秒触发保护"
+        },
+        {
+          "cycle": 3,
+          "advance_ms": 2000,
+          "inputs": {
+            "TemperatureSensorInput": 20,
+            "SetTemperature": 25
+          },
+          "expected_outputs": {
+            "HeaterOutput": false,
+            "OverheatProtection": true
+          },
+          "check": "保护未满 3 秒"
+        },
+        {
+          "cycle": 4,
+          "advance_ms": 1000,
+          "inputs": {
+            "TemperatureSensorInput": 20,
+            "SetTemperature": 25
+          },
+          "expected_outputs": {
+            "OverheatProtection": false
+          },
+          "check": "满 3 秒解除保护"
+        }
+      ],
+      "coverage": [
+        "overheat_protection",
+        "cooldown"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_10_tc03",
+      "task_id": "public_10",
+      "name": "传感器越界故障",
+      "initial_state": {
+        "OverheatProtection": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "TemperatureSensorInput": -1,
+            "SetTemperature": 25
+          },
+          "expected_outputs": {
+            "HeaterOutput": false,
+            "HeaterStatus": false
+          },
+          "check": "低于量程关闭"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "TemperatureSensorInput": 101,
+            "SetTemperature": 25
+          },
+          "expected_outputs": {
+            "HeaterOutput": false,
+            "HeaterStatus": false
+          },
+          "check": "高于量程关闭"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "TemperatureSensorInput": 20,
+            "SetTemperature": 25
+          },
+          "expected_outputs": {
+            "HeaterOutput": true,
+            "HeaterStatus": true
+          },
+          "check": "恢复有效值后按温控运行"
+        }
+      ],
+      "coverage": [
+        "sensor_fault",
+        "recovery"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

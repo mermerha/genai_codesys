@@ -1,0 +1,133 @@
+{
+  "compile_messages": [
+    {
+      "severity": "information", 
+      "number": "None", 
+      "text": "未安装离线帮助", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "------ 开始构建应用程序 Device.Application -------", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "代码典型化...", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "编译完成 -- 0错误,0警告", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "其他代码检查...", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "其他代码检查完成-0 个错误", 
+      "position": "None", 
+      "object": null
+    }
+  ], 
+  "compile_success": true, 
+  "test_total": 2, 
+  "test_passed": 0, 
+  "tests": [
+    {
+      "passed": false, 
+      "failed_step": 2, 
+      "steps": [
+        {
+          "cycle": 0, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Motor": "FALSE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 1, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Motor": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 2, 
+          "passed": false, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Motor": "FALSE"
+          }, 
+          "differences": [
+            {
+              "expression": "PLC_PRG.actual_Motor", 
+              "expected": true, 
+              "actual": "FALSE"
+            }
+          ]
+        }
+      ], 
+      "test_id": "fixture_motor_start_stop_tc01"
+    }, 
+    {
+      "passed": false, 
+      "failed_step": 1, 
+      "steps": [
+        {
+          "cycle": 0, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Motor": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 1, 
+          "passed": false, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Motor": "TRUE"
+          }, 
+          "differences": [
+            {
+              "expression": "PLC_PRG.actual_Motor", 
+              "expected": false, 
+              "actual": "TRUE"
+            }
+          ]
+        }, 
+        {
+          "cycle": 2, 
+          "passed": false, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Motor": "TRUE"
+          }, 
+          "differences": [
+            {
+              "expression": "PLC_PRG.actual_Motor", 
+              "expected": false, 
+              "actual": "TRUE"
+            }
+          ]
+        }
+      ], 
+      "test_id": "fixture_motor_start_stop_tc02"
+    }
+  ], 
+  "exception": null, 
+  "success": false
+}

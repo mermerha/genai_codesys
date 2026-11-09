@@ -1,0 +1,30 @@
+{
+  "task_id": "custom_04",
+  "tests": [
+    {
+      "id": "custom_04_tc01", "task_id": "custom_04", "name": "完整行人通行周期", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"enable": true, "pedestrianRequest": false}, "expected_outputs": {"vehicleRed": false, "vehicleYellow": false, "vehicleGreen": true, "pedestrianRed": true, "pedestrianGreen": false}, "check": "正常车辆通行"},
+        {"cycle": 1, "inputs": {"enable": true, "pedestrianRequest": true}, "expected_outputs": {"vehicleRed": false, "vehicleYellow": true, "vehicleGreen": false, "pedestrianRed": true, "pedestrianGreen": false}, "check": "请求进入黄灯"},
+        {"cycle": 2, "advance_ms": 3000, "inputs": {"enable": true, "pedestrianRequest": false}, "expected_outputs": {"vehicleRed": true, "vehicleYellow": false, "vehicleGreen": false, "pedestrianRed": false, "pedestrianGreen": true}, "check": "进入行人绿灯"},
+        {"cycle": 3, "advance_ms": 7000, "inputs": {"enable": true, "pedestrianRequest": false}, "expected_outputs": {"vehicleRed": false, "vehicleYellow": false, "vehicleGreen": true, "pedestrianRed": true, "pedestrianGreen": false}, "check": "周期完成恢复"}
+      ],
+      "coverage": ["request_latch", "timed_sequence", "normal_return"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_04_tc02", "task_id": "custom_04", "name": "禁用安全灯态", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"enable": false, "pedestrianRequest": true}, "expected_outputs": {"vehicleRed": true, "vehicleYellow": false, "vehicleGreen": false, "pedestrianRed": true, "pedestrianGreen": false}, "check": "禁用时双红"}
+      ],
+      "coverage": ["disabled_safe_state"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_04_tc03", "task_id": "custom_04", "name": "周期中重复请求不冲突", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"enable": true, "pedestrianRequest": true}, "expected_outputs": {"vehicleYellow": true, "vehicleGreen": false, "pedestrianGreen": false}, "check": "开始黄灯"},
+        {"cycle": 1, "advance_ms": 3000, "inputs": {"enable": true, "pedestrianRequest": true}, "expected_outputs": {"vehicleRed": true, "vehicleGreen": false, "pedestrianGreen": true}, "check": "重复请求不造成绿灯冲突"}
+      ],
+      "coverage": ["mutual_exclusion", "repeated_request"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    }
+  ]
+}

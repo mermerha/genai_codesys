@@ -1,0 +1,24 @@
+{
+  "config_id": "formal_v1",
+  "models": [
+    "deepseek-v4.1-flash-1017",
+    "qwen3-coder-flash"
+  ],
+  "frameworks": [
+    "custom",
+    "codex_cli"
+  ],
+  "max_repairs": 2,
+  "model_timeout_seconds": 300,
+  "compile_timeout_seconds": 120,
+  "test_timeout_seconds": 300,
+  "reasoning_effort": null,
+  "test_mode": "codesys_simulation",
+  "test_settle_ms": 50,
+  "pre_run_tasks": [
+    "public_03",
+    "public_09",
+    "public_19"
+  ],
+  "phase": "formal"
+}

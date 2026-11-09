@@ -1,0 +1,50 @@
+{
+  "id": "public_13",
+  "title": "Office HVAC Multi-mode Energy-Saving Control",
+  "difficulty": "medium",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, medium[6]",
+  "requirements": "Control an office-building supply fan and generate a temperature-setpoint adjustment from occupancy, operating mode and the energy-saving selection.\n\n1. Valid HVAC_MODE_SELECTOR values are 0 (Auto), 1 (Comfort), 2 (Economy) and 3 (Night).\n2. Start a 30-second delay only when occupancy is detected and Night mode is not selected. SUPPLY_FAN_RUN becomes TRUE only after these conditions remain satisfied for 30 seconds. Immediately stop the fan and reset timing if occupancy is lost or Night mode is selected. Wait the full 30 seconds again when the conditions recover.\n3. Auto mode: use a 0°C adjustment when occupied. When unoccupied, use +3°C in energy-saving mode or +2°C in standard mode.\n4. Comfort mode: use 0°C when occupied or +1°C when unoccupied. Economy mode: use 0°C when occupied or +4°C when unoccupied.\n5. Night mode: use +4°C regardless of occupancy. The energy-saving selection affects only Auto mode.\n6. Keep TEMP_SETPOINT_ADJUST within ±4°C. Initialize outputs to OFF and zero at power-up; update them from current inputs when normal calculation begins.\n7. The start delay controls only the BOOL fan enable; no continuous speed ramp is required.",
+  "pou_name": "FB_OfficeHVACControl",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "OCCUPANCY_DETECTED",
+      "data_type": "BOOL",
+      "description": "Occupancy-detection result derived from the CO₂ sensor."
+    },
+    {
+      "direction": "input",
+      "name": "ENERGY_SAVING_MODE",
+      "data_type": "BOOL",
+      "description": "TRUE selects energy saving; FALSE selects standard operation; affects Auto mode only."
+    },
+    {
+      "direction": "input",
+      "name": "HVAC_MODE_SELECTOR",
+      "data_type": "INT",
+      "description": "0 Auto, 1 Comfort, 2 Economy, 3 Night; callers supply a valid value."
+    },
+    {
+      "direction": "output",
+      "name": "SUPPLY_FAN_RUN",
+      "data_type": "BOOL",
+      "description": "Supply-fan run enable."
+    },
+    {
+      "direction": "output",
+      "name": "TEMP_SETPOINT_ADJUST",
+      "data_type": "INT",
+      "description": "Temperature-setpoint adjustment in °C."
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests."
+    ]
+  }
+}

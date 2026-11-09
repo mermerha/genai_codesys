@@ -1,0 +1,52 @@
+{
+  "compile_messages": [
+    {
+      "severity": "information", 
+      "number": "None", 
+      "text": "未安装离线帮助", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "------ 开始构建应用程序 Device.Application -------", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "代码典型化...", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "编译完成 -- 0错误,0警告", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "其他代码检查...", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "其他代码检查完成-0 个错误", 
+      "position": "None", 
+      "object": null
+    }
+  ], 
+  "compile_success": true, 
+  "test_total": 2, 
+  "test_passed": 0, 
+  "tests": [], 
+  "exception": "Traceback (most recent call last):\n  File \"G:\\Genai_codesys\\codesys\\scripts\\execute_tests.py\", line 379, in main\n    payload[\"tests\"] = run_tests(\n  File \"G:\\Genai_codesys\\codesys\\scripts\\execute_tests.py\", line 245, in run_tests\n    online_application.stop()\nSystemError: 如果应用程序状态为stop,则无法停止\n", 
+  "success": false
+}

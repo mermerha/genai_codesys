@@ -1,0 +1,8 @@
+```json
+{
+  "pou_name": "FB_DWordEdgeDetection",
+  "pou_type": "FUNCTION_BLOCK",
+  "declaration": "FUNCTION_BLOCK FB_DWordEdgeDetection\n    VAR_INPUT\n        value : DWORD;\n    END_VAR\n    \n    VAR_OUTPUT\n        hasChanged : BOOL;\n        hasRisingEdges : BOOL;\n        risingBits : DWORD;\n        noOfRisingBits : USINT;\n        hasFallingEdges : BOOL;\n        fallingBits : DWORD;\n        noOfFallingBits : USINT;\n    END_VAR\n    \n    VAR\n        oldValue : DWORD;\n    END_VAR\nEND_FUNCTION_BLOCK",
+  "implementation": "(* Initialize old value on first call *)\nIF NOT oldValue THEN\n    oldValue := value;\nEND_IF;\n\n(* Check for changes *)\nhasChanged := value <> oldValue;\n\n(* Detect rising edges *)\nrisingBits := (value AND NOT oldValue);\nhasRisingEdges := risingBits <> 0;\nnoOfRisingBits := BYTE#0;\nFOR i := 0 TO 31 DO\n    IF risingBits[i] THEN\n        noOfRisingBits := noOfRisingBits + 1;\n    END_IF;\nEND_FOR;\n\n(* Detect falling edges *)\nfallingBits := (NOT value AND oldValue);\nhasFallingEdges := fallingBits <> 0;\nnoOfFallingBits := BYTE#0;\nFOR i := 0 TO 31 DO\n    IF fallingBits[i] THEN\n        noOfFallingBits := noOfFallingBits + 1;\n    END_IF;\nEND_FOR;\n\n(* Update old value *)\noldValue := value;"
+}
+```

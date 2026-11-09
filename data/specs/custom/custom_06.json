@@ -1,0 +1,24 @@
+{
+  "task_id": "custom_06",
+  "state_semantics": "每个步骤执行一次 PLC 扫描；advance_ms 驱动 5 秒搅拌定时，X 表示扫描后的状态。",
+  "propositions": {
+    "start_idle": "IDLE 状态收到 start",
+    "high": "highLevel 为真",
+    "mix_done": "搅拌已满 5 秒",
+    "low": "lowLevel 为真",
+    "stop": "stop 为真",
+    "fill": "fillValve 为真",
+    "mix": "mixer 为真",
+    "drain": "drainValve 为真",
+    "done": "done 为真",
+    "multiple_actuators": "fillValve、mixer、drainValve 中至少两个为真"
+  },
+  "assumptions": [],
+  "properties": [
+    {"id": "custom_06_p01", "type": "sequence", "description": "启动后依次灌装、搅拌和排放", "ltl": "G(start_idle -> X(fill)) && G((fill && high) -> X(mix)) && G((mix && mix_done) -> X(drain))", "tool_expression": null},
+    {"id": "custom_06_p02", "type": "response", "description": "排空后发出单扫描完成脉冲", "ltl": "G((drain && low) -> X(done && !drain)) && G(done -> X(!done))", "tool_expression": null},
+    {"id": "custom_06_p03", "type": "safety", "description": "执行器输出互斥", "ltl": "G(!multiple_actuators)", "tool_expression": null},
+    {"id": "custom_06_p04", "type": "safety", "description": "停止中止并关闭全部执行器", "ltl": "G(stop -> X(!fill && !mix && !drain))", "tool_expression": null}
+  ],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["计时命题依据 advance_ms 解释。"]}
+}

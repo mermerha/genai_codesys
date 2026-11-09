@@ -1,0 +1,92 @@
+{
+  "id": "public_11",
+  "title": "Automated Production Line Control",
+  "difficulty": "medium",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, medium[4]",
+  "requirements": "A simple automated production line consists of three workstations: Workstation A, Workstation B, and Workstation C. The product needs to go through these three stations in sequence to be considered fully completed. There is a motor in the production line that is responsible for moving the product from one workstation to the next. The sequence of the line is from Workstation A to Workstation B, and then to Workstation C. Each workstation has a sensor (used to detect if the product has arrived) and a button (used to trigger the signal that the station's processing is complete).\nControl requirements:\n1. Mode Switching: The mode switch (Mode) is used to switch between manual and automatic modes of the production line.\n2. Manual Mode: In manual mode, the forward rotation button (ForwardButton) controls the forward rotation of the motor, and the reverse rotation button (ReverseButton) controls the reverse rotation of the motor. Forward and reverse rotation operations need to be interlocked and cannot be performed simultaneously.\n3. Automatic Mode:\n   - When the product arrives at Workstation A, SensorA detects the product, and after the operator triggers the processing complete signal via ButtonA, the motor starts forward rotation to move the product to Workstation B.\n   - When the product arrives at Workstation B, SensorB detects the product, the motor stops, and after the operator triggers the processing complete signal via ButtonB, the motor starts forward rotation to move the product to Workstation C.\n   - When the product arrives at Workstation C, SensorC detects the product, the motor stops, and after the operator triggers the processing complete signal via ButtonC, the completion indicator light (CompletionLight) turns on, indicating that the product processing is complete. When the product is taken away, i.e., SensorC no longer detects the product, the completion indicator light (CompletionLight) turns off.",
+  "pou_name": "FB_AutomatedProductionLine",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "Mode",
+      "data_type": "BOOL",
+      "description": "Used to switch the production line between manual and automatic modes, 0=manual mode, 1=automatic mode"
+    },
+    {
+      "direction": "input",
+      "name": "ForwardButton",
+      "data_type": "BOOL",
+      "description": "Forward rotation button"
+    },
+    {
+      "direction": "input",
+      "name": "ReverseButton",
+      "data_type": "BOOL",
+      "description": "Reverse rotation button"
+    },
+    {
+      "direction": "input",
+      "name": "SensorA",
+      "data_type": "BOOL",
+      "description": "Sensor A"
+    },
+    {
+      "direction": "input",
+      "name": "SensorB",
+      "data_type": "BOOL",
+      "description": "Sensor B"
+    },
+    {
+      "direction": "input",
+      "name": "SensorC",
+      "data_type": "BOOL",
+      "description": "Sensor C"
+    },
+    {
+      "direction": "input",
+      "name": "ButtonA",
+      "data_type": "BOOL",
+      "description": "Button A"
+    },
+    {
+      "direction": "input",
+      "name": "ButtonB",
+      "data_type": "BOOL",
+      "description": "Button B"
+    },
+    {
+      "direction": "input",
+      "name": "ButtonC",
+      "data_type": "BOOL",
+      "description": "Button C"
+    },
+    {
+      "direction": "output",
+      "name": "MotorForward",
+      "data_type": "BOOL",
+      "description": "Motor forward rotation output"
+    },
+    {
+      "direction": "output",
+      "name": "MotorReverse",
+      "data_type": "BOOL",
+      "description": "Motor reverse rotation output"
+    },
+    {
+      "direction": "output",
+      "name": "CompletionLight",
+      "data_type": "BOOL",
+      "description": "Indicator light for product processing completion"
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests."
+    ]
+  }
+}

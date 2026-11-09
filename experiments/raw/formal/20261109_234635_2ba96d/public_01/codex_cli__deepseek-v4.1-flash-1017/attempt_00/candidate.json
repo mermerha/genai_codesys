@@ -1,0 +1,6 @@
+{
+  "pou_name": "FB_AutomatedFillingLine",
+  "pou_type": "FUNCTION_BLOCK",
+  "declaration": "FUNCTION_BLOCK FB_AutomatedFillingLine\nVAR_INPUT\n    bottleSensor : BOOL;\n    cleaningConfirmButton : BOOL;\n    fillingConfirmButton : BOOL;\n    cappingConfirmButton : BOOL;\n    packingConfirmButton : BOOL;\n    finishedButton : BOOL;\nEND_VAR\nVAR_OUTPUT\n    Pump_Motor : BOOL;\n    Filling_Valve : BOOL;\n    Capping_Machine : BOOL;\n    Packing_Machine : BOOL;\n    Completion_Light : BOOL;\nEND_VAR\nVAR\n    iState : INT := 0;\nEND_VAR\nEND_FUNCTION_BLOCK",
+  "implementation": "CASE iState OF\n    0:\n        IF bottleSensor THEN\n            iState := 1;\n        END_IF;\n    1:\n        IF cleaningConfirmButton THEN\n            iState := 2;\n        END_IF;\n    2:\n        IF fillingConfirmButton THEN\n            iState := 3;\n        END_IF;\n    3:\n        IF cappingConfirmButton THEN\n            iState := 4;\n        END_IF;\n    4:\n        IF packingConfirmButton THEN\n            iState := 5;\n        END_IF;\n    5:\n        IF finishedButton THEN\n            iState := 0;\n        END_IF;\nEND_CASE\n\nPump_Motor := (iState = 1);\nFilling_Valve := (iState = 2);\nCapping_Machine := (iState = 3);\nPacking_Machine := (iState = 4);\nCompletion_Light := (iState = 5);"
+}

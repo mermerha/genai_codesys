@@ -1,0 +1,30 @@
+{
+  "task_id": "custom_08",
+  "tests": [
+    {
+      "id": "custom_08_tc01", "task_id": "custom_08", "name": "内门释放与超时复锁", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"innerRequest": true, "outerRequest": false, "innerClosed": true, "outerClosed": true, "emergency": false}, "expected_outputs": {"innerLock": false, "outerLock": true, "sensorFault": false}, "check": "外门关闭时释放内门"},
+        {"cycle": 1, "advance_ms": 4000, "inputs": {"innerRequest": false, "outerRequest": false, "innerClosed": true, "outerClosed": true, "emergency": false}, "expected_outputs": {"innerLock": false, "outerLock": true}, "check": "超时前保持释放"},
+        {"cycle": 2, "advance_ms": 1000, "inputs": {"innerRequest": false, "outerRequest": false, "innerClosed": true, "outerClosed": true, "emergency": false}, "expected_outputs": {"innerLock": true, "outerLock": true}, "check": "五秒后复锁"}
+      ],
+      "coverage": ["inner_release", "timeout", "mutual_exclusion"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_08_tc02", "task_id": "custom_08", "name": "双请求内门优先", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"innerRequest": true, "outerRequest": true, "innerClosed": true, "outerClosed": true, "emergency": false}, "expected_outputs": {"innerLock": false, "outerLock": true}, "check": "内门请求优先"},
+        {"cycle": 1, "inputs": {"innerRequest": false, "outerRequest": true, "innerClosed": false, "outerClosed": true, "emergency": false}, "expected_outputs": {"innerLock": true, "outerLock": true}, "check": "内门打开时不得释放外门"}
+      ],
+      "coverage": ["request_priority", "door_interlock"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_08_tc03", "task_id": "custom_08", "name": "紧急锁定与传感器故障", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"innerRequest": false, "outerRequest": true, "innerClosed": true, "outerClosed": true, "emergency": false}, "expected_outputs": {"innerLock": true, "outerLock": false}, "check": "正常释放外门"},
+        {"cycle": 1, "inputs": {"innerRequest": false, "outerRequest": false, "innerClosed": false, "outerClosed": false, "emergency": true}, "expected_outputs": {"innerLock": true, "outerLock": true, "sensorFault": true}, "check": "紧急时双锁且报告异常"}
+      ],
+      "coverage": ["emergency", "sensor_fault"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    }
+  ]
+}

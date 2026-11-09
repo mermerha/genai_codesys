@@ -1,0 +1,144 @@
+{
+  "task_id": "public_02",
+  "model": "qwen3-coder-flash",
+  "final_status": "compile_failure",
+  "attempts": 3,
+  "repairs": 2,
+  "first_compile_pass": false,
+  "final_compile_pass": false,
+  "api_models": [
+    "qwen3-coder-flash",
+    "qwen3-coder-flash",
+    "qwen3-coder-flash"
+  ],
+  "usage_by_attempt": [
+    {
+      "prompt_tokens": 840,
+      "completion_tokens": 337,
+      "total_tokens": 1177,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0
+      },
+      "completion_tokens_details": {
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "reasoning_tokens": 0
+      },
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "input_tokens_details": null,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0,
+      "cost": "¥0.003282"
+    },
+    {
+      "prompt_tokens": 1321,
+      "completion_tokens": 350,
+      "total_tokens": 1671,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0
+      },
+      "completion_tokens_details": {
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "reasoning_tokens": 0
+      },
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "input_tokens_details": null,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0,
+      "cost": "¥0.004082"
+    },
+    {
+      "prompt_tokens": 1656,
+      "completion_tokens": 348,
+      "total_tokens": 2004,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0
+      },
+      "completion_tokens_details": {
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "reasoning_tokens": 0
+      },
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "input_tokens_details": null,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0,
+      "cost": "¥0.004572"
+    }
+  ],
+  "duration_seconds": 82.297,
+  "failure_reason": [
+    {
+      "category": "编译",
+      "severity": "error",
+      "number": "9",
+      "text": "发现非预期的记号'value__prev' ",
+      "object_name": "FB_DWordEdgeDetection",
+      "position": "15行 (Decl)"
+    },
+    {
+      "category": "编译",
+      "severity": "error",
+      "number": "189",
+      "text": "应该用';' 替换':'",
+      "object_name": "FB_DWordEdgeDetection",
+      "position": "15行 (Decl)"
+    },
+    {
+      "category": "编译",
+      "severity": "error",
+      "number": "9",
+      "text": "发现非预期的记号':' ",
+      "object_name": "FB_DWordEdgeDetection",
+      "position": "15行 (Decl)"
+    },
+    {
+      "category": "编译",
+      "severity": "error",
+      "number": "189",
+      "text": "应该用';' 替换'DWORD'",
+      "object_name": "FB_DWordEdgeDetection",
+      "position": "15行 (Decl)"
+    },
+    {
+      "category": "编译",
+      "severity": "error",
+      "number": "9",
+      "text": "发现非预期的记号'DWORD' ",
+      "object_name": "FB_DWordEdgeDetection",
+      "position": "15行 (Decl)"
+    },
+    {
+      "category": "编译",
+      "severity": "error",
+      "number": "7",
+      "text": "应该用表达式代替 '<'",
+      "object_name": "FB_DWordEdgeDetection",
+      "position": "行15,列1 (Impl)"
+    },
+    {
+      "category": "编译",
+      "severity": "error",
+      "number": "7",
+      "text": "应该用表达式代替 '<'",
+      "object_name": "FB_DWordEdgeDetection",
+      "position": "行22,列1 (Impl)"
+    }
+  ]
+}

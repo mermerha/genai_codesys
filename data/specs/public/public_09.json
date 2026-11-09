@@ -1,0 +1,62 @@
+{
+  "task_id": "public_09",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "reset": "reset 为 TRUE",
+    "invalid_window": "windowSize 不在 1..100",
+    "valid_window": "windowSize 在 1..100",
+    "sample_accepted": "本扫描接受一个样本",
+    "average_correct": "average 等于当前窗口内样本均值",
+    "window_full": "已存样本数达到 windowSize",
+    "error": "error",
+    "status_8200": "状态 16#8200",
+    "status_ok": "状态 16#0000"
+  },
+  "assumptions": [
+    "非循环模式只在 trigger 上升沿接受样本；窗口运行中不修改 windowSize。"
+  ],
+  "properties": [
+    {
+      "id": "public_09_p01",
+      "type": "priority",
+      "description": "复位清空样本、均值和满窗标志",
+      "ltl": "G(reset -> X(!window_full && average_correct))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_09_p02",
+      "type": "safety",
+      "description": "窗口大小非法时报错且不接受样本",
+      "ltl": "G(invalid_window -> X(error && status_8200 && !sample_accepted))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_09_p03",
+      "type": "invariant",
+      "description": "窗口合法时清除错误",
+      "ltl": "G(valid_window -> X(!error && status_ok))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_09_p04",
+      "type": "functional",
+      "description": "接受样本后均值正确",
+      "ltl": "G(sample_accepted -> X(average_correct))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_09_p05",
+      "type": "response",
+      "description": "样本数达到窗口大小后置位满窗标志",
+      "ltl": "G(window_full -> X(window_full))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "public_02",
+  "title": "Dual-Word Edge Detection",
+  "difficulty": "easy",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, easy[1]",
+  "requirements": "Write a function block FB that checks for rising and falling edges in each bit of a dual-word (DWord) input value every cycle. The function block should be able to detect and report changes, rising edges, and falling edges in the input value.",
+  "pou_name": "FB_DWordEdgeDetection",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "value",
+      "data_type": "DWORD",
+      "description": "The input value to be checked for changes and edge triggering"
+    },
+    {
+      "direction": "output",
+      "name": "hasChanged",
+      "data_type": "BOOL",
+      "description": "True indicates that the input value has changed"
+    },
+    {
+      "direction": "output",
+      "name": "hasRisingEdges",
+      "data_type": "BOOL",
+      "description": "True indicates that rising edges have occurred in the input value"
+    },
+    {
+      "direction": "output",
+      "name": "risingBits",
+      "data_type": "DWORD",
+      "description": "The bit stream of rising edges, where each bit indicates whether the corresponding input bit has experienced a rising edge (1 for a rising edge, 0 for no rising edge)"
+    },
+    {
+      "direction": "output",
+      "name": "noOfRisingBits",
+      "data_type": "USINT",
+      "description": "The number of rising edges in the input value"
+    },
+    {
+      "direction": "output",
+      "name": "hasFallingEdges",
+      "data_type": "BOOL",
+      "description": "True indicates that falling edges have occurred in the input value"
+    },
+    {
+      "direction": "output",
+      "name": "fallingBits",
+      "data_type": "DWORD",
+      "description": "The bit stream of falling edges, where each bit indicates whether the corresponding input bit has experienced a falling edge (1 for a falling edge, 0 for no falling edge)"
+    },
+    {
+      "direction": "output",
+      "name": "noOfFallingBits",
+      "data_type": "USINT",
+      "description": "The number of falling edges in the input value"
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests."
+    ]
+  }
+}

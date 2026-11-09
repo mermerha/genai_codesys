@@ -1,0 +1,39 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "{\n  \"pou_name\": \"FB_AutomatedFillingLine\",\n  \"pou_type\": \"FUNCTION_BLOCK\",\n  \"declaration\": \"FUNCTION_BLOCK FB_AutomatedFillingLine\\nVAR_INPUT\\n    bottleSensor : BOOL;\\n    cleaningConfirmButton : BOOL;\\n    fillingConfirmButton : BOOL;\\n    cappingConfirmButton : BOOL;\\n    packingConfirmButton : BOOL;\\n    finishedButton : BOOL;\\nEND_VAR\\nVAR_OUTPUT\\n    Pump_Motor : BOOL;\\n    Filling_Valve : BOOL;\\n    Capping_Machine : BOOL;\\n    Packing_Machine : BOOL;\\n    Completion_Light : BOOL;\\nEND_VAR\\nVAR\\n    state : INT := 0;\\nEND_VAR\",\n  \"implementation\": \"IF bottleSensor THEN\\n    state := 1;\\nEND_IF;\\n\\nCASE state OF\\n    1:\\n        Pump_Motor := TRUE;\\n        IF cleaningConfirmButton THEN\\n            state := 2;\\n        END_IF;\\n    2:\\n        Pump_Motor := FALSE;\\n        Filling_Valve := TRUE;\\n        IF fillingConfirmButton THEN\\n            state := 3;\\n        END_IF;\\n    3:\\n        Filling_Valve := FALSE;\\n        Capping_Machine := TRUE;\\n        IF cappingConfirmButton THEN\\n            state := 4;\\n        END_IF;\\n    4:\\n        Capping_Machine := FALSE;\\n        Packing_Machine := TRUE;\\n        IF packingConfirmButton THEN\\n            state := 5;\\n        END_IF;\\n    5:\\n        Packing_Machine := FALSE;\\n        Completion_Light := TRUE;\\n        IF finishedButton THEN\\n            state := 0;\\n            Completion_Light := FALSE;\\n        END_IF;\\n    ELSE:\\n        Pump_Motor := FALSE;\\n        Filling_Valve := FALSE;\\n        Capping_Machine := FALSE;\\n        Packing_Machine := FALSE;\\n        Completion_Light := FALSE;\\nEND_CASE;\"\n}",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1794239267,
+  "id": "chatcmpl-61d082d3-d20f-9c63-8bfc-5bcb89d6783f",
+  "model": "qwen3-coder-flash",
+  "object": "chat.completion",
+  "usage": {
+    "prompt_tokens": 1108,
+    "completion_tokens": 436,
+    "total_tokens": 1544,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "text_tokens": 0,
+      "audio_tokens": 0,
+      "image_tokens": 0
+    },
+    "completion_tokens_details": {
+      "text_tokens": 0,
+      "audio_tokens": 0,
+      "image_tokens": 0,
+      "reasoning_tokens": 0
+    },
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0,
+    "cost": "¥0.004278"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "success": false, 
+  "exception": null, 
+  "replaced_pou": "MotorControl", 
+  "messages": [
+    {
+      "severity": "information", 
+      "number": null, 
+      "text": "未安装离线帮助", 
+      "category": "Offline Help", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "------ 开始构建应用程序 Device.Application -------", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "代码典型化...", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "error", 
+      "number": "77", 
+      "text": "未知的类型: 'MotorControl'", 
+      "category": "编译", 
+      "position": "3行 (Decl)", 
+      "object": "PLC_PRG"
+    }, 
+    {
+      "severity": "error", 
+      "number": "35", 
+      "text": "需要程序名、函数或功能块实例替代 'candidateInstance'", 
+      "category": "编译", 
+      "position": "行1,列1 (Impl)", 
+      "object": "PLC_PRG"
+    }, 
+    {
+      "severity": "information", 
+      "number": "181", 
+      "text": "相关位置", 
+      "category": "编译", 
+      "position": "3行 (Decl)", 
+      "object": "PLC_PRG"
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "编译完成--2错误,0警告", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "其他代码检查...", 
+      "category": "附加代码检查", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "其他代码检查完成-0 个错误", 
+      "category": "附加代码检查", 
+      "position": null, 
+      "object": null
+    }
+  ], 
+  "project_path": "G:\\Genai_codesys\\experiments\\raw\\development\\20261109_232103_fixture_motor_start_stop_qwen3-coder-flash_codex_cli\\attempt_02\\compile\\candidate.project"
+}

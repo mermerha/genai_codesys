@@ -1,0 +1,57 @@
+{
+  "task_id": "public_08",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "enabled": "当前通道 enable 为 TRUE",
+    "disabled": "当前通道 enable 为 FALSE",
+    "mode_linear": "measuringMode=0",
+    "mode_tenth": "measuringMode=1",
+    "mode_hundredth": "measuringMode=2",
+    "mode_invalid": "measuringMode 不在 0..2",
+    "limits_invalid": "hiLIM <= loLIM",
+    "conversion_correct": "outputValue 符合对应换算",
+    "result_unchanged": "该通道结果未修改",
+    "status_8001": "retVal=16#8001",
+    "status_8002": "retVal=16#8002"
+  },
+  "assumptions": [
+    "count 不超过两个数组的实际长度；数组按各自下界起始的相同序号配对。"
+  ],
+  "properties": [
+    {
+      "id": "public_08_p01",
+      "type": "safety",
+      "description": "禁用通道不修改结果",
+      "ltl": "G(disabled -> X(result_unchanged))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_08_p02",
+      "type": "functional",
+      "description": "三种合法测量模式按规则换算",
+      "ltl": "G((enabled && !limits_invalid && (mode_linear || mode_tenth || mode_hundredth)) -> X(conversion_correct))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_08_p03",
+      "type": "error",
+      "description": "非法测量模式返回 16#8001",
+      "ltl": "G((enabled && mode_invalid) -> X(status_8001))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_08_p04",
+      "type": "error",
+      "description": "上下限非法返回 16#8002",
+      "ltl": "G((enabled && !mode_invalid && limits_invalid) -> X(status_8002))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

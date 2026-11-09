@@ -1,0 +1,56 @@
+{
+  "task_id": "public_12",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "valid": "THICKNESS_SIGNAL_VALID",
+    "fault": "THICKNESS_FAULT",
+    "fault_rise": "有效故障上升沿",
+    "alarm": "THICKNESS_ALARM",
+    "hold_active": "500 ms 最小保持时间未满",
+    "count_incremented": "故障计数增加 1",
+    "history_updated": "新时间戳写入索引 0 且旧记录后移",
+    "normal_cutting": "CUTTING_RUN 且信号有效且无故障",
+    "runtime_incremented": "累计时间增加 CycleTime",
+    "runtime_unchanged": "累计时间不变"
+  },
+  "assumptions": [
+    "CycleTime 为正值。"
+  ],
+  "properties": [
+    {
+      "id": "public_12_p01",
+      "type": "priority",
+      "description": "信号无效时清除报警且不记录",
+      "ltl": "G(!valid -> X(!alarm && runtime_unchanged))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_12_p02",
+      "type": "response",
+      "description": "有效故障立即触发报警并至少保持 500 ms",
+      "ltl": "G((valid && fault) -> X(alarm)) && G(hold_active -> X(alarm))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_12_p03",
+      "type": "accounting",
+      "description": "每个有效故障上升沿计数并更新历史",
+      "ltl": "G((valid && fault_rise) -> X(count_incremented && history_updated))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_12_p04",
+      "type": "accounting",
+      "description": "仅正常切割时累计运行时间",
+      "ltl": "G(normal_cutting -> X(runtime_incremented)) && G(!normal_cutting -> X(runtime_unchanged))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

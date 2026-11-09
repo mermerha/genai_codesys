@@ -1,0 +1,22 @@
+{
+  "task_id": "custom_02",
+  "state_semantics": "每个步骤执行一次 PLC 扫描，X 表示该扫描后的输出状态。",
+  "propositions": {
+    "invalid_config": "lowLevel >= highLevel",
+    "disabled": "enable 为假",
+    "low": "level <= lowLevel",
+    "high": "level >= highLevel",
+    "high_high": "level >= 95.0",
+    "pump_run": "pumpRun 为真",
+    "alarm": "highHighAlarm 为真",
+    "error": "configError 为真"
+  },
+  "assumptions": [],
+  "properties": [
+    {"id": "custom_02_p01", "type": "safety", "description": "非法配置报错并停泵", "ltl": "G(invalid_config -> X(error && !pump_run))", "tool_expression": null},
+    {"id": "custom_02_p02", "type": "response", "description": "低液位启动补液泵", "ltl": "G((!invalid_config && !disabled && low) -> X(pump_run))", "tool_expression": null},
+    {"id": "custom_02_p03", "type": "response", "description": "高液位或禁用停止泵", "ltl": "G((high || disabled) -> X(!pump_run))", "tool_expression": null},
+    {"id": "custom_02_p04", "type": "response", "description": "高高液位产生报警", "ltl": "G(high_high -> X(alarm)) && G(!high_high -> X(!alarm))", "tool_expression": null}
+  ],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["按工具无关 LTL 冻结。"]}
+}

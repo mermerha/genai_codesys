@@ -1,0 +1,72 @@
+{
+  "success": false, 
+  "exception": null, 
+  "replaced_pou": "FB_DWordEdgeDetection", 
+  "messages": [
+    {
+      "severity": "information", 
+      "number": null, 
+      "text": "未安装离线帮助", 
+      "category": "Offline Help", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "------ 开始构建应用程序 Device.Application -------", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "代码典型化...", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "error", 
+      "number": "7", 
+      "text": "应该用表达式代替 '<'", 
+      "category": "编译", 
+      "position": "行16,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "error", 
+      "number": "7", 
+      "text": "应该用表达式代替 '<'", 
+      "category": "编译", 
+      "position": "行28,列1 (Impl)", 
+      "object": "FB_DWordEdgeDetection"
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "编译完成--2错误,0警告", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "其他代码检查...", 
+      "category": "附加代码检查", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "其他代码检查完成-0 个错误", 
+      "category": "附加代码检查", 
+      "position": null, 
+      "object": null
+    }
+  ], 
+  "project_path": "G:\\Genai_codesys\\experiments\\raw\\formal\\20261109_234635_2ba96d\\public_02\\codex_cli__qwen3-coder-flash\\attempt_01\\compile\\candidate.project"
+}

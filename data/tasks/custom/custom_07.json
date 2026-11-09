@@ -1,0 +1,28 @@
+{
+  "id": "custom_07",
+  "title": "Pressure Signal Scaling",
+  "difficulty": "medium",
+  "source_type": "custom",
+  "source_reference": "规则合成：模拟量线性缩放与诊断",
+  "requirements": "Scale rawValue linearly from 0..27648 to 0.0..16.0 bar and write pressure. Values below 0 or above 27648 set sensorFault and clamp pressure to 0.0 or 16.0 respectively. Set highAlarm when pressure is greater than or equal to highLimit, but force highAlarm FALSE while sensorFault is TRUE. highLimit is a REAL input in bar.",
+  "pou_name": "FB_PressureScale",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {"direction": "input", "name": "rawValue", "data_type": "DINT", "description": "Raw analog count"},
+    {"direction": "input", "name": "highLimit", "data_type": "REAL", "description": "High pressure alarm threshold"},
+    {"direction": "output", "name": "pressure", "data_type": "REAL", "description": "Scaled pressure in bar"},
+    {"direction": "output", "name": "sensorFault", "data_type": "BOOL", "description": "Raw signal outside valid range"},
+    {"direction": "output", "name": "highAlarm", "data_type": "BOOL", "description": "High pressure alarm"}
+  ],
+  "custom_types": [],
+  "provenance": {
+    "source_type": "synthetic",
+    "source_url": null,
+    "creation_process": ["组合标准模拟量计数范围、线性换算、越界钳位和阈值报警规则", "选取 0 到 16 bar 便于构造可核对的中点"],
+    "human_modifications": ["明确故障时禁止高报警，避免钳位上限造成误报警"],
+    "review_process": ["手工核对原始中点 13824 对应 8 bar", "检查上下越界的故障与钳位结果"]
+  },
+  "plc_rationale": "将模拟量模块计数换算为工程量并做断线/越界诊断，是 PLC 采集压力信号的常见前处理。",
+  "diversity_tags": ["模拟量缩放", "算术计算", "传感器诊断", "medium"],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+}

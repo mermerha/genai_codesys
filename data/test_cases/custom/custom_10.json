@@ -1,0 +1,31 @@
+{
+  "task_id": "custom_10",
+  "tests": [
+    {
+      "id": "custom_10_tc01", "task_id": "custom_10", "name": "两级温区控制", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"enable": true, "temperature": 70.0, "setpoint": 100.0, "highTripLimit": 120.0, "reset": false}, "expected_outputs": {"heater1": true, "heater2": true, "highTrip": false, "configError": false}, "check": "低温两级加热"},
+        {"cycle": 1, "inputs": {"enable": true, "temperature": 95.0, "setpoint": 100.0, "highTripLimit": 120.0, "reset": false}, "expected_outputs": {"heater1": true, "heater2": false}, "check": "接近设定点单级加热"},
+        {"cycle": 2, "inputs": {"enable": true, "temperature": 100.0, "setpoint": 100.0, "highTripLimit": 120.0, "reset": false}, "expected_outputs": {"heater1": false, "heater2": false}, "check": "达到设定点停热"}
+      ],
+      "coverage": ["two_stage_control", "temperature_boundaries"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_10_tc02", "task_id": "custom_10", "name": "超温跳闸与受限复位", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"enable": true, "temperature": 120.0, "setpoint": 100.0, "highTripLimit": 120.0, "reset": false}, "expected_outputs": {"heater1": false, "heater2": false, "highTrip": true}, "check": "超温跳闸"},
+        {"cycle": 1, "inputs": {"enable": true, "temperature": 90.0, "setpoint": 100.0, "highTripLimit": 120.0, "reset": true}, "expected_outputs": {"heater1": false, "heater2": false, "highTrip": true}, "check": "启用状态不能复位"},
+        {"cycle": 2, "inputs": {"enable": false, "temperature": 90.0, "setpoint": 100.0, "highTripLimit": 120.0, "reset": true}, "expected_outputs": {"heater1": false, "heater2": false, "highTrip": false}, "check": "禁用且降温后复位"}
+      ],
+      "coverage": ["high_trip", "trip_latch", "reset_interlock"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_10_tc03", "task_id": "custom_10", "name": "配置错误优先", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"enable": true, "temperature": 50.0, "setpoint": 100.0, "highTripLimit": 100.0, "reset": false}, "expected_outputs": {"heater1": false, "heater2": false, "configError": true}, "check": "跳闸限值不高于设定点时停热"},
+        {"cycle": 1, "inputs": {"enable": true, "temperature": 50.0, "setpoint": 100.0, "highTripLimit": 120.0, "reset": false}, "expected_outputs": {"heater1": true, "heater2": true, "configError": false}, "check": "配置恢复后正常控制"}
+      ],
+      "coverage": ["configuration_error", "recovery"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    }
+  ]
+}

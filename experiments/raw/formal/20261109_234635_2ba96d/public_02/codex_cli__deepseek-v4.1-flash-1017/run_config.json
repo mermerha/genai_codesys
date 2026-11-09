@@ -1,0 +1,13 @@
+{
+  "framework": "codex_cli",
+  "framework_version": "codex-cli 0.167.0-alpha.3.2",
+  "model": "deepseek-v4.1-flash-1017",
+  "model_provider": "dmxapi_responses",
+  "tool_mode": "external_compile_feedback",
+  "max_repairs": 2,
+  "max_candidate_attempts": 3,
+  "model_timeout_seconds": 300,
+  "sandbox": "read-only",
+  "automatic_tests": true,
+  "template_project": "G:\\Genai_codesys\\codesys\\template\\测试工程.project"
+}

@@ -1,0 +1,202 @@
+You repair IEC 61131-3 Structured Text for CODESYS.
+
+Return only one corrected JSON object with exactly these string fields:
+"pou_name", "pou_type", "declaration", "implementation".
+
+Rules:
+- Keep the requested interface and behavior.
+- Correct the reported parsing or compiler errors.
+- Use a plain IEC identifier for the POU name without quotes.
+- The declaration must contain the complete POU header and variable sections.
+- For a FUNCTION_BLOCK, start the declaration with FUNCTION_BLOCK <pou_name> and stop after the final END_VAR. Do not add END_FUNCTION_BLOCK.
+- The implementation must contain only the Structured Text implementation body.
+- Start the implementation directly with executable statements. Do not wrap the whole body in BEGIN ... END; control-structure terminators such as END_IF are allowed.
+- Use CODESYS terminators with underscores, for example END_IF;, END_CASE;, END_FOR;, END_WHILE;, and END_REPEAT;. Never write forms such as END IF;.
+- Do not return explanations or additional fields.
+
+Task:
+{
+  "id": "public_19",
+  "title": "Mechanical Arm Control",
+  "difficulty": "hard",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, hard[4]",
+  "requirements": "Implement a mechanical-arm control function block with mutually exclusive manual, single-step, single-cycle, and continuous modes. The arm has down, grip, up, right, down, release, up, and left as its automatic handling sequence, starting from the top-left position. In manual mode, each button commands only its matching action and only while the corresponding limit switch is not active. In single-step mode, each rising edge of Start permits the next automatic action; stop that action when its matching completion limit is reached, then wait for another Start rising edge. In single-cycle mode, one Start rising edge runs the entire automatic sequence and stops after returning to the top-left position. In continuous mode, one Start rising edge begins repeated automatic cycles. GripLimitSwitch and ReleaseLimitSwitch are the completion feedback for grip and release. EmergencyStop is active-low: when FALSE, immediately set all six action outputs to FALSE and do not advance the automatic sequence. Never command opposing directions at the same time.",
+  "pou_name": "FB_MechanicalArm",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "ManualMode",
+      "data_type": "BOOL",
+      "description": "Manual mode selection"
+    },
+    {
+      "direction": "input",
+      "name": "SingleStepMode",
+      "data_type": "BOOL",
+      "description": "Single-step mode selection"
+    },
+    {
+      "direction": "input",
+      "name": "SingleCycleMode",
+      "data_type": "BOOL",
+      "description": "Single-cycle mode selection"
+    },
+    {
+      "direction": "input",
+      "name": "ContinuousMode",
+      "data_type": "BOOL",
+      "description": "Continuous mode selection"
+    },
+    {
+      "direction": "input",
+      "name": "EmergencyStop",
+      "data_type": "BOOL",
+      "description": "FALSE means emergency stop is active; TRUE permits operation"
+    },
+    {
+      "direction": "input",
+      "name": "Start",
+      "data_type": "BOOL",
+      "description": "Start or step request"
+    },
+    {
+      "direction": "input",
+      "name": "DownButton",
+      "data_type": "BOOL",
+      "description": "Manual down button"
+    },
+    {
+      "direction": "input",
+      "name": "UpButton",
+      "data_type": "BOOL",
+      "description": "Manual up button"
+    },
+    {
+      "direction": "input",
+      "name": "LeftButton",
+      "data_type": "BOOL",
+      "description": "Manual left button"
+    },
+    {
+      "direction": "input",
+      "name": "RightButton",
+      "data_type": "BOOL",
+      "description": "Manual right button"
+    },
+    {
+      "direction": "input",
+      "name": "GripButton",
+      "data_type": "BOOL",
+      "description": "Manual grip button"
+    },
+    {
+      "direction": "input",
+      "name": "ReleaseButton",
+      "data_type": "BOOL",
+      "description": "Manual release button"
+    },
+    {
+      "direction": "input",
+      "name": "DownLimitSwitch",
+      "data_type": "BOOL",
+      "description": "Down-position limit"
+    },
+    {
+      "direction": "input",
+      "name": "UpLimitSwitch",
+      "data_type": "BOOL",
+      "description": "Up-position limit"
+    },
+    {
+      "direction": "input",
+      "name": "LeftLimitSwitch",
+      "data_type": "BOOL",
+      "description": "Left-position limit"
+    },
+    {
+      "direction": "input",
+      "name": "RightLimitSwitch",
+      "data_type": "BOOL",
+      "description": "Right-position limit"
+    },
+    {
+      "direction": "input",
+      "name": "GripLimitSwitch",
+      "data_type": "BOOL",
+      "description": "Grip completion feedback"
+    },
+    {
+      "direction": "input",
+      "name": "ReleaseLimitSwitch",
+      "data_type": "BOOL",
+      "description": "Release completion feedback"
+    },
+    {
+      "direction": "output",
+      "name": "MoveDown",
+      "data_type": "BOOL",
+      "description": "Down command"
+    },
+    {
+      "direction": "output",
+      "name": "MoveUp",
+      "data_type": "BOOL",
+      "description": "Up command"
+    },
+    {
+      "direction": "output",
+      "name": "MoveLeft",
+      "data_type": "BOOL",
+      "description": "Left command"
+    },
+    {
+      "direction": "output",
+      "name": "MoveRight",
+      "data_type": "BOOL",
+      "description": "Right command"
+    },
+    {
+      "direction": "output",
+      "name": "ActivateGrip",
+      "data_type": "BOOL",
+      "description": "Grip command"
+    },
+    {
+      "direction": "output",
+      "name": "ActivateRelease",
+      "data_type": "BOOL",
+      "description": "Release command"
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": [
+      "Converted first as a hard development prevalidation task; formal dataset review is still required.",
+      "The source does not fully define mode-change behavior, Start edge semantics, or whether an emergency stop resets or pauses the sequence; these must be frozen before formal testing."
+    ]
+  }
+}
+
+Previous model output:
+{
+  "pou_name": "FB_MechanicalArm",
+  "pou_type": "FUNCTION_BLOCK",
+  "declaration": "FUNCTION_BLOCK FB_MechanicalArm\nVAR_INPUT\n    ManualMode : BOOL;\n    SingleStepMode : BOOL;\n    SingleCycleMode : BOOL;\n    ContinuousMode : BOOL;\n    EmergencyStop : BOOL;\n    Start : BOOL;\n    DownButton : BOOL;\n    UpButton : BOOL;\n    LeftButton : BOOL;\n    RightButton : BOOL;\n    GripButton : BOOL;\n    ReleaseButton : BOOL;\n    DownLimitSwitch : BOOL;\n    UpLimitSwitch : BOOL;\n    LeftLimitSwitch : BOOL;\n    RightLimitSwitch : BOOL;\n    GripLimitSwitch : BOOL;\n    ReleaseLimitSwitch : BOOL;\nEND_VAR\nVAR_OUTPUT\n    MoveDown : BOOL;\n    MoveUp : BOOL;\n    MoveLeft : BOOL;\n    MoveRight : BOOL;\n    ActivateGrip : BOOL;\n    ActivateRelease : BOOL;\nEND_VAR\nVAR\n    Mode : INT;\n    SequenceStep : INT;\n    LastStart : BOOL;\n    SequenceActive : BOOL;\n    CycleComplete : BOOL;\nEND_VAR",
+  "implementation": "IF NOT EmergencyStop THEN\n    MoveDown := FALSE;\n    MoveUp := FALSE;\n    MoveLeft := FALSE;\n    MoveRight := FALSE;\n    ActivateGrip := FALSE;\n    ActivateRelease := FALSE;\n    Mode := 0;\n    SequenceStep := 0;\n    SequenceActive := FALSE;\n    CycleComplete := FALSE;\n    EXIT;\nEND_IF;\n\nIF ManualMode THEN\n    Mode := 1;\n    IF DownButton AND NOT DownLimitSwitch THEN\n        MoveDown := TRUE;\n    ELSE\n        MoveDown := FALSE;\n    END_IF;\n    \n    IF UpButton AND NOT UpLimitSwitch THEN\n        MoveUp := TRUE;\n    ELSE\n        MoveUp := FALSE;\n    END_IF;\n    \n    IF LeftButton AND NOT LeftLimitSwitch THEN\n        MoveLeft := TRUE;\n    ELSE\n        MoveLeft := FALSE;\n    END_IF;\n    \n    IF RightButton AND NOT RightLimitSwitch THEN\n        MoveRight := TRUE;\n    ELSE\n        MoveRight := FALSE;\n    END_IF;\n    \n    IF GripButton THEN\n        ActivateGrip := TRUE;\n    ELSE\n        ActivateGrip := FALSE;\n    END_IF;\n    \n    IF ReleaseButton THEN\n        ActivateRelease := TRUE;\n    ELSE\n        ActivateRelease := FALSE;\n    END_IF;\nELSIF SingleStepMode OR SingleCycleMode OR ContinuousMode THEN\n    Mode := 2;\n    \n    IF NOT LastStart AND Start THEN\n        IF NOT SequenceActive THEN\n            SequenceActive := TRUE;\n            SequenceStep := 0;\n            CycleComplete := FALSE;\n        END_IF;\n        \n        CASE SequenceStep OF\n            0:\n                IF NOT DownLimitSwitch THEN\n                    MoveDown := TRUE;\n                    SequenceStep := 1;\n                END_IF;\n            1:\n                IF DownLimitSwitch THEN\n                    MoveDown := FALSE;\n                    SequenceStep := 2;\n                END_IF;\n            2:\n                IF NOT GripLimitSwitch THEN\n                    ActivateGrip := TRUE;\n                    SequenceStep := 3;\n                END_IF;\n            3:\n                IF GripLimitSwitch THEN\n                    ActivateGrip := FALSE;\n                    SequenceStep := 4;\n                END_IF;\n            4:\n                IF NOT UpLimitSwitch THEN\n                    MoveUp := TRUE;\n                    SequenceStep := 5;\n                END_IF;\n            5:\n                IF UpLimitSwitch THEN\n                    MoveUp := FALSE;\n                    SequenceStep := 6;\n                END_IF;\n            6:\n                IF NOT RightLimitSwitch THEN\n                    MoveRight := TRUE;\n                    SequenceStep := 7;\n                END_IF;\n            7:\n                IF RightLimitSwitch THEN\n                    MoveRight := FALSE;\n                    SequenceStep := 8;\n                END_IF;\n            8:\n                IF NOT DownLimitSwitch THEN\n                    MoveDown := TRUE;\n                    SequenceStep := 9;\n                END_IF;\n            9:\n                IF DownLimitSwitch THEN\n                    MoveDown := FALSE;\n                    SequenceStep := 10;\n                END_IF;\n            10:\n                IF NOT ReleaseLimitSwitch THEN\n                    ActivateRelease := TRUE;\n                    SequenceStep := 11;\n                END_IF;\n            11:\n                IF ReleaseLimitSwitch THEN\n                    ActivateRelease := FALSE;\n                    SequenceStep := 12;\n                END_IF;\n            12:\n                IF NOT UpLimitSwitch THEN\n                    MoveUp := TRUE;\n                    SequenceStep := 13;\n                END_IF;\n            13:\n                IF UpLimitSwitch THEN\n                    MoveUp := FALSE;\n                    SequenceStep := 14;\n                END_IF;\n            14:\n                IF NOT LeftLimitSwitch THEN\n                    MoveLeft := TRUE;\n                    SequenceStep := 15;\n                END_IF;\n            15:\n                IF LeftLimitSwitch THEN\n                    MoveLeft := FALSE;\n                    SequenceStep := 0;\n                    CycleComplete := TRUE;\n                END_IF;\n        END_CASE;\n    END_IF;\n    \n    IF SingleCycleMode AND CycleComplete THEN\n        SequenceActive := FALSE;\n    ELSIF ContinuousMode AND CycleComplete THEN\n        SequenceActive := FALSE;\n    END_IF;\nELSE\n    Mode := 0;\n    MoveDown := FALSE;\n    MoveUp := FALSE;\n    MoveLeft := FALSE;\n    MoveRight := FALSE;\n    ActivateGrip := FALSE;\n    ActivateRelease := FALSE;\nEND_IF;\n\nLastStart := Start;"
+}
+
+Errors:
+[
+  {
+    "category": "编译",
+    "severity": "error",
+    "number": "132",
+    "text": " exit没有闭合的循环",
+    "object_name": "FB_MechanicalArm",
+    "position": "行12,列1 (Impl)"
+  }
+]

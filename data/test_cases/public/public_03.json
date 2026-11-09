@@ -1,0 +1,172 @@
+{
+  "task_id": "public_03",
+  "tests": [
+    {
+      "id": "public_03_tc01",
+      "task_id": "public_03",
+      "name": "高报警滞回",
+      "initial_state": {
+        "hiAlarm": false,
+        "loAlarm": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "Value": 21,
+            "hiLevel": 20,
+            "loLevel": 10,
+            "hystWindow": 2
+          },
+          "expected_outputs": {
+            "hiAlarm": true,
+            "error": false,
+            "status": "16#0000"
+          },
+          "check": "超过高限触发"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "Value": 19,
+            "hiLevel": 20,
+            "loLevel": 10,
+            "hystWindow": 2
+          },
+          "expected_outputs": {
+            "hiAlarm": true
+          },
+          "check": "未低于清除阈值时保持"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "Value": 17.9,
+            "hiLevel": 20,
+            "loLevel": 10,
+            "hystWindow": 2
+          },
+          "expected_outputs": {
+            "hiAlarm": false
+          },
+          "check": "低于 18 后清除"
+        }
+      ],
+      "coverage": [
+        "high_alarm",
+        "hysteresis"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_03_tc02",
+      "task_id": "public_03",
+      "name": "低报警滞回",
+      "initial_state": {
+        "hiAlarm": false,
+        "loAlarm": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "Value": 9,
+            "hiLevel": 20,
+            "loLevel": 10,
+            "hystWindow": 2
+          },
+          "expected_outputs": {
+            "loAlarm": true,
+            "error": false,
+            "status": "16#0000"
+          },
+          "check": "低于低限触发"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "Value": 11,
+            "hiLevel": 20,
+            "loLevel": 10,
+            "hystWindow": 2
+          },
+          "expected_outputs": {
+            "loAlarm": true
+          },
+          "check": "未高于清除阈值时保持"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "Value": 12.1,
+            "hiLevel": 20,
+            "loLevel": 10,
+            "hystWindow": 2
+          },
+          "expected_outputs": {
+            "loAlarm": false
+          },
+          "check": "高于 12 后清除"
+        }
+      ],
+      "coverage": [
+        "low_alarm",
+        "hysteresis"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_03_tc03",
+      "task_id": "public_03",
+      "name": "配置错误优先级",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "Value": 15,
+            "hiLevel": 10,
+            "loLevel": 10,
+            "hystWindow": 1
+          },
+          "expected_outputs": {
+            "error": true,
+            "status": "16#8001"
+          },
+          "check": "上下限非法"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "Value": 15,
+            "hiLevel": 20,
+            "loLevel": 10,
+            "hystWindow": 10
+          },
+          "expected_outputs": {
+            "error": true,
+            "status": "16#8002"
+          },
+          "check": "滞回窗口过大"
+        }
+      ],
+      "coverage": [
+        "invalid_configuration",
+        "status_codes"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

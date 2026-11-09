@@ -1,0 +1,64 @@
+{
+  "task_id": "public_17",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "add": "addRecipe",
+    "remove": "deleteRecipe",
+    "modify": "modifyRecipe",
+    "query": "queryRecipe",
+    "exists": "recipeIn.recipeID 已存在",
+    "space": "存在 recipeID=0 的空槽",
+    "error": "error",
+    "status_8001": "status=16#8001",
+    "status_8002": "status=16#8002",
+    "status_8003": "status=16#8003",
+    "status_8004": "status=16#8004",
+    "status_8005": "status=16#8005",
+    "success_status": "error=FALSE 且 status=16#0000",
+    "smallest_slot_used": "写入最小下标空槽",
+    "query_correct": "查询结果等于数据库记录",
+    "deleted": "目标槽的 recipeID 已置为 0",
+    "modified": "目标槽已被 recipeIn 完整替换"
+  },
+  "assumptions": [
+    "每次扫描最多一个请求信号为 TRUE；recipeID=0 只表示空槽，不作为有效配方号。"
+  ],
+  "properties": [
+    {
+      "id": "public_17_p01",
+      "type": "functional",
+      "description": "查询存在的配方返回完整记录，不存在返回 16#8001",
+      "ltl": "G((query && exists) -> X(success_status && query_correct)) && G((query && !exists) -> X(error && status_8001))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_17_p02",
+      "type": "functional",
+      "description": "新增配方写入最小空槽，重复号和满库分别报错",
+      "ltl": "G((add && !exists && space) -> X(success_status && smallest_slot_used)) && G((add && exists) -> X(error && status_8002)) && G((add && !exists && !space) -> X(error && status_8003))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_17_p03",
+      "type": "functional",
+      "description": "删除存在记录成功，不存在返回 16#8004",
+      "ltl": "G((remove && exists) -> X(success_status && deleted)) && G((remove && !exists) -> X(error && status_8004))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_17_p04",
+      "type": "functional",
+      "description": "修改存在记录成功，不存在返回 16#8005",
+      "ltl": "G((modify && exists) -> X(success_status && modified)) && G((modify && !exists) -> X(error && status_8005))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。",
+      "deleted 表示目标槽 recipeID 变为 0；modified 表示目标槽被 recipeIn 完整替换。"
+    ]
+  }
+}

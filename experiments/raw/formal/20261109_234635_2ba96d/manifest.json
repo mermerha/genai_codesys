@@ -1,0 +1,94 @@
+{
+  "runs": [
+    {
+      "task_id": "public_01",
+      "framework": "custom",
+      "model": "deepseek-v4.1-flash-1017",
+      "final_status": "success",
+      "test_passed": 3,
+      "test_total": 3,
+      "artifact_directory": "public_01\\custom__deepseek-v4.1-flash-1017"
+    },
+    {
+      "task_id": "public_01",
+      "framework": "custom",
+      "model": "qwen3-coder-flash",
+      "final_status": "compile_failure",
+      "test_passed": 0,
+      "test_total": 0,
+      "artifact_directory": "public_01\\custom__qwen3-coder-flash"
+    },
+    {
+      "task_id": "public_01",
+      "framework": "codex_cli",
+      "model": "deepseek-v4.1-flash-1017",
+      "final_status": "success",
+      "test_passed": 3,
+      "test_total": 3,
+      "artifact_directory": "public_01\\codex_cli__deepseek-v4.1-flash-1017"
+    },
+    {
+      "task_id": "public_01",
+      "framework": "codex_cli",
+      "model": "qwen3-coder-flash",
+      "final_status": "test_failure",
+      "test_passed": 1,
+      "test_total": 3,
+      "artifact_directory": "public_01\\codex_cli__qwen3-coder-flash"
+    },
+    {
+      "task_id": "public_02",
+      "framework": "custom",
+      "model": "deepseek-v4.1-flash-1017",
+      "final_status": "test_failure",
+      "test_passed": 0,
+      "test_total": 3,
+      "artifact_directory": "public_02\\custom__deepseek-v4.1-flash-1017"
+    },
+    {
+      "task_id": "public_02",
+      "framework": "custom",
+      "model": "qwen3-coder-flash",
+      "final_status": "compile_failure",
+      "test_passed": 0,
+      "test_total": 0,
+      "artifact_directory": "public_02\\custom__qwen3-coder-flash"
+    },
+    {
+      "task_id": "public_02",
+      "framework": "codex_cli",
+      "model": "deepseek-v4.1-flash-1017",
+      "final_status": "test_failure",
+      "test_passed": 0,
+      "test_total": 3,
+      "artifact_directory": "public_02\\codex_cli__deepseek-v4.1-flash-1017"
+    },
+    {
+      "task_id": "public_02",
+      "framework": "codex_cli",
+      "model": "qwen3-coder-flash",
+      "final_status": "compile_failure",
+      "test_passed": 0,
+      "test_total": 0,
+      "artifact_directory": "public_02\\codex_cli__qwen3-coder-flash"
+    },
+    {
+      "task_id": "public_03",
+      "framework": "custom",
+      "model": "deepseek-v4.1-flash-1017",
+      "final_status": "success",
+      "test_passed": 3,
+      "test_total": 3,
+      "artifact_directory": "public_03\\custom__deepseek-v4.1-flash-1017"
+    },
+    {
+      "task_id": "public_03",
+      "framework": "custom",
+      "model": "qwen3-coder-flash",
+      "final_status": "success",
+      "test_passed": 3,
+      "test_total": 3,
+      "artifact_directory": "public_03\\custom__qwen3-coder-flash"
+    }
+  ]
+}

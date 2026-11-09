@@ -1,0 +1,25 @@
+{
+  "task_id": "custom_08",
+  "state_semantics": "每个步骤执行一次 PLC 扫描；advance_ms 驱动 5 秒释放超时，X 表示扫描后的锁状态。",
+  "propositions": {
+    "both_request": "innerRequest 且 outerRequest",
+    "outer_closed": "outerClosed 为真",
+    "inner_allowed": "innerRequest 且 outerClosed",
+    "outer_allowed": "outerRequest 且 innerClosed 且非 innerRequest",
+    "emergency": "emergency 为真",
+    "inner_unlocked": "innerLock 为假",
+    "outer_unlocked": "outerLock 为假",
+    "both_open": "innerClosed 和 outerClosed 均为假",
+    "fault": "sensorFault 为真",
+    "timeout": "当前释放已满 5 秒"
+  },
+  "assumptions": [],
+  "properties": [
+    {"id": "custom_08_p01", "type": "safety", "description": "两门永不同时解锁", "ltl": "G(!(inner_unlocked && outer_unlocked))", "tool_expression": null},
+    {"id": "custom_08_p02", "type": "priority", "description": "双请求时内门优先", "ltl": "G((both_request && outer_closed) -> X(inner_unlocked && !outer_unlocked))", "tool_expression": null},
+    {"id": "custom_08_p03", "type": "safety", "description": "紧急状态锁定双门", "ltl": "G(emergency -> X(!inner_unlocked && !outer_unlocked))", "tool_expression": null},
+    {"id": "custom_08_p04", "type": "response", "description": "超时后重新锁门", "ltl": "G(timeout -> X(!inner_unlocked && !outer_unlocked))", "tool_expression": null},
+    {"id": "custom_08_p05", "type": "diagnostic", "description": "双门均开时报传感器故障", "ltl": "G(both_open -> X(fault))", "tool_expression": null}
+  ],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["锁输出 TRUE 表示上锁。"]}
+}

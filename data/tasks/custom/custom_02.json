@@ -1,0 +1,30 @@
+{
+  "id": "custom_02",
+  "title": "Tank Level Pump Hysteresis",
+  "difficulty": "easy",
+  "source_type": "custom",
+  "source_reference": "经验改编：储液罐补液泵控制",
+  "requirements": "Control a tank refill pump with hysteresis. When enable is TRUE and level is less than or equal to lowLevel, start and latch pumpRun. Keep it running until level is greater than or equal to highLevel. Disable stops the pump. Set highHighAlarm when level is greater than or equal to 95.0. If lowLevel is greater than or equal to highLevel, set configError and force pumpRun FALSE.",
+  "pou_name": "FB_TankPump",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {"direction": "input", "name": "enable", "data_type": "BOOL", "description": "Controller enable"},
+    {"direction": "input", "name": "level", "data_type": "REAL", "description": "Tank level percent"},
+    {"direction": "input", "name": "lowLevel", "data_type": "REAL", "description": "Pump start threshold"},
+    {"direction": "input", "name": "highLevel", "data_type": "REAL", "description": "Pump stop threshold"},
+    {"direction": "output", "name": "pumpRun", "data_type": "BOOL", "description": "Refill pump command"},
+    {"direction": "output", "name": "highHighAlarm", "data_type": "BOOL", "description": "High-high level alarm"},
+    {"direction": "output", "name": "configError", "data_type": "BOOL", "description": "Invalid threshold configuration"}
+  ],
+  "custom_types": [],
+  "provenance": {
+    "source_type": "experience_based",
+    "source_url": null,
+    "creation_process": ["根据液位开关控制经验整理补液泵滞回逻辑"],
+    "human_modifications": ["增加阈值合法性检查和固定高高报警点，消除边界歧义"],
+    "review_process": ["核对泵在低液位启动、高液位停止的物理方向", "核对异常阈值时泵进入安全停止"]
+  },
+  "plc_rationale": "液位滞回可避免泵在阈值附近频繁启停，配置检查和高高报警符合储罐现场控制需求。",
+  "diversity_tags": ["模拟量", "滞回控制", "配置校验", "easy"],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+}

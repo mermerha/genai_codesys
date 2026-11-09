@@ -1,0 +1,62 @@
+{
+  "id": "public_04",
+  "title": "Jam Pump Debouncing and Runtime Maintenance",
+  "difficulty": "easy",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, easy[3]",
+  "requirements": "Control a jam transfer pump on a food production line, including viscosity-signal debouncing, emergency-stop priority, runtime accumulation and a maintenance-due indication.\n\n1. Accept the viscosity condition only after VISCOSITY_OK has remained TRUE for DebounceTime. Invalidate the condition immediately when the input becomes FALSE.\n2. Allow VFD_RUN to be TRUE only when PASTE_E_STOP_NC is TRUE and the viscosity condition is valid. An emergency stop immediately disables the run output and clears any incomplete debounce timing.\n3. Accumulate PUMP_RUNTIME_ACC using the actual invocation interval CycleTime only while VFD_RUN is TRUE. Preserve the accumulated time while the pump is stopped.\n4. Set PUMP_MAINT_DUE when accumulated runtime reaches 500 hours. This indication is informational and must not affect pump operation or the safety permissive.\n5. At power-up, initialize the run output to OFF, accumulated runtime to zero and the maintenance indication to FALSE.",
+  "pou_name": "FB_JamPumpControl",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "VISCOSITY_OK",
+      "data_type": "BOOL",
+      "description": "Raw signal indicating that viscosity is within the permitted range."
+    },
+    {
+      "direction": "input",
+      "name": "PASTE_E_STOP_NC",
+      "data_type": "BOOL",
+      "description": "Normally closed emergency-stop circuit; TRUE permits operation and FALSE means emergency stop."
+    },
+    {
+      "direction": "input",
+      "name": "DebounceTime",
+      "data_type": "TIME",
+      "description": "Required continuous valid duration for the viscosity signal; must be positive."
+    },
+    {
+      "direction": "input",
+      "name": "CycleTime",
+      "data_type": "TIME",
+      "description": "Actual elapsed interval represented by this invocation; must be positive."
+    },
+    {
+      "direction": "output",
+      "name": "VFD_RUN",
+      "data_type": "BOOL",
+      "description": "Pump variable-frequency-drive run command."
+    },
+    {
+      "direction": "output",
+      "name": "PUMP_MAINT_DUE",
+      "data_type": "BOOL",
+      "description": "Maintenance indication when accumulated runtime reaches 500 hours."
+    },
+    {
+      "direction": "output",
+      "name": "PUMP_RUNTIME_ACC",
+      "data_type": "LTIME",
+      "description": "Accumulated enabled runtime, using a long-duration time type."
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests."
+    ]
+  }
+}

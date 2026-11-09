@@ -1,0 +1,160 @@
+{
+  "task": {
+    "id": "fixture_motor_start_stop",
+    "title": "Motor Start Stop Control",
+    "difficulty": "easy",
+    "source_type": "assignment_example",
+    "source_reference": "Final project_CHINESE.pdf and 大报告测试用例模板与示例.docx",
+    "requirements": "设计电机启停功能块：初始停止；仅在启动有效且停止、急停无效时启动；启动松开后保持；停止或急停使电机停止，且优先级高于启动。",
+    "pou_type": "FUNCTION_BLOCK",
+    "interface": [
+      {
+        "direction": "input",
+        "name": "StartBtn",
+        "data_type": "BOOL"
+      },
+      {
+        "direction": "input",
+        "name": "StopBtn",
+        "data_type": "BOOL"
+      },
+      {
+        "direction": "input",
+        "name": "EStop",
+        "data_type": "BOOL"
+      },
+      {
+        "direction": "output",
+        "name": "Motor",
+        "data_type": "BOOL"
+      }
+    ],
+    "custom_types": [],
+    "review": {
+      "status": "fixture",
+      "reviewer": null,
+      "notes": [
+        "来自老师示例，仅用于接口和环境联调，不计入正式题库"
+      ]
+    },
+    "pou_name": "MotorControl"
+  },
+  "tests": {
+    "task_id": "fixture_motor_start_stop",
+    "tests": [
+      {
+        "id": "fixture_motor_start_stop_tc01",
+        "task_id": "fixture_motor_start_stop",
+        "name": "正常启动并保持运行",
+        "initial_state": {
+          "Motor": false
+        },
+        "steps": [
+          {
+            "cycle": 0,
+            "inputs": {
+              "StartBtn": false,
+              "StopBtn": false,
+              "EStop": false
+            },
+            "expected_outputs": {
+              "Motor": false
+            },
+            "check": "初始化后保持停止"
+          },
+          {
+            "cycle": 1,
+            "inputs": {
+              "StartBtn": true,
+              "StopBtn": false,
+              "EStop": false
+            },
+            "expected_outputs": {
+              "Motor": true
+            },
+            "check": "满足启动条件时启动"
+          },
+          {
+            "cycle": 2,
+            "inputs": {
+              "StartBtn": false,
+              "StopBtn": false,
+              "EStop": false
+            },
+            "expected_outputs": {
+              "Motor": true
+            },
+            "check": "松开启动按钮后保持运行"
+          }
+        ],
+        "coverage": [
+          "initialization",
+          "normal_start",
+          "latching"
+        ],
+        "review": {
+          "status": "fixture",
+          "reviewer": null,
+          "notes": []
+        }
+      },
+      {
+        "id": "fixture_motor_start_stop_tc02",
+        "task_id": "fixture_motor_start_stop",
+        "name": "停止和急停优先",
+        "initial_state": {
+          "Motor": false
+        },
+        "steps": [
+          {
+            "cycle": 0,
+            "inputs": {
+              "StartBtn": true,
+              "StopBtn": false,
+              "EStop": false
+            },
+            "expected_outputs": {
+              "Motor": true
+            },
+            "check": "先启动电机"
+          },
+          {
+            "cycle": 1,
+            "inputs": {
+              "StartBtn": true,
+              "StopBtn": true,
+              "EStop": false
+            },
+            "expected_outputs": {
+              "Motor": false
+            },
+            "check": "启动和停止同时有效时停止优先"
+          },
+          {
+            "cycle": 2,
+            "inputs": {
+              "StartBtn": true,
+              "StopBtn": false,
+              "EStop": true
+            },
+            "expected_outputs": {
+              "Motor": false
+            },
+            "check": "启动和急停同时有效时急停优先"
+          }
+        ],
+        "coverage": [
+          "stop_priority",
+          "emergency_stop_priority",
+          "conflicting_inputs"
+        ],
+        "review": {
+          "status": "fixture",
+          "reviewer": null,
+          "notes": []
+        }
+      }
+    ]
+  },
+  "settle_ms": 50
+}

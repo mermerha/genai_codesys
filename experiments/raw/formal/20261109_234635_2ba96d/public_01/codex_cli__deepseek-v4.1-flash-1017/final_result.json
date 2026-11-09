@@ -1,0 +1,25 @@
+{
+  "task_id": "public_01",
+  "framework": "codex_cli",
+  "framework_version": "codex-cli 0.167.0-alpha.3.2",
+  "model": "deepseek-v4.1-flash-1017",
+  "final_status": "success",
+  "attempts": 1,
+  "repairs": 0,
+  "first_compile_pass": true,
+  "final_compile_pass": true,
+  "usage_by_attempt": [
+    {
+      "input_tokens": 63064,
+      "cached_input_tokens": 61440,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 2558,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "duration_seconds": 73.046,
+  "failure_reason": [],
+  "test_passed": 3,
+  "test_total": 3,
+  "test_results_file": "test_execution\\test_results.json"
+}

@@ -1,0 +1,22 @@
+{
+  "attempt": 2,
+  "success": false,
+  "errors": [
+    {
+      "category": "编译",
+      "severity": "error",
+      "number": "7",
+      "text": "应该用表达式代替 '<'",
+      "object_name": "FB_DWordEdgeDetection",
+      "position": "行16,列1 (Impl)"
+    },
+    {
+      "category": "编译",
+      "severity": "error",
+      "number": "7",
+      "text": "应该用表达式代替 '<'",
+      "object_name": "FB_DWordEdgeDetection",
+      "position": "行28,列1 (Impl)"
+    }
+  ]
+}

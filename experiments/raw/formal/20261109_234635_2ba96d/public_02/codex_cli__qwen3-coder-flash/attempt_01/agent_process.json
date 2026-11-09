@@ -1,0 +1,12 @@
+{
+  "returncode": 0,
+  "duration_seconds": 21.875,
+  "timed_out": false,
+  "usage": {
+    "input_tokens": 54843,
+    "cached_input_tokens": 0,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 411,
+    "reasoning_output_tokens": 0
+  }
+}

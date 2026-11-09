@@ -1,6 +1,0 @@
-{
-  "pou_name": "FixtureMotorStartStop",
-  "pou_type": "FUNCTION_BLOCK",
-  "declaration": "FUNCTION_BLOCK FixtureMotorStartStop\nVAR_INPUT\n\tStartBtn : BOOL;\n\tStopBtn : BOOL;\n\tEStop : BOOL;\nEND_VAR\nVAR_OUTPUT\n\tMotor : BOOL;\nEND_VAR\nVAR\n\tlState : BOOL := FALSE;\nEND_VAR",
-  "implementation": "BEGIN\n\tIF StopBtn OR EStop THEN\n\t\tlState := FALSE;\n\tELSIF StartBtn THEN\n\t\tlState := TRUE;\n\tEND_IF;\n\n\tMotor := lState;\nEND"
-}

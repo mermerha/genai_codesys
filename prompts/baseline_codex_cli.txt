@@ -1,0 +1,12 @@
+Solve the CODESYS Structured Text task below.
+
+Do not use shell commands, files, tools, the network, or test cases. Return one candidate directly as the final JSON object. When compiler feedback is provided, revise the previous candidate using only that feedback and the task.
+
+Candidate JSON must contain exactly `pou_name`, `pou_type`, `declaration`, and `implementation`.
+Use exactly the `pou_name`, `pou_type`, and interface from the task. `declaration` must be the complete POU declaration, including the `PROGRAM` or `FUNCTION_BLOCK` header and its matching end keyword. `implementation` contains only the ST body.
+
+TASK:
+{task_json}
+
+COMPILER FEEDBACK:
+{feedback_json}

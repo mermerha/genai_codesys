@@ -1,0 +1,227 @@
+{
+  "compile_messages": [
+    {
+      "severity": "information", 
+      "number": "None", 
+      "text": "未安装离线帮助", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "------ 开始构建应用程序 Device.Application -------", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "代码典型化...", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "编译完成 -- 0错误,0警告", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "其他代码检查...", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "其他代码检查完成-0 个错误", 
+      "position": "None", 
+      "object": null
+    }
+  ], 
+  "compile_success": true, 
+  "test_total": 3, 
+  "test_passed": 1, 
+  "tests": [
+    {
+      "passed": false, 
+      "failed_step": 6, 
+      "steps": [
+        {
+          "cycle": 0, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Packing_Machine": "FALSE", 
+            "PLC_PRG.actual_Capping_Machine": "FALSE", 
+            "PLC_PRG.actual_Filling_Valve": "FALSE", 
+            "PLC_PRG.actual_Completion_Light": "FALSE", 
+            "PLC_PRG.actual_Pump_Motor": "FALSE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 1, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Packing_Machine": "FALSE", 
+            "PLC_PRG.actual_Capping_Machine": "FALSE", 
+            "PLC_PRG.actual_Filling_Valve": "FALSE", 
+            "PLC_PRG.actual_Completion_Light": "FALSE", 
+            "PLC_PRG.actual_Pump_Motor": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 2, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Pump_Motor": "FALSE", 
+            "PLC_PRG.actual_Filling_Valve": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 3, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Capping_Machine": "TRUE", 
+            "PLC_PRG.actual_Filling_Valve": "FALSE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 4, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Capping_Machine": "FALSE", 
+            "PLC_PRG.actual_Packing_Machine": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 5, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Completion_Light": "TRUE", 
+            "PLC_PRG.actual_Packing_Machine": "FALSE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 6, 
+          "passed": false, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Completion_Light": "TRUE"
+          }, 
+          "differences": [
+            {
+              "expression": "PLC_PRG.actual_Completion_Light", 
+              "expected": false, 
+              "actual": "TRUE"
+            }
+          ]
+        }
+      ], 
+      "test_id": "public_01_tc01"
+    }, 
+    {
+      "passed": true, 
+      "failed_step": null, 
+      "steps": [
+        {
+          "cycle": 0, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Packing_Machine": "FALSE", 
+            "PLC_PRG.actual_Capping_Machine": "FALSE", 
+            "PLC_PRG.actual_Filling_Valve": "FALSE", 
+            "PLC_PRG.actual_Completion_Light": "FALSE", 
+            "PLC_PRG.actual_Pump_Motor": "FALSE"
+          }, 
+          "differences": []
+        }
+      ], 
+      "test_id": "public_01_tc02"
+    }, 
+    {
+      "passed": false, 
+      "failed_step": 6, 
+      "steps": [
+        {
+          "cycle": 0, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Completion_Light": "FALSE", 
+            "PLC_PRG.actual_Pump_Motor": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 1, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Pump_Motor": "FALSE", 
+            "PLC_PRG.actual_Filling_Valve": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 2, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Capping_Machine": "TRUE", 
+            "PLC_PRG.actual_Filling_Valve": "FALSE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 3, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Capping_Machine": "FALSE", 
+            "PLC_PRG.actual_Packing_Machine": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 4, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Completion_Light": "TRUE", 
+            "PLC_PRG.actual_Packing_Machine": "FALSE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 5, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Completion_Light": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 6, 
+          "passed": false, 
+          "actual_outputs": {
+            "PLC_PRG.actual_Completion_Light": "TRUE"
+          }, 
+          "differences": [
+            {
+              "expression": "PLC_PRG.actual_Completion_Light", 
+              "expected": false, 
+              "actual": "TRUE"
+            }
+          ]
+        }
+      ], 
+      "test_id": "public_01_tc03"
+    }
+  ], 
+  "exception": null, 
+  "success": false
+}

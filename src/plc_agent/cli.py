@@ -39,6 +39,21 @@ def _default_output_dir(root: Path, model: str) -> Path:
     return root / "experiments" / "raw" / "development" / f"{timestamp}_{safe_model}"
 
 
+def load_shared_tests(
+    root: Path, payload: dict, task: dict, explicit_path: Path | None = None
+) -> dict | None:
+    if explicit_path is not None:
+        return json.loads(explicit_path.read_text(encoding="utf-8-sig"))
+    if isinstance(payload.get("tests"), list):
+        return {"task_id": task.get("id"), "tests": payload["tests"]}
+    filename = f"{task.get('id')}.json"
+    for kind in ("public", "custom"):
+        candidate = root / "data" / "test_cases" / kind / filename
+        if candidate.is_file():
+            return json.loads(candidate.read_text(encoding="utf-8-sig"))
+    return None
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     root = Path(__file__).resolve().parents[2]
     load_local_env(root / ".env")
@@ -51,6 +66,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--model", default=os.environ.get("MODEL_A"))
     parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--tests", type=Path)
     parser.add_argument("--max-repairs", type=int, default=2)
     parser.add_argument("--model-timeout", type=float, default=120.0)
     parser.add_argument("--reasoning-effort")
@@ -61,6 +77,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     payload = json.loads(args.task.read_text(encoding="utf-8-sig"))
     task = payload.get("task", payload)
+    tests = load_shared_tests(root, payload, task, args.tests)
     output_dir = args.output_dir or _default_output_dir(root, args.model)
     result = run_compile_loop(
         task=task,
@@ -70,10 +87,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         max_repairs=args.max_repairs,
         model_timeout_seconds=args.model_timeout,
         reasoning_effort=args.reasoning_effort,
+        tests=tests,
     )
     print(json.dumps(result, ensure_ascii=True, indent=2))
     print(f"Artifacts: {output_dir.resolve()}")
-    return 0 if result["final_status"] == "compile_success" else 1
+    return 0 if result["final_status"] in {"compile_success", "success"} else 1
 
 
 if __name__ == "__main__":

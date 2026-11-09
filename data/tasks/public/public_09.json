@@ -4,7 +4,7 @@
   "difficulty": "medium",
   "source_type": "provided",
   "source_reference": "大作业题库json/大作业题库.json, medium[2]",
-  "requirements": "Implement a moving arithmetic mean function block with a window size from 1 through 100. When reset is TRUE, reset the stored samples and average. When windowSize is outside 1..100, set error to TRUE, status to 16#8200, and do not accept a sample. With a valid window size, set error to FALSE and status to 16#0000. When cyclicExecution is TRUE, accept value once per scan and ignore trigger. Otherwise, accept value only on each rising edge of trigger. Before the window is full, average all accepted samples. After it is full, each accepted sample replaces the oldest sample. Set windowSizeReached to TRUE when the number of stored samples reaches windowSize.",
+  "requirements": "Implement a moving arithmetic mean function block with a window size from 1 through 100. When reset is TRUE, give reset highest priority and reset the stored samples and average without accepting a sample. When windowSize is outside 1..100, set error to TRUE, status to 16#8200, and do not accept a sample. With a valid window size, set error to FALSE and status to 16#0000. When cyclicExecution is TRUE, accept value once per scan and ignore trigger. Otherwise, accept value only on each rising edge of trigger. Before the window is full, average all accepted samples. After it is full, each accepted sample replaces the oldest sample. Set windowSizeReached to TRUE when the number of stored samples reaches windowSize. Keep windowSize constant while samples are retained; reset before changing it.",
   "pou_name": "FB_MovingAverage",
   "pou_type": "FUNCTION_BLOCK",
   "interface": [
@@ -65,11 +65,11 @@
   ],
   "custom_types": [],
   "review": {
-    "status": "pending",
-    "reviewer": null,
+    "status": "frozen",
+    "reviewer": "Codex",
     "notes": [
-      "Converted first as a medium development prevalidation task; formal dataset review is still required.",
-      "Reset priority and behavior when windowSize changes during operation are not explicit in the source and must be frozen before formal testing."
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests.",
+      "Frozen clarification: reset has highest priority, and callers reset before changing windowSize."
     ]
   }
 }

@@ -1,0 +1,8 @@
+```json
+{
+  "pou_name": "FB_AutomatedFillingLine",
+  "pou_type": "FUNCTION_BLOCK",
+  "declaration": "FUNCTION_BLOCK FB_AutomatedFillingLine\n    VAR_INPUT\n        bottleSensor : BOOL;\n        cleaningConfirmButton : BOOL;\n        fillingConfirmButton : BOOL;\n        cappingConfirmButton : BOOL;\n        packingConfirmButton : BOOL;\n        finishedButton : BOOL;\n    END_VAR\n    \n    VAR_OUTPUT\n        Pump_Motor : BOOL;\n        Filling_Valve : BOOL;\n        Capping_Machine : BOOL;\n        Packing_Machine : BOOL;\n        Completion_Light : BOOL;\n    END_VAR\n    \n    VAR\n        state : INT := 0;\n    END_VAR\nEND_FUNCTION_BLOCK",
+  "implementation": "CASE state OF\n    0: (* Waiting for bottle *)\n        Pump_Motor := bottleSensor;\n        IF bottleSensor THEN\n            state := 1;\n        END_IF;\n        \n    1: (* Cleaning *)\n        Pump_Motor := TRUE;\n        IF cleaningConfirmButton THEN\n            state := 2;\n        END_IF;\n        \n    2: (* Filling *)\n        Pump_Motor := FALSE;\n        Filling_Valve := TRUE;\n        IF fillingConfirmButton THEN\n            state := 3;\n        END_IF;\n        \n    3: (* Capping *)\n        Filling_Valve := FALSE;\n        Capping_Machine := TRUE;\n        IF cappingConfirmButton THEN\n            state := 4;\n        END_IF;\n        \n    4: (* Packaging *)\n        Capping_Machine := FALSE;\n        Packing_Machine := TRUE;\n        IF packingConfirmButton THEN\n            state := 5;\n        END_IF;\n        \n    5: (* Completion *)\n        Packing_Machine := FALSE;\n        Completion_Light := TRUE;\n        IF finishedButton THEN\n            state := 0;\n        END_IF;\n        \n    ELSE\n        state := 0;\nEND_CASE;"
+}
+```

@@ -77,7 +77,20 @@ class AgentLoopTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "tests") as temporary_directory:
             run_dir = Path(temporary_directory) / "run"
             result = run_compile_loop(
-                task={"id": "fixture", "pou_type": "FUNCTION_BLOCK"},
+                task={
+                    "id": "fixture",
+                    "pou_type": "FUNCTION_BLOCK",
+                    "custom_types": [],
+                    "compile_context": {
+                        "inout_bindings": [
+                            {
+                                "parameter": "value",
+                                "variable": "candidateValue",
+                                "data_type": "DINT",
+                            }
+                        ]
+                    },
+                },
                 model="test-model",
                 template_project="template.project",
                 output_dir=run_dir,
@@ -89,6 +102,12 @@ class AgentLoopTests(unittest.TestCase):
             self.assertEqual(result["final_status"], "compile_success")
             self.assertEqual(result["repairs"], 1)
             self.assertEqual(result["api_models"], ["test-model", "test-model"])
+            self.assertEqual(
+                compile_calls[0]["compile_context"]["inout_bindings"][0][
+                    "parameter"
+                ],
+                "value",
+            )
             run_config = json.loads(
                 (run_dir / "run_config.json").read_text(encoding="utf-8")
             )

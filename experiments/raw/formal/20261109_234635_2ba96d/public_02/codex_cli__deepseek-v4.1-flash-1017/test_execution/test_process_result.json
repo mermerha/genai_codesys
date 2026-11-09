@@ -1,0 +1,8 @@
+{
+  "command": "\"F:\\genai\\CODESYS\\Common\\CODESYS.exe\" --profile=\"CODESYS V3.5 SP22 Patch 4\" --runscript=\"G:\\Genai_codesys\\codesys\\scripts\\execute_tests.py\" --noUI",
+  "returncode": 2,
+  "elapsed_seconds": 31.203,
+  "stdout": "",
+  "stderr": "编译: Text: C0: ------ 开始构建应用程序 Device.Application -------\r\n编译: Text: C0: 代码典型化...\r\n附加代码检查: Text: SA0: 其他代码检查...\r\n附加代码检查: Text: SA0: 其他代码检查完成-0 个错误\r\n编译: Text: C0: 编译完成 -- 0错误,0警告\r\n编译: Text: C0: ------ 开始构建应用程序 Device.Sim.Device.Application -------\r\n编译: Text: C0: 代码典型化...\r\n附加代码检查: Text: SA0: 其他代码检查...\r\n附加代码检查: Text: SA0: 其他代码检查完成-0 个错误\r\n编译: Text: C0: 编译完成 -- 0错误,0警告\r\n编译: Text: C0: ------ 开始构建应用程序 Device.Sim.Device.Application -------\r\n编译: Text: C0: 此应用程序是最新的\r\n编译: Text: C0: 生成代码...\r\n编译: Text: C0: 生成全局初始化...\r\n编译: Text: C0: 生成代码初始化...\r\n编译: Text: C0: 生成重定位...\r\n编译: Information: C0: 内存区域0包含 数据, 输入, 输出, 内存 和 不安全行为：大小：1048576字节，最高使用的地址：27936，最大连续存储器间距：1020640字节（97％）\r\n编译: Information: C0: 内存区域3包含 代码：大小：1048576字节，最高使用的地址：79984，最大连续存储器间距：968592字节（92％）\r\n附加代码检查: Text: SA0: 其他代码检查...\r\n附加代码检查: Text: SA0: 其他代码检查完成-0 个错误\r\n编译: Text: C0: 构建完整--0错误,0警告:准备下载\r\n",
+  "timed_out": false
+}

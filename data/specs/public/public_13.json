@@ -1,0 +1,59 @@
+{
+  "task_id": "public_13",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "occupied": "OCCUPANCY_DETECTED",
+    "energy": "ENERGY_SAVING_MODE",
+    "auto_mode": "选择器为 0",
+    "comfort": "选择器为 1",
+    "economy": "选择器为 2",
+    "night": "选择器为 3",
+    "delay_done": "占用且非夜间连续达到 30 秒",
+    "fan": "SUPPLY_FAN_RUN",
+    "adjust_0": "调节值为 0",
+    "adjust_1": "调节值为 1",
+    "adjust_2": "调节值为 2",
+    "adjust_3": "调节值为 3",
+    "adjust_4": "调节值为 4"
+  },
+  "assumptions": [
+    "HVAC_MODE_SELECTOR 只取 0..3。"
+  ],
+  "properties": [
+    {
+      "id": "public_13_p01",
+      "type": "priority",
+      "description": "夜间模式或无人时风机停止",
+      "ltl": "G((night || !occupied) -> X(!fan))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_13_p02",
+      "type": "response",
+      "description": "有人且非夜间持续 30 秒后风机运行",
+      "ltl": "G((occupied && !night && delay_done) -> X(fan))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_13_p03",
+      "type": "functional",
+      "description": "自动模式温度修正正确",
+      "ltl": "G((auto_mode && occupied) -> X(adjust_0)) && G((auto_mode && !occupied && energy) -> X(adjust_3)) && G((auto_mode && !occupied && !energy) -> X(adjust_2))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_13_p04",
+      "type": "functional",
+      "description": "舒适、经济和夜间模式修正正确",
+      "ltl": "G((comfort && !occupied) -> X(adjust_1)) && G((economy && !occupied) -> X(adjust_4)) && G(night -> X(adjust_4))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

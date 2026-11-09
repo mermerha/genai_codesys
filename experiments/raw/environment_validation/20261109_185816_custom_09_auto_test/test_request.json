@@ -1,0 +1,277 @@
+{
+  "task": {
+    "id": "custom_09",
+    "title": "Conveyor Jam Detection",
+    "difficulty": "hard",
+    "source_type": "custom",
+    "source_reference": "经验改编：输送机到位脉冲看门狗",
+    "requirements": "Run the conveyor when runCommand is TRUE, emergencyStop is FALSE and jamAlarm is FALSE. While motorRun is TRUE, require sensorPulse to become TRUE at least once every 2 seconds. Each TRUE sensorPulse restarts the 2 second watchdog. If the watchdog expires, stop the motor and latch jamAlarm. reset clears jamAlarm only when runCommand and emergencyStop are both FALSE. emergencyStop always stops the motor immediately but does not clear jamAlarm.",
+    "pou_name": "FB_JamMonitor",
+    "pou_type": "FUNCTION_BLOCK",
+    "interface": [
+      {
+        "direction": "input",
+        "name": "runCommand",
+        "data_type": "BOOL",
+        "description": "Conveyor run command"
+      },
+      {
+        "direction": "input",
+        "name": "sensorPulse",
+        "data_type": "BOOL",
+        "description": "Product movement pulse"
+      },
+      {
+        "direction": "input",
+        "name": "emergencyStop",
+        "data_type": "BOOL",
+        "description": "Emergency stop"
+      },
+      {
+        "direction": "input",
+        "name": "reset",
+        "data_type": "BOOL",
+        "description": "Jam reset command"
+      },
+      {
+        "direction": "output",
+        "name": "motorRun",
+        "data_type": "BOOL",
+        "description": "Conveyor motor output"
+      },
+      {
+        "direction": "output",
+        "name": "jamAlarm",
+        "data_type": "BOOL",
+        "description": "Latched jam alarm"
+      }
+    ],
+    "custom_types": [],
+    "provenance": {
+      "source_type": "experience_based",
+      "source_url": null,
+      "creation_process": [
+        "根据输送机运动传感器看门狗逻辑定义两秒无脉冲故障"
+      ],
+      "human_modifications": [
+        "明确每次脉冲重启计时，增加安全复位条件和急停优先级"
+      ],
+      "review_process": [
+        "用正常周期脉冲、超时和复位三个场景检查",
+        "确认报警锁存后电机不能自行恢复"
+      ]
+    },
+    "plc_rationale": "运动脉冲看门狗可发现堵料、皮带打滑或传感器异常，是输送系统常见 PLC 诊断方式。",
+    "diversity_tags": [
+      "看门狗",
+      "故障诊断",
+      "定时",
+      "状态锁存",
+      "hard"
+    ],
+    "review": {
+      "status": "frozen",
+      "reviewer": "Codex",
+      "notes": []
+    }
+  },
+  "tests": {
+    "task_id": "custom_09",
+    "tests": [
+      {
+        "id": "custom_09_tc01",
+        "task_id": "custom_09",
+        "name": "脉冲重启看门狗",
+        "initial_state": {},
+        "steps": [
+          {
+            "cycle": 0,
+            "inputs": {
+              "runCommand": true,
+              "sensorPulse": false,
+              "emergencyStop": false,
+              "reset": false
+            },
+            "expected_outputs": {
+              "motorRun": true,
+              "jamAlarm": false
+            },
+            "check": "启动看门狗"
+          },
+          {
+            "cycle": 1,
+            "advance_ms": 1000,
+            "inputs": {
+              "runCommand": true,
+              "sensorPulse": true,
+              "emergencyStop": false,
+              "reset": false
+            },
+            "expected_outputs": {
+              "motorRun": true,
+              "jamAlarm": false
+            },
+            "check": "脉冲重启计时"
+          },
+          {
+            "cycle": 2,
+            "advance_ms": 1900,
+            "inputs": {
+              "runCommand": true,
+              "sensorPulse": false,
+              "emergencyStop": false,
+              "reset": false
+            },
+            "expected_outputs": {
+              "motorRun": true,
+              "jamAlarm": false
+            },
+            "check": "未到两秒继续运行"
+          },
+          {
+            "cycle": 3,
+            "advance_ms": 100,
+            "inputs": {
+              "runCommand": true,
+              "sensorPulse": false,
+              "emergencyStop": false,
+              "reset": false
+            },
+            "expected_outputs": {
+              "motorRun": false,
+              "jamAlarm": true
+            },
+            "check": "两秒超时锁存堵料"
+          }
+        ],
+        "coverage": [
+          "watchdog",
+          "pulse_reset",
+          "timeout_boundary"
+        ],
+        "review": {
+          "status": "frozen",
+          "reviewer": "Codex",
+          "notes": []
+        }
+      },
+      {
+        "id": "custom_09_tc02",
+        "task_id": "custom_09",
+        "name": "堵料复位条件",
+        "initial_state": {},
+        "steps": [
+          {
+            "cycle": 0,
+            "inputs": {
+              "runCommand": true,
+              "sensorPulse": false,
+              "emergencyStop": false,
+              "reset": false
+            },
+            "expected_outputs": {
+              "motorRun": true,
+              "jamAlarm": false
+            },
+            "check": "通过公开输入启动看门狗"
+          },
+          {
+            "cycle": 1,
+            "advance_ms": 2000,
+            "inputs": {
+              "runCommand": true,
+              "sensorPulse": false,
+              "emergencyStop": false,
+              "reset": false
+            },
+            "expected_outputs": {
+              "motorRun": false,
+              "jamAlarm": true
+            },
+            "check": "建立堵料锁存状态"
+          },
+          {
+            "cycle": 2,
+            "inputs": {
+              "runCommand": true,
+              "sensorPulse": false,
+              "emergencyStop": false,
+              "reset": true
+            },
+            "expected_outputs": {
+              "motorRun": false,
+              "jamAlarm": true
+            },
+            "check": "运行命令仍在时拒绝复位"
+          },
+          {
+            "cycle": 3,
+            "inputs": {
+              "runCommand": false,
+              "sensorPulse": false,
+              "emergencyStop": false,
+              "reset": true
+            },
+            "expected_outputs": {
+              "motorRun": false,
+              "jamAlarm": false
+            },
+            "check": "安全静止时复位"
+          }
+        ],
+        "coverage": [
+          "jam_latch",
+          "safe_reset"
+        ],
+        "review": {
+          "status": "frozen",
+          "reviewer": "Codex",
+          "notes": []
+        }
+      },
+      {
+        "id": "custom_09_tc03",
+        "task_id": "custom_09",
+        "name": "急停优先",
+        "initial_state": {},
+        "steps": [
+          {
+            "cycle": 0,
+            "inputs": {
+              "runCommand": true,
+              "sensorPulse": true,
+              "emergencyStop": false,
+              "reset": false
+            },
+            "expected_outputs": {
+              "motorRun": true
+            },
+            "check": "正常运行"
+          },
+          {
+            "cycle": 1,
+            "inputs": {
+              "runCommand": true,
+              "sensorPulse": true,
+              "emergencyStop": true,
+              "reset": false
+            },
+            "expected_outputs": {
+              "motorRun": false
+            },
+            "check": "急停立即断开"
+          }
+        ],
+        "coverage": [
+          "emergency_stop"
+        ],
+        "review": {
+          "status": "frozen",
+          "reviewer": "Codex",
+          "notes": []
+        }
+      }
+    ]
+  },
+  "settle_ms": 50
+}

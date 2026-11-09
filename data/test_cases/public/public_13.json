@@ -1,0 +1,222 @@
+{
+  "task_id": "public_13",
+  "tests": [
+    {
+      "id": "public_13_tc01",
+      "task_id": "public_13",
+      "name": "有人时延时启动风机",
+      "initial_state": {
+        "SUPPLY_FAN_RUN": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "OCCUPANCY_DETECTED": true,
+            "ENERGY_SAVING_MODE": false,
+            "HVAC_MODE_SELECTOR": 0
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": false,
+            "TEMP_SETPOINT_ADJUST": 0
+          },
+          "check": "开始 30 秒延时"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 25000,
+          "inputs": {
+            "OCCUPANCY_DETECTED": true,
+            "ENERGY_SAVING_MODE": false,
+            "HVAC_MODE_SELECTOR": 0
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": false,
+            "TEMP_SETPOINT_ADJUST": 0
+          },
+          "check": "未满 30 秒"
+        },
+        {
+          "cycle": 2,
+          "advance_ms": 5000,
+          "inputs": {
+            "OCCUPANCY_DETECTED": true,
+            "ENERGY_SAVING_MODE": false,
+            "HVAC_MODE_SELECTOR": 0
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": true,
+            "TEMP_SETPOINT_ADJUST": 0
+          },
+          "check": "满 30 秒启动"
+        }
+      ],
+      "coverage": [
+        "fan_delay",
+        "auto_mode"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_13_tc02",
+      "task_id": "public_13",
+      "name": "无人时各模式温度修正",
+      "initial_state": {
+        "SUPPLY_FAN_RUN": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "OCCUPANCY_DETECTED": false,
+            "ENERGY_SAVING_MODE": false,
+            "HVAC_MODE_SELECTOR": 0
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": false,
+            "TEMP_SETPOINT_ADJUST": 2
+          },
+          "check": "自动标准模式 +2"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "OCCUPANCY_DETECTED": false,
+            "ENERGY_SAVING_MODE": true,
+            "HVAC_MODE_SELECTOR": 0
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": false,
+            "TEMP_SETPOINT_ADJUST": 3
+          },
+          "check": "自动节能模式 +3"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "OCCUPANCY_DETECTED": false,
+            "ENERGY_SAVING_MODE": false,
+            "HVAC_MODE_SELECTOR": 1
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": false,
+            "TEMP_SETPOINT_ADJUST": 1
+          },
+          "check": "舒适模式 +1"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "OCCUPANCY_DETECTED": false,
+            "ENERGY_SAVING_MODE": false,
+            "HVAC_MODE_SELECTOR": 2
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": false,
+            "TEMP_SETPOINT_ADJUST": 4
+          },
+          "check": "经济模式 +4"
+        }
+      ],
+      "coverage": [
+        "setpoint_modes",
+        "unoccupied"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_13_tc03",
+      "task_id": "public_13",
+      "name": "夜间模式停止并重置启动延时",
+      "initial_state": {
+        "SUPPLY_FAN_RUN": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "OCCUPANCY_DETECTED": true,
+            "ENERGY_SAVING_MODE": false,
+            "HVAC_MODE_SELECTOR": 0
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": false,
+            "TEMP_SETPOINT_ADJUST": 0
+          },
+          "check": "通过公开输入开始启动延时"
+        },
+        {
+          "cycle": 1,
+          "advance_ms": 30000,
+          "inputs": {
+            "OCCUPANCY_DETECTED": true,
+            "ENERGY_SAVING_MODE": false,
+            "HVAC_MODE_SELECTOR": 0
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": true,
+            "TEMP_SETPOINT_ADJUST": 0
+          },
+          "check": "建立风机运行状态"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "OCCUPANCY_DETECTED": true,
+            "ENERGY_SAVING_MODE": false,
+            "HVAC_MODE_SELECTOR": 3
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": false,
+            "TEMP_SETPOINT_ADJUST": 4
+          },
+          "check": "夜间立即停止"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "OCCUPANCY_DETECTED": true,
+            "ENERGY_SAVING_MODE": false,
+            "HVAC_MODE_SELECTOR": 0
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": false,
+            "TEMP_SETPOINT_ADJUST": 0
+          },
+          "check": "返回自动后重新延时"
+        },
+        {
+          "cycle": 4,
+          "advance_ms": 30000,
+          "inputs": {
+            "OCCUPANCY_DETECTED": true,
+            "ENERGY_SAVING_MODE": false,
+            "HVAC_MODE_SELECTOR": 0
+          },
+          "expected_outputs": {
+            "SUPPLY_FAN_RUN": true,
+            "TEMP_SETPOINT_ADJUST": 0
+          },
+          "check": "重新满 30 秒后启动"
+        }
+      ],
+      "coverage": [
+        "night_mode",
+        "delay_reset"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

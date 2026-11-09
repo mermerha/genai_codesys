@@ -1,0 +1,64 @@
+{
+  "task_id": "public_11",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "manual": "Mode 为 FALSE",
+    "automatic": "Mode 为 TRUE",
+    "forward_button": "ForwardButton",
+    "reverse_button": "ReverseButton",
+    "motor_forward": "MotorForward",
+    "motor_reverse": "MotorReverse",
+    "at_a_done": "SensorA 与 ButtonA",
+    "at_b": "SensorB",
+    "at_b_done": "SensorB 与 ButtonB",
+    "at_c_done": "SensorC 与 ButtonC",
+    "completion": "CompletionLight"
+  },
+  "assumptions": [
+    "自动模式一次只处理一个产品。"
+  ],
+  "properties": [
+    {
+      "id": "public_11_p01",
+      "type": "safety",
+      "description": "电机正反转永不同时输出",
+      "ltl": "G(!(motor_forward && motor_reverse))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_11_p02",
+      "type": "functional",
+      "description": "手动模式按互锁按钮控制方向",
+      "ltl": "G((manual && forward_button && !reverse_button) -> X(motor_forward && !motor_reverse)) && G((manual && reverse_button && !forward_button) -> X(!motor_forward && motor_reverse))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_11_p03",
+      "type": "transition",
+      "description": "A 完成后前进，抵达 B 后停止",
+      "ltl": "G((automatic && at_a_done) -> X(motor_forward)) && G((automatic && at_b) -> X(!motor_forward))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_11_p04",
+      "type": "transition",
+      "description": "B 完成后前进到 C",
+      "ltl": "G((automatic && at_b_done) -> X(motor_forward))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_11_p05",
+      "type": "response",
+      "description": "C 完成点亮完成灯，产品离开后熄灭",
+      "ltl": "G((automatic && at_c_done) -> X(completion)) && G((automatic && !at_c_done && !completion) -> X(!completion))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

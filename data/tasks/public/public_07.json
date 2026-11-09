@@ -1,0 +1,76 @@
+{
+  "id": "public_07",
+  "title": "Multi-Pump Switching Control System",
+  "difficulty": "medium",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, medium[0]",
+  "requirements": "In an industrial water supply system, there are 5 pumps, each of which can be controlled independently. The system needs to support both manual and automatic operating modes.\nBased on the value of the mode variable, switch to the corresponding operating mode.\nIn manual mode, control the start and stop of the selected pump based on the value of pumpGroup[1..5].selection.\nIn automatic mode, compare the priority of each pump, and automatically select the 3 pumps with higher priority for water supply according to the method of three in use and two on standby.",
+  "pou_name": "FB_MultiPumpSwitching",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "mode",
+      "data_type": "BOOL",
+      "description": "FALSE: Manual mode; TRUE: Automatic mode"
+    },
+    {
+      "direction": "input",
+      "name": "start",
+      "data_type": "BOOL",
+      "description": "Start button, used to start the manually selected or automatically selected pump"
+    },
+    {
+      "direction": "input",
+      "name": "stop",
+      "data_type": "BOOL",
+      "description": "Stop button, used to stop all pumps"
+    },
+    {
+      "direction": "inout",
+      "name": "pumpGroup",
+      "data_type": "ARRAY[1..5] OF ST_Pump",
+      "description": "Five pump records passed by reference. Read priority and selection; write only RunComd."
+    }
+  ],
+  "custom_types": [
+    {
+      "name": "ST_Pump",
+      "kind": "STRUCT",
+      "fields": [
+        {
+          "name": "priority",
+          "data_type": "INT",
+          "description": "Priority; larger values have higher priority."
+        },
+        {
+          "name": "selection",
+          "data_type": "BOOL",
+          "description": "Manual-selection state."
+        },
+        {
+          "name": "RunComd",
+          "data_type": "BOOL",
+          "description": "Pump run command."
+        }
+      ]
+    }
+  ],
+  "compile_context": {
+    "inout_bindings": [
+      {
+        "parameter": "pumpGroup",
+        "variable": "candidatePumpGroup",
+        "data_type": "ARRAY[1..5] OF ST_Pump"
+      }
+    ]
+  },
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests.",
+      "Custom DUT creation and array VAR_IN_OUT binding are now supported and passed real CODESYS valid/invalid compilation checks."
+    ]
+  }
+}

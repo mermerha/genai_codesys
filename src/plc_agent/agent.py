@@ -9,12 +9,18 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .candidate import StCandidate
-from .codesys_runner import CompileResult, compile_project
+from .codesys_runner import (
+    CompileResult,
+    TestExecutionResult,
+    compile_project,
+    execute_tests,
+)
 from .model_client import ChatCompletion, chat_completion
 
 
 ChatFunction = Callable[..., ChatCompletion]
 CompileFunction = Callable[..., CompileResult]
+TestFunction = Callable[..., TestExecutionResult]
 
 
 def _write_json(path: Path, payload: Any) -> None:
@@ -44,8 +50,10 @@ def run_compile_loop(
     max_repairs: int = 2,
     model_timeout_seconds: float = 120.0,
     reasoning_effort: str | None = None,
+    tests: dict[str, Any] | None = None,
     chat_function: ChatFunction = chat_completion,
     compile_function: CompileFunction = compile_project,
+    test_function: TestFunction = execute_tests,
 ) -> dict[str, Any]:
     """Run one task and preserve every model and compiler artifact."""
 
@@ -67,6 +75,7 @@ def run_compile_loop(
             "model_timeout_seconds": model_timeout_seconds,
             "reasoning_effort": reasoning_effort,
             "template_project": str(Path(template_project).resolve()),
+            "automatic_tests": tests is not None,
         },
     )
 
@@ -78,6 +87,14 @@ def run_compile_loop(
     api_models: list[str] = []
     usage_by_attempt: list[dict[str, Any]] = []
     started = time.monotonic()
+    compile_context = {
+        "custom_types": task.get("custom_types", []),
+        "inout_bindings": task.get("compile_context", {}).get(
+            "inout_bindings", []
+        ),
+    }
+    if not compile_context["custom_types"] and not compile_context["inout_bindings"]:
+        compile_context = None
 
     for attempt_index in range(max_repairs + 1):
         attempt_dir = run_dir / f"attempt_{attempt_index:02d}"
@@ -142,13 +159,31 @@ def run_compile_loop(
                 output_dir=attempt_dir / "compile",
                 pou_name=candidate.pou_name,
                 pou_type=candidate.pou_type,
+                compile_context=compile_context,
             )
             errors = _compile_errors(compile_result)
             if compile_result.success:
+                test_result = None
+                if tests is not None:
+                    test_result = test_function(
+                        template_project=template_project,
+                        declaration_path=declaration_path,
+                        implementation_path=implementation_path,
+                        task=task,
+                        tests=tests,
+                        output_dir=run_dir / "test_execution",
+                        compile_context=compile_context,
+                    )
                 final = {
                     "task_id": task.get("id"),
                     "model": model,
-                    "final_status": "compile_success",
+                    "final_status": (
+                        "success"
+                        if test_result is not None and test_result.success
+                        else "test_failure"
+                        if test_result is not None
+                        else "compile_success"
+                    ),
                     "attempts": attempt_index + 1,
                     "repairs": attempt_index,
                     "first_compile_pass": attempt_index == 0,
@@ -157,6 +192,18 @@ def run_compile_loop(
                     "usage_by_attempt": usage_by_attempt,
                     "duration_seconds": round(time.monotonic() - started, 3),
                 }
+                if test_result is not None:
+                    final.update(
+                        {
+                            "test_passed": test_result.test_passed,
+                            "test_total": test_result.test_total,
+                            "test_results_file": str(
+                                test_result.result_path.relative_to(run_dir)
+                            ),
+                        }
+                    )
+                    if not test_result.success:
+                        final["failure_reason"] = "shared_tests_failed"
                 _write_json(run_dir / "final_result.json", final)
                 return final
 

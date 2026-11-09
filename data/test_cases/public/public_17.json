@@ -1,0 +1,893 @@
+{
+  "task_id": "public_17",
+  "tests": [
+    {
+      "id": "public_17_tc01",
+      "task_id": "public_17",
+      "name": "新增并查询配方",
+      "initial_state": {
+        "recipe": [
+          {
+            "recipeID": 0,
+            "ingredientType": 0,
+            "ingredientRatio": 0,
+            "productionTemperature": 0
+          },
+          {
+            "recipeID": 0,
+            "ingredientType": 0,
+            "ingredientRatio": 0,
+            "productionTemperature": 0
+          },
+          {
+            "recipeID": 0,
+            "ingredientType": 0,
+            "ingredientRatio": 0,
+            "productionTemperature": 0
+          },
+          {
+            "recipeID": 0,
+            "ingredientType": 0,
+            "ingredientRatio": 0,
+            "productionTemperature": 0
+          },
+          {
+            "recipeID": 0,
+            "ingredientType": 0,
+            "ingredientRatio": 0,
+            "productionTemperature": 0
+          },
+          {
+            "recipeID": 0,
+            "ingredientType": 0,
+            "ingredientRatio": 0,
+            "productionTemperature": 0
+          },
+          {
+            "recipeID": 0,
+            "ingredientType": 0,
+            "ingredientRatio": 0,
+            "productionTemperature": 0
+          },
+          {
+            "recipeID": 0,
+            "ingredientType": 0,
+            "ingredientRatio": 0,
+            "productionTemperature": 0
+          },
+          {
+            "recipeID": 0,
+            "ingredientType": 0,
+            "ingredientRatio": 0,
+            "productionTemperature": 0
+          },
+          {
+            "recipeID": 0,
+            "ingredientType": 0,
+            "ingredientRatio": 0,
+            "productionTemperature": 0
+          }
+        ]
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "addRecipe": true,
+            "deleteRecipe": false,
+            "modifyRecipe": false,
+            "queryRecipe": false,
+            "recipeIn": {
+              "recipeID": 1,
+              "ingredientType": 2,
+              "ingredientRatio": 0.4,
+              "productionTemperature": 180
+            },
+            "recipe": [
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              }
+            ]
+          },
+          "expected_outputs": {
+            "recipeAdded": true,
+            "error": false,
+            "status": "16#0000",
+            "recipe": [
+              {
+                "recipeID": 1,
+                "ingredientType": 2,
+                "ingredientRatio": 0.4,
+                "productionTemperature": 180
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              }
+            ]
+          },
+          "check": "新增写入最小空槽"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "addRecipe": false,
+            "deleteRecipe": false,
+            "modifyRecipe": false,
+            "queryRecipe": true,
+            "recipeIn": {
+              "recipeID": 1,
+              "ingredientType": 0,
+              "ingredientRatio": 0,
+              "productionTemperature": 0
+            },
+            "recipe": [
+              {
+                "recipeID": 1,
+                "ingredientType": 2,
+                "ingredientRatio": 0.4,
+                "productionTemperature": 180
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              }
+            ]
+          },
+          "expected_outputs": {
+            "recipeQueryResult": {
+              "recipeID": 1,
+              "ingredientType": 2,
+              "ingredientRatio": 0.4,
+              "productionTemperature": 180
+            },
+            "error": false,
+            "status": "16#0000"
+          },
+          "check": "查询返回完整记录"
+        }
+      ],
+      "coverage": [
+        "add",
+        "query",
+        "smallest_slot"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_17_tc02",
+      "task_id": "public_17",
+      "name": "重复编号与满库错误",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "addRecipe": true,
+            "deleteRecipe": false,
+            "modifyRecipe": false,
+            "queryRecipe": false,
+            "recipeIn": {
+              "recipeID": 1,
+              "ingredientType": 9,
+              "ingredientRatio": 0.9,
+              "productionTemperature": 200
+            },
+            "recipe": [
+              {
+                "recipeID": 1,
+                "ingredientType": 2,
+                "ingredientRatio": 0.4,
+                "productionTemperature": 180
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              }
+            ]
+          },
+          "expected_outputs": {
+            "recipeAdded": false,
+            "error": true,
+            "status": "16#8002"
+          },
+          "check": "重复编号"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "addRecipe": true,
+            "deleteRecipe": false,
+            "modifyRecipe": false,
+            "queryRecipe": false,
+            "recipeIn": {
+              "recipeID": 11,
+              "ingredientType": 1,
+              "ingredientRatio": 0.1,
+              "productionTemperature": 100
+            },
+            "recipe": [
+              {
+                "recipeID": 1,
+                "ingredientType": 1,
+                "ingredientRatio": 0.1,
+                "productionTemperature": 100
+              },
+              {
+                "recipeID": 2,
+                "ingredientType": 2,
+                "ingredientRatio": 0.1,
+                "productionTemperature": 101
+              },
+              {
+                "recipeID": 3,
+                "ingredientType": 3,
+                "ingredientRatio": 0.1,
+                "productionTemperature": 102
+              },
+              {
+                "recipeID": 4,
+                "ingredientType": 4,
+                "ingredientRatio": 0.1,
+                "productionTemperature": 103
+              },
+              {
+                "recipeID": 5,
+                "ingredientType": 5,
+                "ingredientRatio": 0.1,
+                "productionTemperature": 104
+              },
+              {
+                "recipeID": 6,
+                "ingredientType": 6,
+                "ingredientRatio": 0.1,
+                "productionTemperature": 105
+              },
+              {
+                "recipeID": 7,
+                "ingredientType": 7,
+                "ingredientRatio": 0.1,
+                "productionTemperature": 106
+              },
+              {
+                "recipeID": 8,
+                "ingredientType": 8,
+                "ingredientRatio": 0.1,
+                "productionTemperature": 107
+              },
+              {
+                "recipeID": 9,
+                "ingredientType": 9,
+                "ingredientRatio": 0.1,
+                "productionTemperature": 108
+              },
+              {
+                "recipeID": 10,
+                "ingredientType": 10,
+                "ingredientRatio": 0.1,
+                "productionTemperature": 109
+              }
+            ]
+          },
+          "expected_outputs": {
+            "recipeAdded": false,
+            "error": true,
+            "status": "16#8003"
+          },
+          "check": "数据库已满"
+        }
+      ],
+      "coverage": [
+        "duplicate",
+        "database_full"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_17_tc03",
+      "task_id": "public_17",
+      "name": "修改、删除和不存在错误",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "addRecipe": false,
+            "deleteRecipe": false,
+            "modifyRecipe": true,
+            "queryRecipe": false,
+            "recipeIn": {
+              "recipeID": 2,
+              "ingredientType": 5,
+              "ingredientRatio": 0.6,
+              "productionTemperature": 210
+            },
+            "recipe": [
+              {
+                "recipeID": 1,
+                "ingredientType": 2,
+                "ingredientRatio": 0.4,
+                "productionTemperature": 180
+              },
+              {
+                "recipeID": 2,
+                "ingredientType": 3,
+                "ingredientRatio": 0.5,
+                "productionTemperature": 190
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              }
+            ]
+          },
+          "expected_outputs": {
+            "recipeModified": true,
+            "error": false,
+            "status": "16#0000",
+            "recipe": [
+              {
+                "recipeID": 1,
+                "ingredientType": 2,
+                "ingredientRatio": 0.4,
+                "productionTemperature": 180
+              },
+              {
+                "recipeID": 2,
+                "ingredientType": 5,
+                "ingredientRatio": 0.6,
+                "productionTemperature": 210
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              }
+            ]
+          },
+          "check": "修改存在记录"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "addRecipe": false,
+            "deleteRecipe": true,
+            "modifyRecipe": false,
+            "queryRecipe": false,
+            "recipeIn": {
+              "recipeID": 2,
+              "ingredientType": 0,
+              "ingredientRatio": 0,
+              "productionTemperature": 0
+            },
+            "recipe": [
+              {
+                "recipeID": 1,
+                "ingredientType": 2,
+                "ingredientRatio": 0.4,
+                "productionTemperature": 180
+              },
+              {
+                "recipeID": 2,
+                "ingredientType": 5,
+                "ingredientRatio": 0.6,
+                "productionTemperature": 210
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              }
+            ]
+          },
+          "expected_outputs": {
+            "recipeDeleted": true,
+            "error": false,
+            "status": "16#0000",
+            "recipe": [
+              {
+                "recipeID": 1,
+                "ingredientType": 2,
+                "ingredientRatio": 0.4,
+                "productionTemperature": 180
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              }
+            ]
+          },
+          "check": "删除存在记录"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "addRecipe": false,
+            "deleteRecipe": false,
+            "modifyRecipe": true,
+            "queryRecipe": false,
+            "recipeIn": {
+              "recipeID": 9,
+              "ingredientType": 1,
+              "ingredientRatio": 0.1,
+              "productionTemperature": 100
+            },
+            "recipe": [
+              {
+                "recipeID": 1,
+                "ingredientType": 2,
+                "ingredientRatio": 0.4,
+                "productionTemperature": 180
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              },
+              {
+                "recipeID": 0,
+                "ingredientType": 0,
+                "ingredientRatio": 0,
+                "productionTemperature": 0
+              }
+            ]
+          },
+          "expected_outputs": {
+            "recipeModified": false,
+            "error": true,
+            "status": "16#8005"
+          },
+          "check": "修改不存在记录"
+        }
+      ],
+      "coverage": [
+        "modify",
+        "delete",
+        "not_found"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

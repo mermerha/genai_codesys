@@ -1,0 +1,13 @@
+2026-11-09T15:21:45.573528Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:21:45.582884Z  WARN codex_core::shell_snapshot: Failed to create shell snapshot for powershell: Shell snapshot not supported yet for PowerShell
+2026-11-09T15:21:45.701390Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:21:45.706332Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:21:45.706674Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:21:45.713332Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:21:45.722770Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:21:45.723124Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:21:45.723549Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:21:45.747162Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:21:45.749951Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:21:47.117422Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:21:47.118596Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.

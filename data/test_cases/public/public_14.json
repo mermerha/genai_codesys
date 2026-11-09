@@ -1,0 +1,135 @@
+{
+  "task_id": "public_14",
+  "tests": [
+    {
+      "id": "public_14_tc01",
+      "task_id": "public_14",
+      "name": "解析常用 IPv4 地址",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "ipText": "192.168.1.10"
+          },
+          "expected_outputs": {
+            "ipValue": 3232235786
+          },
+          "check": "按网络字节序解析"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "ipText": "1.2.3.4"
+          },
+          "expected_outputs": {
+            "ipValue": 16909060
+          },
+          "check": "四段顺序正确"
+        }
+      ],
+      "coverage": [
+        "valid_parse",
+        "network_byte_order"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_14_tc02",
+      "task_id": "public_14",
+      "name": "合法边界地址",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "ipText": "0.0.0.0"
+          },
+          "expected_outputs": {
+            "ipValue": 0
+          },
+          "check": "全零地址合法但结果为零"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "ipText": "255.255.255.255"
+          },
+          "expected_outputs": {
+            "ipValue": 4294967295
+          },
+          "check": "各段最大值"
+        }
+      ],
+      "coverage": [
+        "boundary"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_14_tc03",
+      "task_id": "public_14",
+      "name": "非法文本输出零",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "ipText": "256.1.1.1"
+          },
+          "expected_outputs": {
+            "ipValue": 0
+          },
+          "check": "段值越界"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "ipText": "1.2.3"
+          },
+          "expected_outputs": {
+            "ipValue": 0
+          },
+          "check": "段数不足"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "ipText": "1.a.3.4"
+          },
+          "expected_outputs": {
+            "ipValue": 0
+          },
+          "check": "包含非数字"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "ipText": "1..3.4"
+          },
+          "expected_outputs": {
+            "ipValue": 0
+          },
+          "check": "空段"
+        }
+      ],
+      "coverage": [
+        "invalid_format",
+        "invalid_range"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

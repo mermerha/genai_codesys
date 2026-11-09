@@ -1,0 +1,264 @@
+{
+  "task_id": "public_09",
+  "tests": [
+    {
+      "id": "public_09_tc01",
+      "task_id": "public_09",
+      "name": "循环采样与滑动窗口",
+      "initial_state": {
+        "average": 0,
+        "windowSizeReached": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "cyclicExecution": true,
+            "trigger": false,
+            "value": 0,
+            "windowSize": 3,
+            "reset": true
+          },
+          "expected_outputs": {
+            "average": 0,
+            "windowSizeReached": false,
+            "error": false,
+            "status": "16#0000"
+          },
+          "check": "复位"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "cyclicExecution": true,
+            "trigger": false,
+            "value": 3,
+            "windowSize": 3,
+            "reset": false
+          },
+          "expected_outputs": {
+            "average": 3,
+            "windowSizeReached": false
+          },
+          "check": "第一个样本"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "cyclicExecution": true,
+            "trigger": false,
+            "value": 6,
+            "windowSize": 3,
+            "reset": false
+          },
+          "expected_outputs": {
+            "average": 4.5,
+            "windowSizeReached": false
+          },
+          "check": "两个样本"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "cyclicExecution": true,
+            "trigger": false,
+            "value": 9,
+            "windowSize": 3,
+            "reset": false
+          },
+          "expected_outputs": {
+            "average": 6,
+            "windowSizeReached": true
+          },
+          "check": "窗口填满"
+        },
+        {
+          "cycle": 4,
+          "inputs": {
+            "cyclicExecution": true,
+            "trigger": false,
+            "value": 12,
+            "windowSize": 3,
+            "reset": false
+          },
+          "expected_outputs": {
+            "average": 9,
+            "windowSizeReached": true
+          },
+          "check": "替换最旧样本"
+        }
+      ],
+      "coverage": [
+        "cyclic_sampling",
+        "moving_window"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_09_tc02",
+      "task_id": "public_09",
+      "name": "触发沿采样",
+      "initial_state": {
+        "average": 0,
+        "windowSizeReached": false
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "cyclicExecution": false,
+            "trigger": false,
+            "value": 2,
+            "windowSize": 2,
+            "reset": false
+          },
+          "expected_outputs": {
+            "average": 0,
+            "windowSizeReached": false
+          },
+          "check": "低电平不采样"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "cyclicExecution": false,
+            "trigger": true,
+            "value": 2,
+            "windowSize": 2,
+            "reset": false
+          },
+          "expected_outputs": {
+            "average": 2,
+            "windowSizeReached": false
+          },
+          "check": "第一次上升沿采样"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "cyclicExecution": false,
+            "trigger": true,
+            "value": 10,
+            "windowSize": 2,
+            "reset": false
+          },
+          "expected_outputs": {
+            "average": 2,
+            "windowSizeReached": false
+          },
+          "check": "保持高电平不重复采样"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "cyclicExecution": false,
+            "trigger": false,
+            "value": 10,
+            "windowSize": 2,
+            "reset": false
+          },
+          "expected_outputs": {
+            "average": 2
+          },
+          "check": "释放触发"
+        },
+        {
+          "cycle": 4,
+          "inputs": {
+            "cyclicExecution": false,
+            "trigger": true,
+            "value": 6,
+            "windowSize": 2,
+            "reset": false
+          },
+          "expected_outputs": {
+            "average": 4,
+            "windowSizeReached": true
+          },
+          "check": "第二次上升沿采样"
+        }
+      ],
+      "coverage": [
+        "edge_trigger",
+        "no_repeat"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_09_tc03",
+      "task_id": "public_09",
+      "name": "窗口大小非法",
+      "initial_state": {
+        "average": 0
+      },
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "cyclicExecution": true,
+            "trigger": false,
+            "value": 5,
+            "windowSize": 0,
+            "reset": false
+          },
+          "expected_outputs": {
+            "error": true,
+            "status": "16#8200",
+            "average": 0
+          },
+          "check": "窗口为 0 拒绝样本"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "cyclicExecution": true,
+            "trigger": false,
+            "value": 5,
+            "windowSize": 101,
+            "reset": false
+          },
+          "expected_outputs": {
+            "error": true,
+            "status": "16#8200",
+            "average": 0
+          },
+          "check": "窗口大于 100 拒绝样本"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "cyclicExecution": true,
+            "trigger": false,
+            "value": 5,
+            "windowSize": 1,
+            "reset": false
+          },
+          "expected_outputs": {
+            "error": false,
+            "status": "16#0000",
+            "average": 5,
+            "windowSizeReached": true
+          },
+          "check": "合法后恢复"
+        }
+      ],
+      "coverage": [
+        "invalid_window",
+        "recovery"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

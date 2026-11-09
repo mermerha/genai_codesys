@@ -1,0 +1,239 @@
+{
+  "task": {
+    "id": "public_02",
+    "title": "Dual-Word Edge Detection",
+    "difficulty": "easy",
+    "source_type": "provided",
+    "source_reference": "大作业题库json/大作业题库.json, easy[1]",
+    "requirements": "Write a function block FB that checks for rising and falling edges in each bit of a dual-word (DWord) input value every cycle. The function block should be able to detect and report changes, rising edges, and falling edges in the input value.",
+    "pou_name": "FB_DWordEdgeDetection",
+    "pou_type": "FUNCTION_BLOCK",
+    "interface": [
+      {
+        "direction": "input",
+        "name": "value",
+        "data_type": "DWORD",
+        "description": "The input value to be checked for changes and edge triggering"
+      },
+      {
+        "direction": "output",
+        "name": "hasChanged",
+        "data_type": "BOOL",
+        "description": "True indicates that the input value has changed"
+      },
+      {
+        "direction": "output",
+        "name": "hasRisingEdges",
+        "data_type": "BOOL",
+        "description": "True indicates that rising edges have occurred in the input value"
+      },
+      {
+        "direction": "output",
+        "name": "risingBits",
+        "data_type": "DWORD",
+        "description": "The bit stream of rising edges, where each bit indicates whether the corresponding input bit has experienced a rising edge (1 for a rising edge, 0 for no rising edge)"
+      },
+      {
+        "direction": "output",
+        "name": "noOfRisingBits",
+        "data_type": "USINT",
+        "description": "The number of rising edges in the input value"
+      },
+      {
+        "direction": "output",
+        "name": "hasFallingEdges",
+        "data_type": "BOOL",
+        "description": "True indicates that falling edges have occurred in the input value"
+      },
+      {
+        "direction": "output",
+        "name": "fallingBits",
+        "data_type": "DWORD",
+        "description": "The bit stream of falling edges, where each bit indicates whether the corresponding input bit has experienced a falling edge (1 for a falling edge, 0 for no falling edge)"
+      },
+      {
+        "direction": "output",
+        "name": "noOfFallingBits",
+        "data_type": "USINT",
+        "description": "The number of falling edges in the input value"
+      }
+    ],
+    "custom_types": [],
+    "review": {
+      "status": "frozen",
+      "reviewer": "Codex",
+      "notes": [
+        "Converted from the teacher-provided public task and reviewed against the frozen specification and tests."
+      ]
+    }
+  },
+  "tests": {
+    "task_id": "public_02",
+    "tests": [
+      {
+        "id": "public_02_tc01",
+        "task_id": "public_02",
+        "name": "混合上升与下降位",
+        "initial_state": {},
+        "steps": [
+          {
+            "cycle": 0,
+            "inputs": {
+              "value": 0
+            },
+            "expected_outputs": {
+              "hasChanged": false,
+              "hasRisingEdges": false,
+              "risingBits": 0,
+              "noOfRisingBits": 0,
+              "hasFallingEdges": false,
+              "fallingBits": 0,
+              "noOfFallingBits": 0
+            },
+            "check": "零值初始化"
+          },
+          {
+            "cycle": 1,
+            "inputs": {
+              "value": 5
+            },
+            "expected_outputs": {
+              "hasChanged": true,
+              "hasRisingEdges": true,
+              "risingBits": 5,
+              "noOfRisingBits": 2,
+              "hasFallingEdges": false,
+              "fallingBits": 0,
+              "noOfFallingBits": 0
+            },
+            "check": "位 0 和 2 上升"
+          },
+          {
+            "cycle": 2,
+            "inputs": {
+              "value": 2
+            },
+            "expected_outputs": {
+              "hasChanged": true,
+              "hasRisingEdges": true,
+              "risingBits": 2,
+              "noOfRisingBits": 1,
+              "hasFallingEdges": true,
+              "fallingBits": 5,
+              "noOfFallingBits": 2
+            },
+            "check": "位 1 上升，位 0 和 2 下降"
+          }
+        ],
+        "coverage": [
+          "rising_edges",
+          "falling_edges",
+          "bit_count"
+        ],
+        "review": {
+          "status": "frozen",
+          "reviewer": "Codex",
+          "notes": []
+        }
+      },
+      {
+        "id": "public_02_tc02",
+        "task_id": "public_02",
+        "name": "输入保持不变",
+        "initial_state": {},
+        "steps": [
+          {
+            "cycle": 0,
+            "inputs": {
+              "value": 4294967295
+            },
+            "expected_outputs": {
+              "hasChanged": true,
+              "hasRisingEdges": true,
+              "risingBits": 4294967295,
+              "noOfRisingBits": 32,
+              "hasFallingEdges": false,
+              "fallingBits": 0,
+              "noOfFallingBits": 0
+            },
+            "check": "先通过公开输入建立前值"
+          },
+          {
+            "cycle": 1,
+            "inputs": {
+              "value": 4294967295
+            },
+            "expected_outputs": {
+              "hasChanged": false,
+              "hasRisingEdges": false,
+              "risingBits": 0,
+              "noOfRisingBits": 0,
+              "hasFallingEdges": false,
+              "fallingBits": 0,
+              "noOfFallingBits": 0
+            },
+            "check": "输入保持不变时无边沿"
+          }
+        ],
+        "coverage": [
+          "no_change"
+        ],
+        "review": {
+          "status": "frozen",
+          "reviewer": "Codex",
+          "notes": []
+        }
+      },
+      {
+        "id": "public_02_tc03",
+        "task_id": "public_02",
+        "name": "全部位下降",
+        "initial_state": {},
+        "steps": [
+          {
+            "cycle": 0,
+            "inputs": {
+              "value": 4294967295
+            },
+            "expected_outputs": {
+              "hasChanged": true,
+              "hasRisingEdges": true,
+              "risingBits": 4294967295,
+              "noOfRisingBits": 32,
+              "hasFallingEdges": false,
+              "fallingBits": 0,
+              "noOfFallingBits": 0
+            },
+            "check": "先通过公开输入建立全一前值"
+          },
+          {
+            "cycle": 1,
+            "inputs": {
+              "value": 0
+            },
+            "expected_outputs": {
+              "hasChanged": true,
+              "hasRisingEdges": false,
+              "risingBits": 0,
+              "noOfRisingBits": 0,
+              "hasFallingEdges": true,
+              "fallingBits": 4294967295,
+              "noOfFallingBits": 32
+            },
+            "check": "32 位同时下降"
+          }
+        ],
+        "coverage": [
+          "boundary",
+          "falling_edges"
+        ],
+        "review": {
+          "status": "frozen",
+          "reviewer": "Codex",
+          "notes": []
+        }
+      }
+    ]
+  },
+  "settle_ms": 50
+}

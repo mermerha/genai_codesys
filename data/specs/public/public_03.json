@@ -1,0 +1,64 @@
+{
+  "task_id": "public_03",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "invalid_levels": "loLevel >= hiLevel",
+    "invalid_window": "hystWindow >= hiLevel - loLevel",
+    "valid": "配置合法",
+    "above_hi": "Value > hiLevel",
+    "below_hi_clear": "Value < hiLevel - hystWindow",
+    "below_lo": "Value < loLevel",
+    "above_lo_clear": "Value > loLevel + hystWindow",
+    "hi_alarm": "高报警",
+    "lo_alarm": "低报警",
+    "error": "错误输出",
+    "status_8001": "状态 16#8001",
+    "status_8002": "状态 16#8002",
+    "status_ok": "状态 16#0000"
+  },
+  "assumptions": [],
+  "properties": [
+    {
+      "id": "public_03_p01",
+      "type": "priority",
+      "description": "上下限非法优先返回 16#8001",
+      "ltl": "G(invalid_levels -> X(error && status_8001))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_03_p02",
+      "type": "safety",
+      "description": "滞回窗口非法返回 16#8002",
+      "ltl": "G((!invalid_levels && invalid_window) -> X(error && status_8002))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_03_p03",
+      "type": "response",
+      "description": "合法配置下越过高限触发高报警并按滞回清除",
+      "ltl": "G((valid && above_hi) -> X(hi_alarm)) && G((valid && below_hi_clear) -> X(!hi_alarm))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_03_p04",
+      "type": "response",
+      "description": "合法配置下越过低限触发低报警并按滞回清除",
+      "ltl": "G((valid && below_lo) -> X(lo_alarm)) && G((valid && above_lo_clear) -> X(!lo_alarm))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_03_p05",
+      "type": "invariant",
+      "description": "合法配置清除错误并返回成功状态",
+      "ltl": "G(valid -> X(!error && status_ok))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "compile_messages": [
+    {
+      "severity": "information", 
+      "number": "None", 
+      "text": "未安装离线帮助", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "------ 开始构建应用程序 Device.Application -------", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "代码典型化...", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "编译完成 -- 0错误,0警告", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "其他代码检查...", 
+      "position": "None", 
+      "object": null
+    }, 
+    {
+      "severity": "Text", 
+      "number": "None", 
+      "text": "其他代码检查完成-0 个错误", 
+      "position": "None", 
+      "object": null
+    }
+  ], 
+  "compile_success": true, 
+  "test_total": 3, 
+  "test_passed": 3, 
+  "tests": [
+    {
+      "passed": true, 
+      "failed_step": null, 
+      "steps": [
+        {
+          "cycle": 0, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_error": "FALSE", 
+            "PLC_PRG.actual_status": "WORD#0", 
+            "PLC_PRG.actual_hiAlarm": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 1, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_hiAlarm": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 2, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_hiAlarm": "FALSE"
+          }, 
+          "differences": []
+        }
+      ], 
+      "test_id": "public_03_tc01"
+    }, 
+    {
+      "passed": true, 
+      "failed_step": null, 
+      "steps": [
+        {
+          "cycle": 0, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_error": "FALSE", 
+            "PLC_PRG.actual_loAlarm": "TRUE", 
+            "PLC_PRG.actual_status": "WORD#0"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 1, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_loAlarm": "TRUE"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 2, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_loAlarm": "FALSE"
+          }, 
+          "differences": []
+        }
+      ], 
+      "test_id": "public_03_tc02"
+    }, 
+    {
+      "passed": true, 
+      "failed_step": null, 
+      "steps": [
+        {
+          "cycle": 0, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_error": "TRUE", 
+            "PLC_PRG.actual_status": "WORD#32769"
+          }, 
+          "differences": []
+        }, 
+        {
+          "cycle": 1, 
+          "passed": true, 
+          "actual_outputs": {
+            "PLC_PRG.actual_error": "TRUE", 
+            "PLC_PRG.actual_status": "WORD#32770"
+          }, 
+          "differences": []
+        }
+      ], 
+      "test_id": "public_03_tc03"
+    }
+  ], 
+  "exception": null, 
+  "success": true
+}

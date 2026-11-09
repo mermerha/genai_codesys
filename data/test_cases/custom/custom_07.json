@@ -1,0 +1,30 @@
+{
+  "task_id": "custom_07",
+  "tests": [
+    {
+      "id": "custom_07_tc01", "task_id": "custom_07", "name": "线性缩放关键点", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"rawValue": 0, "highLimit": 12.0}, "expected_outputs": {"pressure": 0.0, "sensorFault": false, "highAlarm": false}, "check": "零点"},
+        {"cycle": 1, "inputs": {"rawValue": 13824, "highLimit": 12.0}, "expected_outputs": {"pressure": 8.0, "sensorFault": false, "highAlarm": false}, "check": "中点"},
+        {"cycle": 2, "inputs": {"rawValue": 27648, "highLimit": 12.0}, "expected_outputs": {"pressure": 16.0, "sensorFault": false, "highAlarm": true}, "check": "满量程及高报警"}
+      ],
+      "coverage": ["linear_scaling", "boundary_values", "high_alarm"], "review": {"status": "frozen", "reviewer": "Codex", "notes": ["pressure 比较允许 0.001 绝对误差。"]}
+    },
+    {
+      "id": "custom_07_tc02", "task_id": "custom_07", "name": "上下越界钳位", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"rawValue": -1, "highLimit": 12.0}, "expected_outputs": {"pressure": 0.0, "sensorFault": true, "highAlarm": false}, "check": "下越界"},
+        {"cycle": 1, "inputs": {"rawValue": 27649, "highLimit": 12.0}, "expected_outputs": {"pressure": 16.0, "sensorFault": true, "highAlarm": false}, "check": "上越界且禁止误报警"}
+      ],
+      "coverage": ["range_fault", "clamping"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    },
+    {
+      "id": "custom_07_tc03", "task_id": "custom_07", "name": "报警阈值边界", "initial_state": {},
+      "steps": [
+        {"cycle": 0, "inputs": {"rawValue": 17280, "highLimit": 10.0}, "expected_outputs": {"pressure": 10.0, "sensorFault": false, "highAlarm": true}, "check": "等于阈值报警"},
+        {"cycle": 1, "inputs": {"rawValue": 17279, "highLimit": 10.0}, "expected_outputs": {"sensorFault": false, "highAlarm": false}, "check": "略低于阈值不报警"}
+      ],
+      "coverage": ["alarm_boundary"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+    }
+  ]
+}

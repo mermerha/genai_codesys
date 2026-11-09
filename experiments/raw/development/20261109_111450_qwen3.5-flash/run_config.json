@@ -1,6 +1,0 @@
-{
-  "model": "qwen3.5-flash",
-  "max_repairs": 2,
-  "model_timeout_seconds": 120.0,
-  "template_project": "G:\\Genai_codesys\\codesys\\template\\测试工程.project"
-}

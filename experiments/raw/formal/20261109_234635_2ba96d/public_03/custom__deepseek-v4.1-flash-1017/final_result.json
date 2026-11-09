@@ -1,0 +1,41 @@
+{
+  "task_id": "public_03",
+  "model": "deepseek-v4.1-flash-1017",
+  "final_status": "success",
+  "attempts": 1,
+  "repairs": 0,
+  "first_compile_pass": true,
+  "final_compile_pass": true,
+  "api_models": [
+    "deepseek-v4.1-flash-1017"
+  ],
+  "usage_by_attempt": [
+    {
+      "prompt_tokens": 921,
+      "completion_tokens": 1682,
+      "total_tokens": 2603,
+      "prompt_tokens_details": {
+        "cached_tokens": 896,
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0
+      },
+      "completion_tokens_details": {
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "reasoning_tokens": 1383
+      },
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "input_tokens_details": null,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0,
+      "cost": "¥0.00535"
+    }
+  ],
+  "duration_seconds": 62.922,
+  "test_passed": 3,
+  "test_total": 3,
+  "test_results_file": "test_execution\\test_results.json"
+}

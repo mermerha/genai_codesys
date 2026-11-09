@@ -1,0 +1,66 @@
+{
+  "task_id": "public_19",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "permit": "EmergencyStop 为 TRUE",
+    "manual": "ManualMode",
+    "single_step": "SingleStepMode",
+    "single_cycle": "SingleCycleMode",
+    "continuous": "ContinuousMode",
+    "start_rise": "Start 上升沿",
+    "all_off": "六个动作输出均关闭",
+    "vertical_conflict": "MoveDown 与 MoveUp 同时为 TRUE",
+    "horizontal_conflict": "MoveLeft 与 MoveRight 同时为 TRUE",
+    "grip_conflict": "ActivateGrip 与 ActivateRelease 同时为 TRUE",
+    "action_done": "当前动作限位到达",
+    "waiting": "单步模式等待下一次启动",
+    "cycle_complete": "回到左上位置且本轮完成"
+  },
+  "assumptions": [
+    "四个模式输入互斥；初始位置为左上；夹取和释放反馈最终到达。"
+  ],
+  "properties": [
+    {
+      "id": "public_19_p01",
+      "type": "priority",
+      "description": "急停立即关闭全部动作且不推进序列",
+      "ltl": "G(!permit -> X(all_off))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_19_p02",
+      "type": "safety",
+      "description": "相反动作永不同时输出",
+      "ltl": "G(!(vertical_conflict || horizontal_conflict || grip_conflict))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_19_p03",
+      "type": "transition",
+      "description": "单步模式每次启动只完成一个动作后等待",
+      "ltl": "G((single_step && start_rise) -> F(action_done && waiting))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_19_p04",
+      "type": "completion",
+      "description": "单周期启动后完成一轮并停止",
+      "ltl": "G((single_cycle && start_rise) -> F(cycle_complete && all_off))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_19_p05",
+      "type": "liveness",
+      "description": "连续模式启动后重复完成搬运循环",
+      "ltl": "G((continuous && start_rise) -> GF(cycle_complete))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

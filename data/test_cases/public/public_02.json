@@ -1,0 +1,168 @@
+{
+  "task_id": "public_02",
+  "tests": [
+    {
+      "id": "public_02_tc01",
+      "task_id": "public_02",
+      "name": "混合上升与下降位",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "value": 0
+          },
+          "expected_outputs": {
+            "hasChanged": false,
+            "hasRisingEdges": false,
+            "risingBits": 0,
+            "noOfRisingBits": 0,
+            "hasFallingEdges": false,
+            "fallingBits": 0,
+            "noOfFallingBits": 0
+          },
+          "check": "零值初始化"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "value": 5
+          },
+          "expected_outputs": {
+            "hasChanged": true,
+            "hasRisingEdges": true,
+            "risingBits": 5,
+            "noOfRisingBits": 2,
+            "hasFallingEdges": false,
+            "fallingBits": 0,
+            "noOfFallingBits": 0
+          },
+          "check": "位 0 和 2 上升"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "value": 2
+          },
+          "expected_outputs": {
+            "hasChanged": true,
+            "hasRisingEdges": true,
+            "risingBits": 2,
+            "noOfRisingBits": 1,
+            "hasFallingEdges": true,
+            "fallingBits": 5,
+            "noOfFallingBits": 2
+          },
+          "check": "位 1 上升，位 0 和 2 下降"
+        }
+      ],
+      "coverage": [
+        "rising_edges",
+        "falling_edges",
+        "bit_count"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_02_tc02",
+      "task_id": "public_02",
+      "name": "输入保持不变",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "value": 4294967295
+          },
+          "expected_outputs": {
+            "hasChanged": true,
+            "hasRisingEdges": true,
+            "risingBits": 4294967295,
+            "noOfRisingBits": 32,
+            "hasFallingEdges": false,
+            "fallingBits": 0,
+            "noOfFallingBits": 0
+          },
+          "check": "先通过公开输入建立前值"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "value": 4294967295
+          },
+          "expected_outputs": {
+            "hasChanged": false,
+            "hasRisingEdges": false,
+            "risingBits": 0,
+            "noOfRisingBits": 0,
+            "hasFallingEdges": false,
+            "fallingBits": 0,
+            "noOfFallingBits": 0
+          },
+          "check": "输入保持不变时无边沿"
+        }
+      ],
+      "coverage": [
+        "no_change"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_02_tc03",
+      "task_id": "public_02",
+      "name": "全部位下降",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "value": 4294967295
+          },
+          "expected_outputs": {
+            "hasChanged": true,
+            "hasRisingEdges": true,
+            "risingBits": 4294967295,
+            "noOfRisingBits": 32,
+            "hasFallingEdges": false,
+            "fallingBits": 0,
+            "noOfFallingBits": 0
+          },
+          "check": "先通过公开输入建立全一前值"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "value": 0
+          },
+          "expected_outputs": {
+            "hasChanged": true,
+            "hasRisingEdges": false,
+            "risingBits": 0,
+            "noOfRisingBits": 0,
+            "hasFallingEdges": true,
+            "fallingBits": 4294967295,
+            "noOfFallingBits": 32
+          },
+          "check": "32 位同时下降"
+        }
+      ],
+      "coverage": [
+        "boundary",
+        "falling_edges"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

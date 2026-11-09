@@ -1,0 +1,84 @@
+You generate IEC 61131-3 Structured Text for CODESYS.
+
+Return only one JSON object with exactly these string fields:
+"pou_name", "pou_type", "declaration", "implementation".
+
+Rules:
+- Use the requested POU name and type.
+- Use a plain IEC identifier for the POU name without quotes.
+- The declaration must contain the complete POU header and variable sections.
+- For a FUNCTION_BLOCK, start the declaration with FUNCTION_BLOCK <pou_name> and stop after the final END_VAR. Do not add END_FUNCTION_BLOCK.
+- The implementation must contain only the Structured Text implementation body.
+- Start the implementation directly with executable statements. Do not wrap the whole body in BEGIN ... END; control-structure terminators such as END_IF are allowed.
+- Use CODESYS terminators with underscores, for example END_IF;, END_CASE;, END_FOR;, END_WHILE;, and END_REPEAT;. Never write forms such as END IF;.
+- Do not return explanations or additional fields.
+
+Task:
+{
+  "id": "public_02",
+  "title": "Dual-Word Edge Detection",
+  "difficulty": "easy",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, easy[1]",
+  "requirements": "Write a function block FB that checks for rising and falling edges in each bit of a dual-word (DWord) input value every cycle. The function block should be able to detect and report changes, rising edges, and falling edges in the input value.",
+  "pou_name": "FB_DWordEdgeDetection",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "value",
+      "data_type": "DWORD",
+      "description": "The input value to be checked for changes and edge triggering"
+    },
+    {
+      "direction": "output",
+      "name": "hasChanged",
+      "data_type": "BOOL",
+      "description": "True indicates that the input value has changed"
+    },
+    {
+      "direction": "output",
+      "name": "hasRisingEdges",
+      "data_type": "BOOL",
+      "description": "True indicates that rising edges have occurred in the input value"
+    },
+    {
+      "direction": "output",
+      "name": "risingBits",
+      "data_type": "DWORD",
+      "description": "The bit stream of rising edges, where each bit indicates whether the corresponding input bit has experienced a rising edge (1 for a rising edge, 0 for no rising edge)"
+    },
+    {
+      "direction": "output",
+      "name": "noOfRisingBits",
+      "data_type": "USINT",
+      "description": "The number of rising edges in the input value"
+    },
+    {
+      "direction": "output",
+      "name": "hasFallingEdges",
+      "data_type": "BOOL",
+      "description": "True indicates that falling edges have occurred in the input value"
+    },
+    {
+      "direction": "output",
+      "name": "fallingBits",
+      "data_type": "DWORD",
+      "description": "The bit stream of falling edges, where each bit indicates whether the corresponding input bit has experienced a falling edge (1 for a falling edge, 0 for no falling edge)"
+    },
+    {
+      "direction": "output",
+      "name": "noOfFallingBits",
+      "data_type": "USINT",
+      "description": "The number of falling edges in the input value"
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests."
+    ]
+  }
+}

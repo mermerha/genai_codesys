@@ -1,7 +1,7 @@
 # 数据接口草案
 
-版本：0.3
-状态：单 POU 模型输出接口已冻结；正式题库、LTL 和测试接口仍为草案。
+版本：0.5
+状态：单 POU 模型输出、题库、工具无关 LTL、共享测试标准和自动执行语义已冻结。
 
 目标是让题库、LTL、测试、Agent 和实验分析能够独立开发，通过文件接口集成。
 
@@ -15,7 +15,7 @@
 
 ## 题目记录
 
-正式数据建议每题一个 JSON，最低字段：
+正式数据每题一个 JSON，最低字段：
 
 ```json
 {
@@ -37,9 +37,50 @@
 }
 ```
 
-自建题还需记录：生成提示或原始链接、人工修改、PLC 场景合理性、多样性标签和审核过程。
+自建题还需记录：
+
+```json
+{
+  "provenance": {
+    "source_type": "self_conceived | experience_based | synthetic | public_web",
+    "source_url": null,
+    "creation_process": [],
+    "human_modifications": [],
+    "review_process": []
+  },
+  "plc_rationale": "实际 PLC 场景合理性说明",
+  "diversity_tags": ["任务类型", "控制特征", "难度"]
+}
+```
+
+`public_web` 必须填写原始链接；`synthetic` 必须说明合成过程。所有自建题都必须说明人工修改、审核过程和 PLC 合理性。
 
 `pou_name` 是该题要求模型使用的固定 IEC 标识符；同一道题在全部实验设置下保持一致。
+
+需要 DUT 或 `VAR_IN_OUT` 的题目可增加：
+
+```json
+{
+  "custom_types": [
+    {
+      "name": "ST_Example",
+      "kind": "STRUCT",
+      "fields": [{"name": "value", "data_type": "DINT"}]
+    }
+  ],
+  "compile_context": {
+    "inout_bindings": [
+      {
+        "parameter": "items",
+        "variable": "candidateItems",
+        "data_type": "ARRAY[1..10] OF ST_Example"
+      }
+    ]
+  }
+}
+```
+
+`custom_types` 在临时 CODESYS 工程中创建 DUT；`inout_bindings` 只提供使候选进入真实调用链所需的固定测试变量，不改变题目正式接口。
 
 ## LTL 规约记录
 
@@ -67,6 +108,8 @@
 ```
 
 `tool_expression` 只有在确定 PLCVerif 或其他工具的实际语法后填写，不能凭空假设。
+
+当前 LTL 使用工具无关的 ASCII 写法：`G` 表示始终，`F` 表示最终，`X` 表示下一次扫描后的状态，`GF` 表示反复发生，`!`、`&&`、`||`、`->` 分别表示非、与、或、蕴含。比较、计时完成和状态关系先定义成命题，再在公式中引用；正式接入验证工具时再转换到具体语法。
 
 ## 测试用例记录
 
@@ -97,7 +140,13 @@
 
 正式实验的实际输出不能回写或覆盖标准测试定义。每次运行的 `test_results.json` 另行保存测试 ID、逐步骤实际输出、失败差异和通过状态，保证四种设置共享同一个测试标准。
 
+为减少文件数量，正式测试按任务保存为 `data/test_cases/public/<task_id>.json` 或 `data/test_cases/custom/<task_id>.json`，顶层格式为 `{"task_id": "...", "tests": [...]}`。步骤可包含可选字段 `advance_ms`，表示执行该次扫描前经过的时间，缺省为 0；`expected_outputs` 只列出该步骤需要检查的输出。
+
 `tests/fixtures/` 中允许使用一个顶层对象包装 `task`、`spec` 和 `tests`，以便单文件完成集成测试；正式题库分别存放在 `data/tasks/public/`、`data/tasks/custom/`、`data/specs/` 和 `data/test_cases/`。
+
+每个测试用例执行前对 CODESYS Simulation 做冷复位。`initial_state` 只能引用题目公开接口：输入和 `inout` 值在启动前写入，输出值在启动后的初始化扫描中检查；禁止引用候选内部变量。需要特定内部状态时，必须通过前置测试步骤和公开输入到达。
+
+步骤中的 `inputs` 允许只列出本步骤改变的公开输入，未列出的输入保持上一测试步骤的值。`advance_ms` 表示写入本步骤输入后等待的真实时间；定时边界必须留出足够扫描和脚本通信裕量，不能使用 1 ms 等脆弱边界判断。
 
 ## Agent 候选输出（首版已冻结）
 
@@ -175,12 +224,7 @@ experiments/raw/<run_id>/<task_id>/<framework>__<model>/
 - 开发和实验配置模板统一放在 `config/`；`run_config.json` 保存本次正式运行实际使用的完整配置快照。正式结果以运行目录中的快照为准。
 - 汇总程序只读取原始目录生成 `experiments/processed/`，不得反向修改原始结果。
 
-## 冻结前必须解决的问题
+## 正式实验前仍需确定
 
-- 公共题 JSON 中英文文本的处理方式。
-- 一个文件一题还是单一数组文件。
-- POU、DUT、GVL 等多对象任务的表示方式。
-- LTL 扫描周期语义。
-- 测试步骤中时间、定时器和模拟量的表示方式。
-- CODESYS 错误消息的结构化字段。
+- 正式实验参数、超时、模型版本和基线 Agent。
 - 不同模型 API 返回的 Token、费用和模型版本字段映射。

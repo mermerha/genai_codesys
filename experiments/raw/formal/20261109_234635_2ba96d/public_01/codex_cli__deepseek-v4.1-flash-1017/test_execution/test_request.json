@@ -1,0 +1,391 @@
+{
+  "task": {
+    "id": "public_01",
+    "title": "Automated Filling Line Control",
+    "difficulty": "easy",
+    "source_type": "provided",
+    "source_reference": "大作业题库json/大作业题库.json, easy[0]",
+    "requirements": "An automated filling line responsible for cleaning, filling, capping, and packaging bottles. Each step of the production line is controlled by PLC and triggered by signals from sensors and operators.\nControl requirements:\nWhen the sensor bottleSensor detects a bottle, it triggers the start of the cleaning pump and continues to work.\nAfter cleaning is completed, the operator operates the button cleaningConfirmButton to trigger the cleaning completion signal, automatically starting the filling valve for filling.\nAfter filling is completed, the operator operates the button fillingConfirmButton to trigger the filling completion signal, automatically starting the capping machine for capping.\nAfter capping is completed, the operator operates the button cappingConfirmButton to trigger the capping completion signal, starting the packing machine for packaging.\nAfter packaging is completed, the operator operates the button packingConfirmButton to trigger the packaging completion signal, lighting up the packaging completion indicator light.\nAfter the operator picks up the packaged bottle, they press the confirmation button finishedButton to reset the indicator light and prepare for the next bottle's production cycle.",
+    "pou_name": "FB_AutomatedFillingLine",
+    "pou_type": "FUNCTION_BLOCK",
+    "interface": [
+      {
+        "direction": "input",
+        "name": "bottleSensor",
+        "data_type": "BOOL",
+        "description": "The bottle reaches the sensor, triggering a signal when a bottle is detected"
+      },
+      {
+        "direction": "input",
+        "name": "cleaningConfirmButton",
+        "data_type": "BOOL",
+        "description": "Operator confirmation button, used to confirm the completion of the cleaning process"
+      },
+      {
+        "direction": "input",
+        "name": "fillingConfirmButton",
+        "data_type": "BOOL",
+        "description": "Operator confirmation button, used to confirm the completion of the filling process"
+      },
+      {
+        "direction": "input",
+        "name": "cappingConfirmButton",
+        "data_type": "BOOL",
+        "description": "Operator confirmation button, used to confirm the completion of the capping process"
+      },
+      {
+        "direction": "input",
+        "name": "packingConfirmButton",
+        "data_type": "BOOL",
+        "description": "Operator confirmation button, used to confirm the completion of the packaging process"
+      },
+      {
+        "direction": "input",
+        "name": "finishedButton",
+        "data_type": "BOOL",
+        "description": "Operator confirmation button, used to confirm that the bottle has been picked up"
+      },
+      {
+        "direction": "output",
+        "name": "Pump_Motor",
+        "data_type": "BOOL",
+        "description": "Control output for the operation of the cleaning pump motor"
+      },
+      {
+        "direction": "output",
+        "name": "Filling_Valve",
+        "data_type": "BOOL",
+        "description": "Control output for the operation of the filling valve"
+      },
+      {
+        "direction": "output",
+        "name": "Capping_Machine",
+        "data_type": "BOOL",
+        "description": "Control output for the operation of the capping machine"
+      },
+      {
+        "direction": "output",
+        "name": "Packing_Machine",
+        "data_type": "BOOL",
+        "description": "Control output for the operation of the packing machine"
+      },
+      {
+        "direction": "output",
+        "name": "Completion_Light",
+        "data_type": "BOOL",
+        "description": "Indicator light for packaging completion"
+      }
+    ],
+    "custom_types": [],
+    "review": {
+      "status": "frozen",
+      "reviewer": "Codex",
+      "notes": [
+        "Converted from the teacher-provided public task and reviewed against the frozen specification and tests."
+      ]
+    }
+  },
+  "tests": {
+    "task_id": "public_01",
+    "tests": [
+      {
+        "id": "public_01_tc01",
+        "task_id": "public_01",
+        "name": "完整生产循环",
+        "initial_state": {},
+        "steps": [
+          {
+            "cycle": 0,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": false,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Pump_Motor": false,
+              "Filling_Valve": false,
+              "Capping_Machine": false,
+              "Packing_Machine": false,
+              "Completion_Light": false
+            },
+            "check": "初始停止"
+          },
+          {
+            "cycle": 1,
+            "inputs": {
+              "bottleSensor": true,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": false,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Pump_Motor": true,
+              "Filling_Valve": false,
+              "Capping_Machine": false,
+              "Packing_Machine": false,
+              "Completion_Light": false
+            },
+            "check": "检测到瓶子后清洗"
+          },
+          {
+            "cycle": 2,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": true,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": false,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Pump_Motor": false,
+              "Filling_Valve": true
+            },
+            "check": "清洗确认后灌装"
+          },
+          {
+            "cycle": 3,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": true,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": false,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Filling_Valve": false,
+              "Capping_Machine": true
+            },
+            "check": "灌装确认后旋盖"
+          },
+          {
+            "cycle": 4,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": true,
+              "packingConfirmButton": false,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Capping_Machine": false,
+              "Packing_Machine": true
+            },
+            "check": "旋盖确认后包装"
+          },
+          {
+            "cycle": 5,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": true,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Packing_Machine": false,
+              "Completion_Light": true
+            },
+            "check": "包装确认后完成"
+          },
+          {
+            "cycle": 6,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": false,
+              "finishedButton": true
+            },
+            "expected_outputs": {
+              "Completion_Light": false
+            },
+            "check": "取走成品后复位"
+          }
+        ],
+        "coverage": [
+          "initialization",
+          "normal_flow",
+          "reset"
+        ],
+        "review": {
+          "status": "frozen",
+          "reviewer": "Codex",
+          "notes": []
+        }
+      },
+      {
+        "id": "public_01_tc02",
+        "task_id": "public_01",
+        "name": "越序确认无效",
+        "initial_state": {},
+        "steps": [
+          {
+            "cycle": 0,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": true,
+              "cappingConfirmButton": true,
+              "packingConfirmButton": true,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Pump_Motor": false,
+              "Filling_Valve": false,
+              "Capping_Machine": false,
+              "Packing_Machine": false,
+              "Completion_Light": false
+            },
+            "check": "未开始时忽略越序确认"
+          }
+        ],
+        "coverage": [
+          "invalid_sequence"
+        ],
+        "review": {
+          "status": "frozen",
+          "reviewer": "Codex",
+          "notes": []
+        }
+      },
+      {
+        "id": "public_01_tc03",
+        "task_id": "public_01",
+        "name": "完成灯保持到确认",
+        "initial_state": {},
+        "steps": [
+          {
+            "cycle": 0,
+            "inputs": {
+              "bottleSensor": true,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": false,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Pump_Motor": true,
+              "Completion_Light": false
+            },
+            "check": "通过公开输入开始生产循环"
+          },
+          {
+            "cycle": 1,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": true,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": false,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Pump_Motor": false,
+              "Filling_Valve": true
+            },
+            "check": "进入灌装阶段"
+          },
+          {
+            "cycle": 2,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": true,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": false,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Filling_Valve": false,
+              "Capping_Machine": true
+            },
+            "check": "进入旋盖阶段"
+          },
+          {
+            "cycle": 3,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": true,
+              "packingConfirmButton": false,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Capping_Machine": false,
+              "Packing_Machine": true
+            },
+            "check": "进入包装阶段"
+          },
+          {
+            "cycle": 4,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": true,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Packing_Machine": false,
+              "Completion_Light": true
+            },
+            "check": "通过公开输入到达完成状态"
+          },
+          {
+            "cycle": 5,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": false,
+              "finishedButton": false
+            },
+            "expected_outputs": {
+              "Completion_Light": true
+            },
+            "check": "未确认取走时保持完成灯"
+          },
+          {
+            "cycle": 6,
+            "inputs": {
+              "bottleSensor": false,
+              "cleaningConfirmButton": false,
+              "fillingConfirmButton": false,
+              "cappingConfirmButton": false,
+              "packingConfirmButton": false,
+              "finishedButton": true
+            },
+            "expected_outputs": {
+              "Completion_Light": false
+            },
+            "check": "确认后熄灭"
+          }
+        ],
+        "coverage": [
+          "latching",
+          "reset"
+        ],
+        "review": {
+          "status": "frozen",
+          "reviewer": "Codex",
+          "notes": []
+        }
+      }
+    ]
+  },
+  "settle_ms": 50
+}

@@ -1,0 +1,25 @@
+{
+  "task_id": "public_01",
+  "framework": "codex_cli",
+  "framework_version": "codex-cli 0.167.0-alpha.3.2",
+  "model": "qwen3-coder-flash",
+  "final_status": "test_failure",
+  "attempts": 1,
+  "repairs": 0,
+  "first_compile_pass": true,
+  "final_compile_pass": true,
+  "usage_by_attempt": [
+    {
+      "input_tokens": 53389,
+      "cached_input_tokens": 0,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 473,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "duration_seconds": 88.594,
+  "failure_reason": "shared_tests_failed",
+  "test_passed": 1,
+  "test_total": 3,
+  "test_results_file": "test_execution\\test_results.json"
+}

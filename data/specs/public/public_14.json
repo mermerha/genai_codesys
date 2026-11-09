@@ -1,0 +1,43 @@
+{
+  "task_id": "public_14",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "valid_ipv4": "文本为四段 0..255 的十进制数字",
+    "valid_ipv4_zero": "文本为合法地址 0.0.0.0",
+    "invalid_ipv4": "格式、字符、段数或范围非法",
+    "network_order_correct": "ipValue 按网络字节序组装",
+    "zero_output": "ipValue 为 0"
+  },
+  "assumptions": [],
+  "properties": [
+    {
+      "id": "public_14_p01",
+      "type": "functional",
+      "description": "合法地址按网络字节序解析",
+      "ltl": "G(valid_ipv4 -> X(network_order_correct))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_14_p02",
+      "type": "safety",
+      "description": "任意非法地址输出 0",
+      "ltl": "G(invalid_ipv4 -> X(zero_output))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_14_p03",
+      "type": "boundary",
+      "description": "合法地址 0.0.0.0 也输出 0",
+      "ltl": "G(valid_ipv4_zero -> X(zero_output))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。",
+      "valid_ipv4_zero 表示合法文本 0.0.0.0。"
+    ]
+  }
+}

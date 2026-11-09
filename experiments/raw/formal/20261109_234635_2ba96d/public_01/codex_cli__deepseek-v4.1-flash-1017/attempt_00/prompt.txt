@@ -1,0 +1,97 @@
+Solve the CODESYS Structured Text task below.
+
+Do not use shell commands, files, tools, the network, or test cases. Return one candidate directly as the final JSON object. When compiler feedback is provided, revise the previous candidate using only that feedback and the task.
+
+Candidate JSON must contain exactly `pou_name`, `pou_type`, `declaration`, and `implementation`.
+Use exactly the `pou_name`, `pou_type`, and interface from the task. `declaration` must be the complete POU declaration, including the `PROGRAM` or `FUNCTION_BLOCK` header and its matching end keyword. `implementation` contains only the ST body.
+
+TASK:
+{
+  "id": "public_01",
+  "title": "Automated Filling Line Control",
+  "difficulty": "easy",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, easy[0]",
+  "requirements": "An automated filling line responsible for cleaning, filling, capping, and packaging bottles. Each step of the production line is controlled by PLC and triggered by signals from sensors and operators.\nControl requirements:\nWhen the sensor bottleSensor detects a bottle, it triggers the start of the cleaning pump and continues to work.\nAfter cleaning is completed, the operator operates the button cleaningConfirmButton to trigger the cleaning completion signal, automatically starting the filling valve for filling.\nAfter filling is completed, the operator operates the button fillingConfirmButton to trigger the filling completion signal, automatically starting the capping machine for capping.\nAfter capping is completed, the operator operates the button cappingConfirmButton to trigger the capping completion signal, starting the packing machine for packaging.\nAfter packaging is completed, the operator operates the button packingConfirmButton to trigger the packaging completion signal, lighting up the packaging completion indicator light.\nAfter the operator picks up the packaged bottle, they press the confirmation button finishedButton to reset the indicator light and prepare for the next bottle's production cycle.",
+  "pou_name": "FB_AutomatedFillingLine",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "bottleSensor",
+      "data_type": "BOOL",
+      "description": "The bottle reaches the sensor, triggering a signal when a bottle is detected"
+    },
+    {
+      "direction": "input",
+      "name": "cleaningConfirmButton",
+      "data_type": "BOOL",
+      "description": "Operator confirmation button, used to confirm the completion of the cleaning process"
+    },
+    {
+      "direction": "input",
+      "name": "fillingConfirmButton",
+      "data_type": "BOOL",
+      "description": "Operator confirmation button, used to confirm the completion of the filling process"
+    },
+    {
+      "direction": "input",
+      "name": "cappingConfirmButton",
+      "data_type": "BOOL",
+      "description": "Operator confirmation button, used to confirm the completion of the capping process"
+    },
+    {
+      "direction": "input",
+      "name": "packingConfirmButton",
+      "data_type": "BOOL",
+      "description": "Operator confirmation button, used to confirm the completion of the packaging process"
+    },
+    {
+      "direction": "input",
+      "name": "finishedButton",
+      "data_type": "BOOL",
+      "description": "Operator confirmation button, used to confirm that the bottle has been picked up"
+    },
+    {
+      "direction": "output",
+      "name": "Pump_Motor",
+      "data_type": "BOOL",
+      "description": "Control output for the operation of the cleaning pump motor"
+    },
+    {
+      "direction": "output",
+      "name": "Filling_Valve",
+      "data_type": "BOOL",
+      "description": "Control output for the operation of the filling valve"
+    },
+    {
+      "direction": "output",
+      "name": "Capping_Machine",
+      "data_type": "BOOL",
+      "description": "Control output for the operation of the capping machine"
+    },
+    {
+      "direction": "output",
+      "name": "Packing_Machine",
+      "data_type": "BOOL",
+      "description": "Control output for the operation of the packing machine"
+    },
+    {
+      "direction": "output",
+      "name": "Completion_Light",
+      "data_type": "BOOL",
+      "description": "Indicator light for packaging completion"
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests."
+    ]
+  }
+}
+
+COMPILER FEEDBACK:
+No compiler feedback; produce the first candidate.

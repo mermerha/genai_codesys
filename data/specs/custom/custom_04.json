@@ -1,0 +1,24 @@
+{
+  "task_id": "custom_04",
+  "state_semantics": "每个步骤执行一次 PLC 扫描；advance_ms 驱动阶段定时，X 表示扫描后的灯态。",
+  "propositions": {
+    "disabled": "enable 为假",
+    "request": "请求已锁存",
+    "yellow_stage": "处于 3 秒车辆黄灯阶段",
+    "cross_stage": "处于 7 秒车辆红灯和行人绿灯阶段",
+    "cycle_done": "行人通行阶段完成",
+    "safe_all_red": "vehicleRed 且 pedestrianRed，其他灯灭",
+    "normal": "vehicleGreen 且 pedestrianRed，其他灯灭",
+    "yellow": "vehicleYellow 且 pedestrianRed，其他灯灭",
+    "pedestrian_go": "vehicleRed 且 pedestrianGreen，其他灯灭",
+    "conflicting_green": "vehicleGreen 且 pedestrianGreen"
+  },
+  "assumptions": [],
+  "properties": [
+    {"id": "custom_04_p01", "type": "safety", "description": "禁用时进入安全灯态", "ltl": "G(disabled -> X(safe_all_red))", "tool_expression": null},
+    {"id": "custom_04_p02", "type": "safety", "description": "车辆与行人绿灯不冲突", "ltl": "G(!conflicting_green)", "tool_expression": null},
+    {"id": "custom_04_p03", "type": "sequence", "description": "请求先进入黄灯再进入行人通行", "ltl": "G(request -> F(yellow_stage)) && G(yellow_stage -> F(cross_stage))", "tool_expression": null},
+    {"id": "custom_04_p04", "type": "response", "description": "通行周期完成后恢复正常", "ltl": "G(cycle_done -> X(normal))", "tool_expression": null}
+  ],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["计时阶段由测试的 advance_ms 覆盖。"]}
+}

@@ -1,0 +1,14 @@
+2026-11-09T15:56:39.556767Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:39.565332Z  WARN codex_core::shell_snapshot: Failed to create shell snapshot for powershell: Shell snapshot not supported yet for PowerShell
+2026-11-09T15:56:39.683512Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:39.688091Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:39.688450Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:39.696945Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:39.707256Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:39.707599Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:39.708031Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:39.723281Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:39.726145Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:41.058685Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:41.059783Z  WARN codex_models_manager::model_info: Unknown model qwen3-coder-flash is used. This will use fallback model metadata.
+2026-11-09T15:56:59.933839Z  WARN codex_analytics::client: failed to send events request: error sending request for url (https://chatgpt.com/backend-api/codex/analytics-events/events)

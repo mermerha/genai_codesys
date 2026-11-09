@@ -1,0 +1,83 @@
+{
+  "id": "public_18",
+  "title": "FIFO First-In-First-Out Queue",
+  "difficulty": "hard",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, hard[3]",
+  "requirements": "Implement a DINT FIFO circular queue with a fixed capacity of 10 elements. Each rising edge of enqueue appends item when the queue is not full. Each rising edge of dequeue removes the front value and writes it back to item when the queue is not empty. The caller does not request enqueue and dequeue in the same scan. reset empties the queue and has priority. elementCount reports 0..10. Return status 16#0000 for idle, reset and successful operations, 16#8001 for dequeue on empty, and 16#8002 for enqueue on full. The queue is empty on first invocation; head and tail remain internal.",
+  "pou_name": "FB_FIFOQueue",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "enqueue",
+      "data_type": "BOOL",
+      "description": "Enqueue request; one operation per rising edge."
+    },
+    {
+      "direction": "input",
+      "name": "dequeue",
+      "data_type": "BOOL",
+      "description": "Dequeue request; one operation per rising edge."
+    },
+    {
+      "direction": "input",
+      "name": "reset",
+      "data_type": "BOOL",
+      "description": "TRUE resets the queue to empty; takes priority over enqueue and dequeue."
+    },
+    {
+      "direction": "output",
+      "name": "elementCount",
+      "data_type": "DINT",
+      "description": "Current number of valid elements, from zero through the queue capacity."
+    },
+    {
+      "direction": "output",
+      "name": "status",
+      "data_type": "WORD",
+      "description": "Invocation status: 16#0000 no error, 16#8001 dequeue from an empty queue, 16#8002 enqueue into a full queue."
+    },
+    {
+      "direction": "inout",
+      "name": "item",
+      "data_type": "DINT",
+      "description": "Value to enqueue or dequeued value returned by reference."
+    },
+    {
+      "direction": "inout",
+      "name": "buffer",
+      "data_type": "ARRAY[1..10] OF DINT",
+      "description": "Fixed ten-element queue storage passed by reference."
+    }
+  ],
+  "custom_types": [],
+  "compile_context": {
+    "inout_bindings": [
+      {
+        "parameter": "item",
+        "variable": "candidateItem",
+        "data_type": "DINT"
+      },
+      {
+        "parameter": "buffer",
+        "variable": "candidateBuffer",
+        "data_type": "ARRAY[1..10] OF DINT"
+      }
+    ]
+  },
+  "adaptation_record": {
+    "original_interface": "VARIANT item and VARIANT buffer with caller-defined element type and capacity",
+    "adapted_interface": "DINT item and ARRAY[1..10] OF DINT buffer",
+    "reason": "The installed CODESYS V3.5 SP22 Patch 4 compiler rejects VARIANT and permits generic ANY only as an input, not as writable VAR_IN_OUT.",
+    "fairness": "All four experiment settings use this same adapted task and test standard."
+  },
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "Converted from the teacher-provided public task and reviewed against the frozen specification and tests.",
+      "Environment adaptation recorded: the generic FIFO is fixed to DINT with capacity 10 because writable VARIANT/ANY is unsupported."
+    ]
+  }
+}

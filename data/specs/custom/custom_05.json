@@ -1,0 +1,22 @@
+{
+  "task_id": "custom_05",
+  "state_semantics": "每个步骤执行一次 PLC 扫描，X 表示该扫描后的泵输出。",
+  "propositions": {
+    "demand": "enable 且 levelHigh",
+    "p1_fault": "pump1Fault 为真",
+    "p2_fault": "pump2Fault 为真",
+    "p1_run": "pump1Run 为真",
+    "p2_run": "pump2Run 为真",
+    "both_failed": "bothFailed 为真",
+    "cycle_end": "levelHigh 从真变假",
+    "preferred_alternated": "下一周期首选泵已切换"
+  },
+  "assumptions": [],
+  "properties": [
+    {"id": "custom_05_p01", "type": "safety", "description": "两泵永不同时运行", "ltl": "G(!(p1_run && p2_run))", "tool_expression": null},
+    {"id": "custom_05_p02", "type": "safety", "description": "故障泵不得运行", "ltl": "G(p1_fault -> X(!p1_run)) && G(p2_fault -> X(!p2_run))", "tool_expression": null},
+    {"id": "custom_05_p03", "type": "response", "description": "双故障产生不可用报警", "ltl": "G((p1_fault && p2_fault) -> X(both_failed && !p1_run && !p2_run))", "tool_expression": null},
+    {"id": "custom_05_p04", "type": "response", "description": "需求结束后轮换首选泵", "ltl": "G(cycle_end -> X(preferred_alternated))", "tool_expression": null}
+  ],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["轮值通过连续两个需求周期测试。"]}
+}

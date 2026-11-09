@@ -1,0 +1,66 @@
+{
+  "task_id": "public_20",
+  "state_semantics": "每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance_ms 判定。",
+  "propositions": {
+    "manual": "Mode 为 FALSE",
+    "automatic": "Mode 为 TRUE",
+    "ForwardButton": "手动正转按钮",
+    "ReverseButton": "手动反转按钮",
+    "forward": "MotorForward",
+    "reverse": "MotorReverse",
+    "qualified": "100 <= weight <= 200",
+    "unqualified": "weight < 100 或 weight > 200",
+    "weight_done": "SensorWeight 与 weightComplete",
+    "kick": "kick",
+    "temp_correct": "firingTemp = 500 + (weight - 100) * 0.5",
+    "at_output": "SensorOutput",
+    "complete": "CompletionLight"
+  },
+  "assumptions": [
+    "自动模式一次只处理一个产品。"
+  ],
+  "properties": [
+    {
+      "id": "public_20_p01",
+      "type": "safety",
+      "description": "电机正反转永不同时输出",
+      "ltl": "G(!(forward && reverse))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_20_p02",
+      "type": "functional",
+      "description": "手动模式按互锁按钮控制电机",
+      "ltl": "G((manual && ForwardButton && !ReverseButton) -> X(forward && !reverse)) && G((manual && ReverseButton && !ForwardButton) -> X(!forward && reverse))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_20_p03",
+      "type": "safety",
+      "description": "称重不合格时剔除且不向烧制站输送",
+      "ltl": "G((automatic && weight_done && unqualified) -> X(kick && !forward))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_20_p04",
+      "type": "functional",
+      "description": "称重合格时温度线性映射并向前输送",
+      "ltl": "G((automatic && weight_done && qualified) -> X(!kick && temp_correct && forward))",
+      "tool_expression": null
+    },
+    {
+      "id": "public_20_p05",
+      "type": "response",
+      "description": "成品到达点亮完成灯，离开后熄灭",
+      "ltl": "G((automatic && at_output) -> X(complete)) && G((automatic && !at_output) -> X(!complete))",
+      "tool_expression": null
+    }
+  ],
+  "review": {
+    "status": "frozen",
+    "reviewer": "Codex",
+    "notes": [
+      "已按工具无关 LTL 冻结；tool_expression 在确定验证工具后填写。"
+    ]
+  }
+}

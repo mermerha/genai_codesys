@@ -1,0 +1,25 @@
+{
+  "task_id": "fixture_motor_start_stop",
+  "framework": "codex_cli",
+  "framework_version": "codex-cli 0.167.0-alpha.3.2",
+  "model": "qwen3-coder-flash",
+  "final_status": "success",
+  "attempts": 1,
+  "repairs": 0,
+  "first_compile_pass": true,
+  "final_compile_pass": true,
+  "usage_by_attempt": [
+    {
+      "input_tokens": 52817,
+      "cached_input_tokens": 51456,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 129,
+      "reasoning_output_tokens": 0
+    }
+  ],
+  "duration_seconds": 67.578,
+  "failure_reason": [],
+  "test_passed": 2,
+  "test_total": 2,
+  "test_results_file": "test_execution\\test_results.json"
+}

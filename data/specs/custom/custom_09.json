@@ -1,0 +1,21 @@
+{
+  "task_id": "custom_09",
+  "state_semantics": "每个步骤执行一次 PLC 扫描；advance_ms 驱动 2 秒看门狗，X 表示扫描后的状态。",
+  "propositions": {
+    "safe_run": "runCommand 且非 emergencyStop 且非 jamAlarm",
+    "pulse": "sensorPulse 为真",
+    "watchdog_expired": "运行期间距最近脉冲已满 2 秒",
+    "emergency": "emergencyStop 为真",
+    "valid_reset": "reset 且非 runCommand 且非 emergencyStop",
+    "run": "motorRun 为真",
+    "jam": "jamAlarm 为真"
+  },
+  "assumptions": [],
+  "properties": [
+    {"id": "custom_09_p01", "type": "response", "description": "安全运行命令启动电机", "ltl": "G(safe_run -> X(run))", "tool_expression": null},
+    {"id": "custom_09_p02", "type": "safety", "description": "看门狗超时停机并锁存堵料", "ltl": "G(watchdog_expired -> X(!run && jam))", "tool_expression": null},
+    {"id": "custom_09_p03", "type": "safety", "description": "急停立即停机", "ltl": "G(emergency -> X(!run))", "tool_expression": null},
+    {"id": "custom_09_p04", "type": "response", "description": "仅安全静止时允许复位", "ltl": "G(valid_reset -> X(!jam)) && G((jam && !valid_reset) -> X(jam))", "tool_expression": null}
+  ],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["每次 pulse 重新开始看门狗计时。"]}
+}

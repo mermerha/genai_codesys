@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "pou_name": {"type": "string"},
+    "pou_type": {"type": "string", "enum": ["PROGRAM", "FUNCTION_BLOCK"]},
+    "declaration": {"type": "string"},
+    "implementation": {"type": "string"}
+  },
+  "required": ["pou_name", "pou_type", "declaration", "implementation"]
+}

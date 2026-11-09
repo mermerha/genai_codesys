@@ -1,0 +1,872 @@
+{
+  "task_id": "public_19",
+  "tests": [
+    {
+      "id": "public_19_tc01",
+      "task_id": "public_19",
+      "name": "手动互锁、限位与急停",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "ManualMode": true,
+            "SingleStepMode": false,
+            "SingleCycleMode": false,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": true,
+            "UpButton": true,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": false,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveDown": false,
+            "MoveUp": false
+          },
+          "check": "上下按钮冲突时均不动作"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "ManualMode": true,
+            "SingleStepMode": false,
+            "SingleCycleMode": false,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": true,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": false,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveDown": true,
+            "MoveUp": false
+          },
+          "check": "未到下限时下移"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "ManualMode": true,
+            "SingleStepMode": false,
+            "SingleCycleMode": false,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": true,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": true,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": false,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveDown": false
+          },
+          "check": "到下限停止"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "ManualMode": true,
+            "SingleStepMode": false,
+            "SingleCycleMode": false,
+            "ContinuousMode": false,
+            "EmergencyStop": false,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": false,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveDown": false,
+            "MoveUp": false,
+            "MoveLeft": false,
+            "MoveRight": false,
+            "ActivateGrip": false,
+            "ActivateRelease": false
+          },
+          "check": "急停关闭所有动作"
+        }
+      ],
+      "coverage": [
+        "manual_mode",
+        "interlock",
+        "limit",
+        "emergency_stop"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_19_tc02",
+      "task_id": "public_19",
+      "name": "单步执行前两个动作",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": true,
+            "SingleCycleMode": false,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": true,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": false,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveDown": true
+          },
+          "check": "第一次启动执行下移"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": true,
+            "SingleCycleMode": false,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": false,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveDown": true
+          },
+          "check": "未到限位继续下移"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": true,
+            "SingleCycleMode": false,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": true,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": false,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveDown": false,
+            "ActivateGrip": false
+          },
+          "check": "到位后等待"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": true,
+            "SingleCycleMode": false,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": true,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": true,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": false,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "ActivateGrip": true
+          },
+          "check": "第二次启动执行夹取"
+        },
+        {
+          "cycle": 4,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": true,
+            "SingleCycleMode": false,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": true,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "ActivateGrip": false
+          },
+          "check": "夹取完成后等待"
+        }
+      ],
+      "coverage": [
+        "single_step",
+        "start_edge",
+        "feedback"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_19_tc03",
+      "task_id": "public_19",
+      "name": "单周期完整动作序列",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": true,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": false,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveDown": true
+          },
+          "check": "启动下移"
+        },
+        {
+          "cycle": 1,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": true,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": false,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveDown": false
+          },
+          "check": "下移完成"
+        },
+        {
+          "cycle": 2,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": true,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": false,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "ActivateGrip": true
+          },
+          "check": "夹取"
+        },
+        {
+          "cycle": 3,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "ActivateGrip": false
+          },
+          "check": "夹取完成"
+        },
+        {
+          "cycle": 4,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveUp": true
+          },
+          "check": "上移"
+        },
+        {
+          "cycle": 5,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": true,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveUp": false
+          },
+          "check": "到上限"
+        },
+        {
+          "cycle": 6,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": true,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveRight": true
+          },
+          "check": "右移"
+        },
+        {
+          "cycle": 7,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": true,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": true,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveRight": false
+          },
+          "check": "到右限停止"
+        },
+        {
+          "cycle": 8,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": true,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": true,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveDown": true
+          },
+          "check": "第二次下移"
+        },
+        {
+          "cycle": 9,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": true,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": true,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "MoveDown": false
+          },
+          "check": "到下限停止"
+        },
+        {
+          "cycle": 10,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": true,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": true,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {
+            "ActivateRelease": true
+          },
+          "check": "释放"
+        },
+        {
+          "cycle": 11,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": true,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": true,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": true
+          },
+          "expected_outputs": {
+            "ActivateRelease": false
+          },
+          "check": "释放完成"
+        },
+        {
+          "cycle": 12,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": true,
+            "UpLimitSwitch": false,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": true,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": true
+          },
+          "expected_outputs": {
+            "MoveUp": true
+          },
+          "check": "第二次上移"
+        },
+        {
+          "cycle": 13,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": true,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": true,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": true
+          },
+          "expected_outputs": {
+            "MoveUp": false
+          },
+          "check": "到上限停止"
+        },
+        {
+          "cycle": 14,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": true,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": true,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": true
+          },
+          "expected_outputs": {
+            "MoveLeft": true
+          },
+          "check": "返回左侧"
+        },
+        {
+          "cycle": 15,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": true,
+            "ContinuousMode": false,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": true,
+            "LeftLimitSwitch": true,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": true
+          },
+          "expected_outputs": {
+            "MoveDown": false,
+            "MoveUp": false,
+            "MoveLeft": false,
+            "MoveRight": false,
+            "ActivateGrip": false,
+            "ActivateRelease": false
+          },
+          "check": "回到左上后单周期停止"
+        }
+      ],
+      "coverage": [
+        "single_cycle",
+        "full_sequence",
+        "cycle_stop"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    },
+    {
+      "id": "public_19_tc04",
+      "task_id": "public_19",
+      "name": "连续模式完成后重新开始",
+      "initial_state": {},
+      "steps": [
+        {
+          "cycle": 0,
+          "inputs": {
+            "ManualMode": false, "SingleStepMode": false, "SingleCycleMode": false, "ContinuousMode": true,
+            "EmergencyStop": true, "Start": true,
+            "DownButton": false, "UpButton": false, "LeftButton": false, "RightButton": false,
+            "GripButton": false, "ReleaseButton": false,
+            "DownLimitSwitch": false, "UpLimitSwitch": false, "LeftLimitSwitch": false, "RightLimitSwitch": false,
+            "GripLimitSwitch": false, "ReleaseLimitSwitch": false
+          },
+          "expected_outputs": {"MoveDown": true},
+          "check": "通过公开输入启动连续循环"
+        },
+        {"cycle": 1, "inputs": {"Start": false, "DownLimitSwitch": true}, "expected_outputs": {"MoveDown": false}, "check": "第一次下移完成"},
+        {"cycle": 2, "inputs": {}, "expected_outputs": {"ActivateGrip": true}, "check": "夹取"},
+        {"cycle": 3, "inputs": {"DownLimitSwitch": false, "GripLimitSwitch": true}, "expected_outputs": {"ActivateGrip": false}, "check": "夹取完成"},
+        {"cycle": 4, "inputs": {}, "expected_outputs": {"MoveUp": true}, "check": "第一次上移"},
+        {"cycle": 5, "inputs": {"UpLimitSwitch": true}, "expected_outputs": {"MoveUp": false}, "check": "第一次上移完成"},
+        {"cycle": 6, "inputs": {}, "expected_outputs": {"MoveRight": true}, "check": "右移"},
+        {"cycle": 7, "inputs": {"RightLimitSwitch": true}, "expected_outputs": {"MoveRight": false}, "check": "右移完成"},
+        {"cycle": 8, "inputs": {}, "expected_outputs": {"MoveDown": true}, "check": "第二次下移"},
+        {"cycle": 9, "inputs": {"DownLimitSwitch": true, "UpLimitSwitch": false}, "expected_outputs": {"MoveDown": false}, "check": "第二次下移完成"},
+        {"cycle": 10, "inputs": {}, "expected_outputs": {"ActivateRelease": true}, "check": "释放"},
+        {"cycle": 11, "inputs": {"ReleaseLimitSwitch": true}, "expected_outputs": {"ActivateRelease": false}, "check": "释放完成"},
+        {"cycle": 12, "inputs": {}, "expected_outputs": {"MoveUp": true}, "check": "第二次上移"},
+        {"cycle": 13, "inputs": {"DownLimitSwitch": false, "UpLimitSwitch": true}, "expected_outputs": {"MoveUp": false}, "check": "第二次上移完成"},
+        {
+          "cycle": 14,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": false,
+            "ContinuousMode": true,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": true,
+            "LeftLimitSwitch": false,
+            "RightLimitSwitch": true,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": true
+          },
+          "expected_outputs": {
+            "MoveLeft": true
+          },
+          "check": "循环末步左移"
+        },
+        {
+          "cycle": 15,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": false,
+            "ContinuousMode": true,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": true,
+            "LeftLimitSwitch": true,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": true
+          },
+          "expected_outputs": {
+            "MoveLeft": false
+          },
+          "check": "到左限完成一轮"
+        },
+        {
+          "cycle": 16,
+          "inputs": {
+            "ManualMode": false,
+            "SingleStepMode": false,
+            "SingleCycleMode": false,
+            "ContinuousMode": true,
+            "EmergencyStop": true,
+            "Start": false,
+            "DownButton": false,
+            "UpButton": false,
+            "LeftButton": false,
+            "RightButton": false,
+            "GripButton": false,
+            "ReleaseButton": false,
+            "DownLimitSwitch": false,
+            "UpLimitSwitch": true,
+            "LeftLimitSwitch": true,
+            "RightLimitSwitch": false,
+            "GripLimitSwitch": true,
+            "ReleaseLimitSwitch": true
+          },
+          "expected_outputs": {
+            "MoveDown": true
+          },
+          "check": "无需再次启动即开始下一轮"
+        }
+      ],
+      "coverage": [
+        "continuous_mode",
+        "cycle_restart"
+      ],
+      "review": {
+        "status": "frozen",
+        "reviewer": "Codex",
+        "notes": []
+      }
+    }
+  ]
+}

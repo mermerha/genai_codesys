@@ -1,0 +1,38 @@
+{
+  "task_id": "public_19",
+  "model": "glm-5.3",
+  "final_status": "compile_success",
+  "attempts": 1,
+  "repairs": 0,
+  "first_compile_pass": true,
+  "final_compile_pass": true,
+  "api_models": [
+    "glm-5.3"
+  ],
+  "usage_by_attempt": [
+    {
+      "prompt_tokens": 1492,
+      "completion_tokens": 8346,
+      "total_tokens": 9838,
+      "prompt_tokens_details": {
+        "cached_tokens": 1472,
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0
+      },
+      "completion_tokens_details": {
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "reasoning_tokens": 7180
+      },
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "input_tokens_details": null,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0,
+      "cost": "¥0.187066"
+    }
+  ],
+  "duration_seconds": 98.032
+}
