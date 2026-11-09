@@ -69,7 +69,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         max_repairs=args.max_repairs,
         model_timeout_seconds=args.model_timeout,
     )
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(result, ensure_ascii=True, indent=2))
     print(f"Artifacts: {output_dir.resolve()}")
     return 0 if result["final_status"] == "compile_success" else 1
 

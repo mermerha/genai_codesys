@@ -1,0 +1,14 @@
+{
+  "task_id": "fixture_motor_start_stop",
+  "model": "qwen3.5-flash",
+  "final_status": "model_error",
+  "attempts": 2,
+  "repairs": 1,
+  "first_compile_pass": false,
+  "final_compile_pass": false,
+  "duration_seconds": 284.297,
+  "failure_reason": {
+    "type": "ModelApiError",
+    "message": "DMXAPI request timed out after 120.0 seconds"
+  }
+}

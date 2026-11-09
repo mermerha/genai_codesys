@@ -1,0 +1,88 @@
+{
+  "success": false, 
+  "exception": null, 
+  "replaced_pou": "FixtureMotorStartStop", 
+  "messages": [
+    {
+      "severity": "information", 
+      "number": null, 
+      "text": "未安装离线帮助", 
+      "category": "Offline Help", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "------ 开始构建应用程序 Device.Application -------", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "代码典型化...", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "error", 
+      "number": "189", 
+      "text": "应该用';' 替换'IF'", 
+      "category": "编译", 
+      "position": "行2,列1 (Impl)", 
+      "object": "FixtureMotorStartStop"
+    }, 
+    {
+      "severity": "warning", 
+      "number": "139", 
+      "text": "代码'BEGIN;\r\n'不可能执行到.这是有目的的吗？", 
+      "category": "编译", 
+      "position": "行1,列1 (Impl)", 
+      "object": "FixtureMotorStartStop"
+    }, 
+    {
+      "severity": "error", 
+      "number": "190", 
+      "text": "应该采用';' 取代end of POU", 
+      "category": "编译", 
+      "position": "行10,列1 (Impl)", 
+      "object": "FixtureMotorStartStop"
+    }, 
+    {
+      "severity": "warning", 
+      "number": "139", 
+      "text": "代码'END;\r\n'不可能执行到.这是有目的的吗？", 
+      "category": "编译", 
+      "position": "行9,列1 (Impl)", 
+      "object": "FixtureMotorStartStop"
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "编译完成--2错误,2警告", 
+      "category": "编译", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "其他代码检查...", 
+      "category": "附加代码检查", 
+      "position": null, 
+      "object": null
+    }, 
+    {
+      "severity": "text", 
+      "number": null, 
+      "text": "其他代码检查完成-0 个错误", 
+      "category": "附加代码检查", 
+      "position": null, 
+      "object": null
+    }
+  ], 
+  "project_path": "G:\\Genai_codesys\\experiments\\raw\\development\\20261109_111450_qwen3.5-flash\\attempt_00\\compile\\candidate.project"
+}
