@@ -31,6 +31,7 @@ class AgentLoopTests(unittest.TestCase):
         ]
 
         def fake_chat(**kwargs):
+            self.assertEqual(kwargs["reasoning_effort"], "low")
             payload = model_outputs.pop(0)
             content = json.dumps(payload)
             return ChatCompletion(
@@ -80,6 +81,7 @@ class AgentLoopTests(unittest.TestCase):
                 model="test-model",
                 template_project="template.project",
                 output_dir=run_dir,
+                reasoning_effort="low",
                 chat_function=fake_chat,
                 compile_function=fake_compile,
             )
@@ -87,6 +89,10 @@ class AgentLoopTests(unittest.TestCase):
             self.assertEqual(result["final_status"], "compile_success")
             self.assertEqual(result["repairs"], 1)
             self.assertEqual(result["api_models"], ["test-model", "test-model"])
+            run_config = json.loads(
+                (run_dir / "run_config.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(run_config["reasoning_effort"], "low")
             self.assertTrue((run_dir / "attempt_00" / "model_response.json").is_file())
             self.assertTrue((run_dir / "attempt_01" / "candidate.json").is_file())
             repair_prompt = (run_dir / "attempt_01" / "prompt.txt").read_text(

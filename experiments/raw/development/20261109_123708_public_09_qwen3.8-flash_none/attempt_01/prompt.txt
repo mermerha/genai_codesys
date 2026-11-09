@@ -1,0 +1,107 @@
+You repair IEC 61131-3 Structured Text for CODESYS.
+
+Return only one corrected JSON object with exactly these string fields:
+"pou_name", "pou_type", "declaration", "implementation".
+
+Rules:
+- Keep the requested interface and behavior.
+- Correct the reported parsing or compiler errors.
+- Use a plain IEC identifier for the POU name without quotes.
+- The declaration must contain the complete POU header and variable sections.
+- For a FUNCTION_BLOCK, start the declaration with FUNCTION_BLOCK <pou_name> and stop after the final END_VAR. Do not add END_FUNCTION_BLOCK.
+- The implementation must contain only the Structured Text implementation body.
+- Start the implementation directly with executable statements. Do not wrap the whole body in BEGIN ... END; control-structure terminators such as END_IF are allowed.
+- Use CODESYS terminators with underscores, for example END_IF;, END_CASE;, END_FOR;, END_WHILE;, and END_REPEAT;. Never write forms such as END IF;.
+- Do not return explanations or additional fields.
+
+Task:
+{
+  "id": "public_09",
+  "title": "Calculate Moving Average",
+  "difficulty": "medium",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, medium[2]",
+  "requirements": "Implement a moving arithmetic mean function block with a window size from 1 through 100. When reset is TRUE, reset the stored samples and average. When windowSize is outside 1..100, set error to TRUE, status to 16#8200, and do not accept a sample. With a valid window size, set error to FALSE and status to 16#0000. When cyclicExecution is TRUE, accept value once per scan and ignore trigger. Otherwise, accept value only on each rising edge of trigger. Before the window is full, average all accepted samples. After it is full, each accepted sample replaces the oldest sample. Set windowSizeReached to TRUE when the number of stored samples reaches windowSize.",
+  "pou_name": "FB_MovingAverage",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "cyclicExecution",
+      "data_type": "BOOL",
+      "description": "When TRUE, accept one sample every scan and ignore trigger"
+    },
+    {
+      "direction": "input",
+      "name": "trigger",
+      "data_type": "BOOL",
+      "description": "Accept one sample on each rising edge when cyclicExecution is FALSE"
+    },
+    {
+      "direction": "input",
+      "name": "value",
+      "data_type": "LREAL",
+      "description": "New sample value"
+    },
+    {
+      "direction": "input",
+      "name": "windowSize",
+      "data_type": "INT",
+      "description": "Moving-average window size from 1 through 100"
+    },
+    {
+      "direction": "input",
+      "name": "reset",
+      "data_type": "BOOL",
+      "description": "Reset the moving-average state when TRUE"
+    },
+    {
+      "direction": "output",
+      "name": "average",
+      "data_type": "LREAL",
+      "description": "Current moving average"
+    },
+    {
+      "direction": "output",
+      "name": "windowSizeReached",
+      "data_type": "BOOL",
+      "description": "TRUE after the configured number of samples has been stored"
+    },
+    {
+      "direction": "output",
+      "name": "error",
+      "data_type": "BOOL",
+      "description": "TRUE when windowSize is invalid"
+    },
+    {
+      "direction": "output",
+      "name": "status",
+      "data_type": "WORD",
+      "description": "16#0000 for success or 16#8200 for an invalid window size"
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": [
+      "Converted first as a medium development prevalidation task; formal dataset review is still required.",
+      "Reset priority and behavior when windowSize changes during operation are not explicit in the source and must be frozen before formal testing."
+    ]
+  }
+}
+
+Previous model output:
+{
+  "pou_name": "FB_MovingAverage",
+  "pou_type": "FUNCTION_BLOCK",
+  "declaration": "FUNCTION_BLOCK FB_MovingAverage\nVAR_INPUT\n    cyclicExecution : BOOL;\n    trigger : BOOL;\n    value : LREAL;\n    windowSize : INT;\n    reset : BOOL;\nEND_VAR\nVAR_OUTPUT\n    average : LREAL;\n    windowSizeReached : BOOL;\n    error : BOOL;\n    status : WORD;\nEND_VAR\nVAR\n    samples : ARRAY[1..100] OF LREAL;\n    count : INT := 0;\n    oldestIndex : INT := 1;\n    sum : LREAL := 0.0;\n    prevTrigger : BOOL := FALSE;\n    risingEdge : BOOL := FALSE;\n    validWindow : BOOL := FALSE;\n    acceptSample : BOOL := FALSE;\nEND_VAR",
+  "implementation": "IF reset THEN\n    count := 0;\n    oldestIndex := 1;\n    sum := 0.0;\n    windowSizeReached := FALSE;\n    average := 0.0;\n    // Reset internal state variables related to trigger if needed, though not strictly required by spec for reset behavior on data\nEND_IF;\n\n// Validate window size\nIF (windowSize >= 1) AND (windowSize <= 100) THEN\n    validWindow := TRUE;\n    error := FALSE;\n    status := 16#0000;\nELSE\n    validWindow := FALSE;\n    error := TRUE;\n    status := 16#8200;\nEND_IF;\n\n// Determine if a sample should be accepted\nIF validWindow THEN\n    IF cyclicExecution THEN\n        acceptSample := TRUE;\n    ELSE\n        // Detect rising edge of trigger\n        risingEdge := trigger AND NOT prevTrigger;\n        acceptSample := risingEdge;\n    END_IF;\nELSE\n    acceptSample := FALSE;\nEND_IF;\n\n// Update prevTrigger for next scan\nprevTrigger := trigger;\n\n// Process sample acceptance\nIF acceptSample THEN\n    IF count < windowSize THEN\n        // Window not full yet: add new sample at the end (index count + 1)\n        count := count + 1;\n        samples[count] := value;\n        sum := sum + value;\n        \n        // Check if window just became full\n        IF count = windowSize THEN\n            windowSizeReached := TRUE;\n            oldestIndex := 1; // Oldest is now index 1\n        ELSE\n            windowSizeReached := FALSE;\n        END_IF;\n    ELSE\n        // Window is full: replace oldest sample\n        // The current oldestIndex points to the element to overwrite\n        sum := sum - samples[oldestIndex];\n        samples[oldestIndex] := value;\n        sum := sum + value;\n        \n        // Advance oldestIndex circularly\n        oldestIndex := oldestIndex + 1;\n        IF oldestIndex > windowSize THEN\n            oldestIndex := 1;\n        END_IF;\n        \n        windowSizeReached := TRUE;\n    END_IF;\n    \n    // Calculate average\n    IF count > 0 THEN\n        average := sum / LREAL_TO_INT(count); // Division requires matching types or explicit cast in some contexts, but CODESYS handles implicit upcast usually. Safer: sum / count as REAL/LREAL mix.\n        // Actually, in ST, dividing LREAL by INT results in LREAL.\n        average := sum / count;\n    ELSE\n        average := 0.0;\n    END_IF;\nEND_IF;\n\n// If not accepting a sample, ensure outputs reflect current state correctly if they haven't been updated this cycle\n// Note: If no sample is accepted, average and windowSizeReached remain from previous cycles unless reset occurred.\n// However, if windowSize changed, we might need to handle that. The spec says \"Before the window is full... After it is full...\" implying dynamic handling.\n// If windowSize decreases, count might be > windowSize. This implementation assumes windowSize changes are handled gracefully or only when stable.\n// Given the complexity, standard behavior for these FBs often requires re-initialization if windowSize changes significantly.\n// But sticking to the core logic requested:\n\n// Edge case: If windowSize becomes invalid during operation, we already set error/status.\n// If windowSize changes while valid, the logic above uses 'windowSize' dynamically.\n// If count > windowSize (due to shrinking), the 'count < windowSize' branch won't execute, it goes to else.\n// In else branch, it replaces samples[oldestIndex]. This might leave stale data beyond windowSize in the array, but sum calculation relies on replacing specific indices.\n// To be robust against shrinking windowSize without reset, one would typically clear the buffer. \n// Since the prompt doesn't specify behavior for dynamic shrinking without reset, we assume standard moving average logic where windowSize is constant or reset is used.\n\n// Ensure average is calculated even if no new sample arrives but state exists?\n// Usually, average output holds its last calculated value. The code above only updates average when acceptSample is true.\n// If cyclicExecution is false and no trigger, average stays same. Correct."
+
+Errors:
+[
+  {
+    "kind": "parse_error",
+    "text": "model output is not valid JSON: Expecting ',' delimiter: line 5 column 4065 (char 4695)"
+  }
+]

@@ -41,11 +41,14 @@ def chat_completion(
     api_key: str | None = None,
     base_url: str | None = None,
     timeout_seconds: float = 120.0,
+    reasoning_effort: str | None = None,
 ) -> ChatCompletion:
     if not model.strip():
         raise ValueError("model must not be empty")
     if timeout_seconds <= 0:
         raise ValueError("timeout_seconds must be positive")
+    if reasoning_effort is not None and not reasoning_effort.strip():
+        raise ValueError("reasoning_effort must not be empty")
 
     resolved_key = api_key or os.environ.get("DMXAPI_API_KEY")
     if not resolved_key:
@@ -54,10 +57,14 @@ def chat_completion(
     resolved_base_url = (
         base_url or os.environ.get("DMXAPI_BASE_URL") or DEFAULT_BASE_URL
     ).rstrip("/")
-    body = json.dumps(
-        {"model": model, "messages": messages, "stream": False},
-        ensure_ascii=False,
-    ).encode("utf-8")
+    request_payload: dict[str, Any] = {
+        "model": model,
+        "messages": messages,
+        "stream": False,
+    }
+    if reasoning_effort is not None:
+        request_payload["reasoning_effort"] = reasoning_effort
+    body = json.dumps(request_payload, ensure_ascii=False).encode("utf-8")
     request = Request(
         f"{resolved_base_url}/chat/completions",
         data=body,

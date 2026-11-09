@@ -1,0 +1,6 @@
+[
+  {
+    "kind": "parse_error",
+    "text": "model output is not valid JSON: Expecting ',' delimiter: line 5 column 4065 (char 4695)"
+  }
+]

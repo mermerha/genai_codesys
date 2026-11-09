@@ -37,6 +37,8 @@ class ModelClientTests(unittest.TestCase):
             self.assertEqual(timeout, 30.0)
             self.assertNotIn(b"secret-for-test", request.data)
             self.assertEqual(request.get_header("Authorization"), "Bearer secret-for-test")
+            request_payload = json.loads(request.data)
+            self.assertEqual(request_payload["reasoning_effort"], "low")
             return _FakeResponse(payload)
 
         with patch("plc_agent.model_client.urlopen", side_effect=fake_urlopen):
@@ -45,11 +47,30 @@ class ModelClientTests(unittest.TestCase):
                 messages=[{"role": "user", "content": "hello"}],
                 api_key="secret-for-test",
                 timeout_seconds=30.0,
+                reasoning_effort="low",
             )
 
         self.assertEqual(result.content, "model output")
         self.assertEqual(result.model, "model-returned-by-api")
         self.assertEqual(result.usage["total_tokens"], 12)
+
+    def test_omits_reasoning_effort_when_unspecified(self):
+        payload = {
+            "model": "returned-model",
+            "choices": [{"message": {"content": "model output"}}],
+        }
+
+        def fake_urlopen(request, timeout):
+            request_payload = json.loads(request.data)
+            self.assertNotIn("reasoning_effort", request_payload)
+            return _FakeResponse(payload)
+
+        with patch("plc_agent.model_client.urlopen", side_effect=fake_urlopen):
+            chat_completion(
+                model="requested-model",
+                messages=[{"role": "user", "content": "hello"}],
+                api_key="secret-for-test",
+            )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,75 @@
+{
+  "id": "public_09",
+  "title": "Calculate Moving Average",
+  "difficulty": "medium",
+  "source_type": "provided",
+  "source_reference": "大作业题库json/大作业题库.json, medium[2]",
+  "requirements": "Implement a moving arithmetic mean function block with a window size from 1 through 100. When reset is TRUE, reset the stored samples and average. When windowSize is outside 1..100, set error to TRUE, status to 16#8200, and do not accept a sample. With a valid window size, set error to FALSE and status to 16#0000. When cyclicExecution is TRUE, accept value once per scan and ignore trigger. Otherwise, accept value only on each rising edge of trigger. Before the window is full, average all accepted samples. After it is full, each accepted sample replaces the oldest sample. Set windowSizeReached to TRUE when the number of stored samples reaches windowSize.",
+  "pou_name": "FB_MovingAverage",
+  "pou_type": "FUNCTION_BLOCK",
+  "interface": [
+    {
+      "direction": "input",
+      "name": "cyclicExecution",
+      "data_type": "BOOL",
+      "description": "When TRUE, accept one sample every scan and ignore trigger"
+    },
+    {
+      "direction": "input",
+      "name": "trigger",
+      "data_type": "BOOL",
+      "description": "Accept one sample on each rising edge when cyclicExecution is FALSE"
+    },
+    {
+      "direction": "input",
+      "name": "value",
+      "data_type": "LREAL",
+      "description": "New sample value"
+    },
+    {
+      "direction": "input",
+      "name": "windowSize",
+      "data_type": "INT",
+      "description": "Moving-average window size from 1 through 100"
+    },
+    {
+      "direction": "input",
+      "name": "reset",
+      "data_type": "BOOL",
+      "description": "Reset the moving-average state when TRUE"
+    },
+    {
+      "direction": "output",
+      "name": "average",
+      "data_type": "LREAL",
+      "description": "Current moving average"
+    },
+    {
+      "direction": "output",
+      "name": "windowSizeReached",
+      "data_type": "BOOL",
+      "description": "TRUE after the configured number of samples has been stored"
+    },
+    {
+      "direction": "output",
+      "name": "error",
+      "data_type": "BOOL",
+      "description": "TRUE when windowSize is invalid"
+    },
+    {
+      "direction": "output",
+      "name": "status",
+      "data_type": "WORD",
+      "description": "16#0000 for success or 16#8200 for an invalid window size"
+    }
+  ],
+  "custom_types": [],
+  "review": {
+    "status": "pending",
+    "reviewer": null,
+    "notes": [
+      "Converted first as a medium development prevalidation task; formal dataset review is still required.",
+      "Reset priority and behavior when windowSize changes during operation are not explicit in the source and must be frozen before formal testing."
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "task_id": "public_09",
+  "model": "qwen3.8-flash",
+  "final_status": "compile_success",
+  "attempts": 2,
+  "repairs": 1,
+  "first_compile_pass": false,
+  "final_compile_pass": true,
+  "api_models": [
+    "qwen3.8-flash",
+    "qwen3.8-flash"
+  ],
+  "usage_by_attempt": [
+    {
+      "prompt_tokens": 1032,
+      "completion_tokens": 1157,
+      "total_tokens": 2189,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "text_tokens": 1032,
+        "audio_tokens": 0,
+        "image_tokens": 0
+      },
+      "completion_tokens_details": {
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "reasoning_tokens": 0
+      },
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "input_tokens_details": null,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0,
+      "cost": "¥0.003752"
+    },
+    {
+      "prompt_tokens": 2261,
+      "completion_tokens": 608,
+      "total_tokens": 2869,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "text_tokens": 2261,
+        "audio_tokens": 0,
+        "image_tokens": 0
+      },
+      "completion_tokens_details": {
+        "text_tokens": 0,
+        "audio_tokens": 0,
+        "image_tokens": 0,
+        "reasoning_tokens": 0
+      },
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "input_tokens_details": null,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0,
+      "cost": "¥0.003278"
+    }
+  ],
+  "duration_seconds": 60.641
+}

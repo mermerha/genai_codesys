@@ -53,6 +53,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--max-repairs", type=int, default=2)
     parser.add_argument("--model-timeout", type=float, default=120.0)
+    parser.add_argument("--reasoning-effort")
     args = parser.parse_args(argv)
 
     if not args.model:
@@ -68,6 +69,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         output_dir=output_dir,
         max_repairs=args.max_repairs,
         model_timeout_seconds=args.model_timeout,
+        reasoning_effort=args.reasoning_effort,
     )
     print(json.dumps(result, ensure_ascii=True, indent=2))
     print(f"Artifacts: {output_dir.resolve()}")

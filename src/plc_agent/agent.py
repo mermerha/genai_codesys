@@ -43,6 +43,7 @@ def run_compile_loop(
     output_dir: str | Path,
     max_repairs: int = 2,
     model_timeout_seconds: float = 120.0,
+    reasoning_effort: str | None = None,
     chat_function: ChatFunction = chat_completion,
     compile_function: CompileFunction = compile_project,
 ) -> dict[str, Any]:
@@ -64,6 +65,7 @@ def run_compile_loop(
             "model": model,
             "max_repairs": max_repairs,
             "model_timeout_seconds": model_timeout_seconds,
+            "reasoning_effort": reasoning_effort,
             "template_project": str(Path(template_project).resolve()),
         },
     )
@@ -93,6 +95,7 @@ def run_compile_loop(
                     {"role": "user", "content": prompt},
                 ],
                 timeout_seconds=model_timeout_seconds,
+                reasoning_effort=reasoning_effort,
             )
         except Exception as exc:
             error = {"type": type(exc).__name__, "message": str(exc)}

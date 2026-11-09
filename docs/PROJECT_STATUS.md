@@ -4,7 +4,7 @@
 
 ## 当前阶段
 
-项目治理和目录整理已完成初版。真实 `FUNCTION_BLOCK` 创建、引用、自动编译与结构化错误提取已经通过验证；单 POU 模型输出接口已冻结。模型 A 已通过简单、中等和困难公共题的编译预验证。当前模型 B 候选已改为 `qwen3.8-flash`，但该模型只通过简单题，并在中等题上于 300 秒超时，尚不能冻结。
+项目治理和目录整理已完成初版。真实 `FUNCTION_BLOCK` 创建、引用、自动编译与结构化错误提取已经通过验证；单 POU 模型输出接口已冻结。模型 A 与模型 B 均已通过简单、中等和困难公共题的编译预验证。模型 B 已确定为 `qwen3.8-flash`，固定使用 `reasoning_effort=none`；功能测试、现成 Agent 基线和完整题库仍未完成。
 
 完整要求见 [`REQUIREMENTS.md`](REQUIREMENTS.md)，完整阶段流程见 [`WORKFLOW.md`](WORKFLOW.md)。本文件只记录当前事实、阻塞和近期行动。
 
@@ -39,7 +39,12 @@
 - 已将公共题 `public_03`、`public_09`、`public_19` 转换为简单、中等和困难开发预验证题；三题均标记为待正式人工复核，尚未冻结 LTL 和测试标准。
 - 模型 A `deepseek-v4.1-flash-1017` 在三道预验证题上均首次编译通过：`public_03` 52.609 秒、`public_09` 83.625 秒、`public_19` 116.625 秒；尚未执行功能测试。
 - 按用户选择，模型 B 候选改为 `qwen3.8-flash`。该模型在 `public_03` 上首次编译通过，耗时 51.813 秒，API 返回标识为 `qwen3.8-flash`。
-- `qwen3.8-flash` 在 `public_09` 上于 300 秒读取超时，没有收到模型输出，未进入 CODESYS；按预验证门槛未继续运行困难题 `public_19`，因此模型 B 仍未冻结。
+- `qwen3.8-flash` 在未指定推理档位时于 `public_09` 上 300 秒读取超时，没有收到模型输出，未进入 CODESYS；该默认配置不足以支持冻结，随后继续验证显式推理档位。
+- 已为模型客户端、Agent 运行配置和 CLI 增加可选 `reasoning_effort`，默认值仍为未设置；参数会写入每次 `run_config.json`。相关单元测试通过。
+- `qwen3.8-flash` 使用 `reasoning_effort=low` 时，`public_09` 首次编译通过，耗时 107.156 秒；但 `public_19` 在 300 秒内无输出，因此未采用该档位。
+- `qwen3.8-flash` 使用 `reasoning_effort=none` 时完成三档预验证：`public_03` 首次编译通过，47.750 秒；`public_09` 首次输出未通过严格 JSON 解析，收到解析错误后第二次输出编译通过，60.641 秒；`public_19` 首次编译通过，40.687 秒。
+- 已据此冻结模型 B 为 `qwen3.8-flash` 且 `reasoning_effort=none`。该结论只代表开发期编译链可用，不代表功能正确。
+- 人工快速复核发现 qwen3.8 的 `public_19` 候选在手动模式下没有阻止上下或左右相反命令同时输出；该候选尚不能判为任务通过。
 
 ## 当前证据
 
@@ -67,20 +72,24 @@
 - 模型 A 中等题首次编译通过：`experiments/raw/development/20261109_121451_public_09_deepseek-v4.1-flash-1017/`。
 - 模型 A 困难题首次编译通过：`experiments/raw/development/20261109_121732_public_19_deepseek-v4.1-flash-1017/`。
 - 模型 A 简单题首次编译通过：`experiments/raw/development/20261109_122132_public_03_deepseek-v4.1-flash-1017/`。
+- qwen3.8 `low` 中等题首次编译通过：`experiments/raw/development/20261109_122643_public_09_qwen3.8-flash_low/`。
+- qwen3.8 `low` 困难题 300 秒超时：`experiments/raw/development/20261109_122931_public_19_qwen3.8-flash_low/`。
+- qwen3.8 `none` 困难题首次编译通过：`experiments/raw/development/20261109_123613_public_19_qwen3.8-flash_none/`。
+- qwen3.8 `none` 中等题解析修复后编译通过：`experiments/raw/development/20261109_123708_public_09_qwen3.8-flash_none/`。
+- qwen3.8 `none` 简单题首次编译通过：`experiments/raw/development/20261109_123853_public_03_qwen3.8-flash_none/`。
 
 ## 当前阻塞
 
-- `qwen3.8-flash` 只通过简单题，并在中等题上于 300 秒无输出，尚不能冻结为正式模型 B。
 - 真实模型调用尚未产生一次“首次编译失败、根据 CODESYS 错误修复后编译成功”的完整证据。
 - 现成 Agent 基线和正式实验参数尚未确定。
 - 团队名单、技术负责人和正式实验机尚未记录。
 
 ## 接下来四步
 
-1. 排查 `qwen3.8-flash` 中等题 300 秒无输出问题；在问题解决前不冻结模型 B，也不执行困难题调用。
-2. 用真实模型调用补齐一次 CODESYS 编译错误反馈后的成功修复证据。
-3. 确认现成 Agent 基线候选，并验证其能使用相同两个模型和保存等价证据。
-4. 审计 20 道公共题的接口兼容性，重点处理自定义 DUT、数组、`VAR_IN_OUT` 和 `VARIANT`，再继续转换和设计 LTL、测试标准。
+1. 确认现成 Agent 基线候选，并验证其能使用相同两个模型、相同模型参数和保存等价证据。
+2. 审计 20 道公共题的接口兼容性，重点处理自定义 DUT、数组、`VAR_IN_OUT` 和 `VARIANT`。
+3. 用受控开发验证补齐一次真实 CODESYS 编译错误反馈后的模型修复成功证据，并明确它与自然生成失败的区别。
+4. 继续转换公共题，并设计、复核和冻结 LTL 与测试标准；编译成功不得代替功能测试结果。
 
 ## 更新规则
 
