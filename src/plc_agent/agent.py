@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import time
 from dataclasses import asdict
 from pathlib import Path
@@ -16,6 +17,7 @@ from .codesys_runner import (
     execute_tests,
 )
 from .model_client import ChatCompletion, chat_completion
+from .precheck import validate_candidate
 
 
 ChatFunction = Callable[..., ChatCompletion]
@@ -41,6 +43,21 @@ def _compile_errors(result: CompileResult) -> list[dict[str, Any]]:
     return [asdict(message) for message in result.errors]
 
 
+def _error_signature(errors: list[dict[str, Any]]) -> str:
+    normalized = [
+        {
+            key: str(error.get(key, "")).strip().lower()
+            for key in ("kind", "number", "text", "object_name", "variable")
+            if error.get(key) not in (None, "")
+        }
+        for error in errors
+    ]
+    if not any(normalized):
+        return ""
+    payload = json.dumps(normalized, ensure_ascii=False, sort_keys=True)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:12]
+
+
 def run_compile_loop(
     *,
     task: dict[str, Any],
@@ -51,6 +68,8 @@ def run_compile_loop(
     model_timeout_seconds: float = 120.0,
     reasoning_effort: str | None = None,
     tests: dict[str, Any] | None = None,
+    enable_candidate_precheck: bool = False,
+    regenerate_on_repeated_error: bool = False,
     chat_function: ChatFunction = chat_completion,
     compile_function: CompileFunction = compile_project,
     test_function: TestFunction = execute_tests,
@@ -76,6 +95,8 @@ def run_compile_loop(
             "reasoning_effort": reasoning_effort,
             "template_project": str(Path(template_project).resolve()),
             "automatic_tests": tests is not None,
+            "enable_candidate_precheck": enable_candidate_precheck,
+            "regenerate_on_repeated_error": regenerate_on_repeated_error,
         },
     )
 
@@ -86,6 +107,9 @@ def run_compile_loop(
     errors: list[dict[str, Any]] = []
     api_models: list[str] = []
     usage_by_attempt: list[dict[str, Any]] = []
+    attempts_detail: list[dict[str, Any]] = []
+    previous_error_signature = ""
+    stage = "generate"
     started = time.monotonic()
     compile_context = {
         "custom_types": task.get("custom_types", []),
@@ -100,6 +124,12 @@ def run_compile_loop(
         attempt_dir = run_dir / f"attempt_{attempt_index:02d}"
         attempt_dir.mkdir()
         (attempt_dir / "prompt.txt").write_text(prompt, encoding="utf-8")
+        attempt_detail: dict[str, Any] = {
+            "attempt": attempt_index,
+            "stage": stage,
+            "compiled": False,
+            "compile_passed": False,
+        }
 
         try:
             completion = chat_function(
@@ -117,6 +147,9 @@ def run_compile_loop(
         except Exception as exc:
             error = {"type": type(exc).__name__, "message": str(exc)}
             _write_json(attempt_dir / "model_error.json", error)
+            attempt_detail["errors"] = [error]
+            attempts_detail.append(attempt_detail)
+            _write_json(attempt_dir / "attempt_result.json", attempt_detail)
             final = {
                 "task_id": task.get("id"),
                 "model": model,
@@ -127,6 +160,7 @@ def run_compile_loop(
                 "final_compile_pass": False,
                 "duration_seconds": round(time.monotonic() - started, 3),
                 "failure_reason": error,
+                "attempts_detail": attempts_detail,
             }
             _write_json(run_dir / "final_result.json", final)
             return final
@@ -147,22 +181,40 @@ def run_compile_loop(
             _write_json(attempt_dir / "parse_errors.json", errors)
         else:
             _write_json(attempt_dir / "candidate.json", candidate.to_dict())
-            declaration_path = attempt_dir / "declaration.st"
-            implementation_path = attempt_dir / "implementation.st"
-            declaration_path.write_text(candidate.declaration + "\n", encoding="utf-8")
-            implementation_path.write_text(candidate.implementation + "\n", encoding="utf-8")
-
-            compile_result = compile_function(
-                template_project=template_project,
-                declaration_path=declaration_path,
-                implementation_path=implementation_path,
-                output_dir=attempt_dir / "compile",
-                pou_name=candidate.pou_name,
-                pou_type=candidate.pou_type,
-                compile_context=compile_context,
+            precheck_errors = (
+                validate_candidate(task, candidate)
+                if enable_candidate_precheck
+                else []
             )
-            errors = _compile_errors(compile_result)
-            if compile_result.success:
+            if precheck_errors:
+                errors = precheck_errors
+                _write_json(attempt_dir / "precheck_errors.json", errors)
+            else:
+                declaration_path = attempt_dir / "declaration.st"
+                implementation_path = attempt_dir / "implementation.st"
+                declaration_path.write_text(
+                    candidate.declaration + "\n", encoding="utf-8"
+                )
+                implementation_path.write_text(
+                    candidate.implementation + "\n", encoding="utf-8"
+                )
+
+                compile_result = compile_function(
+                    template_project=template_project,
+                    declaration_path=declaration_path,
+                    implementation_path=implementation_path,
+                    output_dir=attempt_dir / "compile",
+                    pou_name=candidate.pou_name,
+                    pou_type=candidate.pou_type,
+                    compile_context=compile_context,
+                )
+                attempt_detail["compiled"] = True
+                attempt_detail["compile_passed"] = compile_result.success
+                errors = _compile_errors(compile_result)
+            if not precheck_errors and compile_result.success:
+                attempt_detail["errors"] = []
+                attempts_detail.append(attempt_detail)
+                _write_json(attempt_dir / "attempt_result.json", attempt_detail)
                 test_result = None
                 if tests is not None:
                     test_result = test_function(
@@ -191,6 +243,7 @@ def run_compile_loop(
                     "api_models": api_models,
                     "usage_by_attempt": usage_by_attempt,
                     "duration_seconds": round(time.monotonic() - started, 3),
+                    "attempts_detail": attempts_detail,
                 }
                 if test_result is not None:
                     final.update(
@@ -207,15 +260,34 @@ def run_compile_loop(
                 _write_json(run_dir / "final_result.json", final)
                 return final
 
+        signature = _error_signature(errors)
+        attempt_detail["errors"] = errors
+        attempt_detail["error_signature"] = signature
+        attempts_detail.append(attempt_detail)
+        _write_json(attempt_dir / "attempt_result.json", attempt_detail)
+
         if attempt_index < max_repairs:
-            prompt = _render_prompt(
-                repair_template,
-                {
-                    "task_json": task_json,
-                    "previous_output": previous_output,
-                    "errors_json": json.dumps(errors, ensure_ascii=False, indent=2),
-                },
-            )
+            repeated = bool(signature and signature == previous_error_signature)
+            if regenerate_on_repeated_error and repeated:
+                prompt = _render_prompt(generate_template, {"task_json": task_json})
+                prompt += (
+                    "\n\nThe previous two candidates produced the same error signature. "
+                    "Create an independent solution from scratch; do not copy the previous candidate."
+                )
+                stage = "regenerate"
+            else:
+                prompt = _render_prompt(
+                    repair_template,
+                    {
+                        "task_json": task_json,
+                        "previous_output": previous_output,
+                        "errors_json": json.dumps(
+                            errors, ensure_ascii=False, indent=2
+                        ),
+                    },
+                )
+                stage = "repair"
+            previous_error_signature = signature
 
     final = {
         "task_id": task.get("id"),
@@ -229,6 +301,7 @@ def run_compile_loop(
         "usage_by_attempt": usage_by_attempt,
         "duration_seconds": round(time.monotonic() - started, 3),
         "failure_reason": errors,
+        "attempts_detail": attempts_detail,
     }
     _write_json(run_dir / "final_result.json", final)
     return final

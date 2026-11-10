@@ -67,8 +67,13 @@ def run_experiment(
         for index, row in enumerate(rows)
     }
     template = root / "codesys" / "template" / "测试工程.project"
+    task_paths = _task_paths(root, phase, config)
+    total_conditions = (
+        len(task_paths) * len(config["frameworks"]) * len(config["models"])
+    )
+    condition_number = 0
 
-    for task_path in _task_paths(root, phase, config):
+    for task_path in task_paths:
         task = _read_json(task_path)
         kind = task_path.parent.name
         tests = _read_json(
@@ -76,11 +81,19 @@ def run_experiment(
         )
         for framework in config["frameworks"]:
             for model in config["models"]:
+                condition_number += 1
                 key = (task["id"], framework, model)
                 previous_index = row_indexes.get(key)
                 previous = rows[previous_index] if previous_index is not None else None
                 if previous and previous["final_status"] not in retry_statuses:
                     continue
+                prefix = f"[{condition_number:03d}/{total_conditions:03d}]"
+                action = "重跑" if previous else "开始"
+                print(
+                    f"{prefix} {action} task={task['id']} "
+                    f"framework={framework} model={model}",
+                    flush=True,
+                )
                 base_name = f"{framework}__{_safe_name(model)}"
                 condition_dir = output_dir / task["id"] / base_name
                 if previous:
@@ -92,6 +105,7 @@ def run_experiment(
                         / task["id"]
                         / f"{base_name}__retry_{retry_index:02d}"
                     )
+                result: dict[str, Any] | None = None
                 try:
                     if framework == "custom":
                         result = run_compile_loop(
@@ -103,6 +117,12 @@ def run_experiment(
                             max_repairs=config["max_repairs"],
                             model_timeout_seconds=config["model_timeout_seconds"],
                             reasoning_effort=config.get("reasoning_effort"),
+                            enable_candidate_precheck=config.get(
+                                "enable_candidate_precheck", False
+                            ),
+                            regenerate_on_repeated_error=config.get(
+                                "regenerate_on_repeated_error", False
+                            ),
                         )
                     elif framework == "codex_cli":
                         result = run_codex_cli_baseline(
@@ -153,6 +173,23 @@ def run_experiment(
                     row_indexes[key] = len(rows)
                     rows.append(row)
                 _write_json(output_dir / "manifest.json", {"runs": rows})
+                if result is None:
+                    compile_text = "首次编译=未知 最终编译=未知 候选=0 修复=0 耗时=0.0s"
+                else:
+                    first_compile = "通过" if result.get("first_compile_pass") else "失败"
+                    final_compile = "通过" if result.get("final_compile_pass") else "失败"
+                    compile_text = (
+                        f"首次编译={first_compile} 最终编译={final_compile} "
+                        f"候选={result.get('attempts', 0)} "
+                        f"修复={result.get('repairs', 0)} "
+                        f"耗时={float(result.get('duration_seconds', 0.0)):.1f}s"
+                    )
+                print(
+                    f"{prefix} 完成 status={row['final_status']} {compile_text} "
+                    f"测试={row.get('test_passed', 0)}/{len(tests['tests'])} "
+                    f"证据={row['artifact_directory']}",
+                    flush=True,
+                )
     return rows
 
 

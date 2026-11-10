@@ -119,6 +119,76 @@ class AgentLoopTests(unittest.TestCase):
             )
             self.assertIn("unknown identifier", repair_prompt)
 
+    def test_regenerates_after_repeated_error_signature(self):
+        invalid = {
+            "pou_name": "MotorControl",
+            "pou_type": "FUNCTION_BLOCK",
+            "declaration": "FUNCTION_BLOCK MotorControl",
+            "implementation": "Motor := MissingSignal;",
+        }
+        valid = {
+            "pou_name": "MotorControl",
+            "pou_type": "FUNCTION_BLOCK",
+            "declaration": "FUNCTION_BLOCK MotorControl",
+            "implementation": "Motor := FALSE;",
+        }
+        model_outputs = [invalid, invalid, valid]
+
+        def fake_chat(**kwargs):
+            content = json.dumps(model_outputs.pop(0))
+            return ChatCompletion(
+                content=content,
+                model=kwargs["model"],
+                usage={},
+                raw_response={"content": content},
+            )
+
+        compile_calls = 0
+
+        def fake_compile(**kwargs):
+            nonlocal compile_calls
+            compile_calls += 1
+            failed = compile_calls < 3
+            messages = (
+                CompileMessage(
+                    category="compile",
+                    severity="error",
+                    number="100",
+                    text="unknown identifier",
+                    object_name="MotorControl",
+                    position="line 1",
+                ),
+            ) if failed else ()
+            return CompileResult(
+                success=not failed,
+                messages=messages,
+                exception=None,
+                replaced_pou="MotorControl",
+                project_path=Path("candidate.project"),
+                result_path=Path(kwargs["output_dir"]) / "compile_result.json",
+                process_returncode=2 if failed else 0,
+            )
+
+        with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "tests") as temporary_directory:
+            run_dir = Path(temporary_directory) / "run"
+            result = run_compile_loop(
+                task={"id": "fixture", "pou_type": "FUNCTION_BLOCK"},
+                model="test-model",
+                template_project="template.project",
+                output_dir=run_dir,
+                max_repairs=2,
+                regenerate_on_repeated_error=True,
+                chat_function=fake_chat,
+                compile_function=fake_compile,
+            )
+
+            third_prompt = (run_dir / "attempt_02" / "prompt.txt").read_text(
+                encoding="utf-8"
+            )
+            self.assertEqual(result["final_status"], "compile_success")
+            self.assertEqual(result["attempts_detail"][2]["stage"], "regenerate")
+            self.assertIn("independent solution from scratch", third_prompt)
+
 
 if __name__ == "__main__":
     unittest.main()

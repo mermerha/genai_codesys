@@ -70,6 +70,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--max-repairs", type=int, default=2)
     parser.add_argument("--model-timeout", type=float, default=120.0)
     parser.add_argument("--reasoning-effort")
+    parser.add_argument("--candidate-precheck", action="store_true")
+    parser.add_argument("--regenerate-on-repeated-error", action="store_true")
     args = parser.parse_args(argv)
 
     if not args.model:
@@ -88,6 +90,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         model_timeout_seconds=args.model_timeout,
         reasoning_effort=args.reasoning_effort,
         tests=tests,
+        enable_candidate_precheck=args.candidate_precheck,
+        regenerate_on_repeated_error=args.regenerate_on_repeated_error,
     )
     print(json.dumps(result, ensure_ascii=True, indent=2))
     print(f"Artifacts: {output_dir.resolve()}")
