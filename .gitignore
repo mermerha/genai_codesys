@@ -18,3 +18,4 @@ experiments/raw/pre_run/
 experiments/raw/**/candidate.project
 experiments/raw/**/candidate.Device.*
 *.log
+experiments/

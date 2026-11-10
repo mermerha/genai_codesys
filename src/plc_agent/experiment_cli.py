@@ -44,11 +44,28 @@ def _task_paths(root: Path, phase: str, config: dict[str, Any]) -> list[Path]:
 
 
 def run_experiment(
-    *, root: Path, config: dict[str, Any], phase: str, output_dir: Path
+    *,
+    root: Path,
+    config: dict[str, Any],
+    phase: str,
+    output_dir: Path,
+    resume: bool = False,
+    retry_statuses: set[str] | None = None,
 ) -> list[dict[str, Any]]:
-    output_dir.mkdir(parents=True, exist_ok=False)
-    _write_json(output_dir / "run_config.json", {**config, "phase": phase})
-    rows: list[dict[str, Any]] = []
+    expected_config = {**config, "phase": phase}
+    if resume:
+        if _read_json(output_dir / "run_config.json") != expected_config:
+            raise ValueError("resume config does not match the saved run config")
+        rows = _read_json(output_dir / "manifest.json")["runs"]
+    else:
+        output_dir.mkdir(parents=True, exist_ok=False)
+        _write_json(output_dir / "run_config.json", expected_config)
+        rows = []
+    retry_statuses = retry_statuses or set()
+    row_indexes = {
+        (row["task_id"], row["framework"], row["model"]): index
+        for index, row in enumerate(rows)
+    }
     template = root / "codesys" / "template" / "测试工程.project"
 
     for task_path in _task_paths(root, phase, config):
@@ -59,11 +76,22 @@ def run_experiment(
         )
         for framework in config["frameworks"]:
             for model in config["models"]:
-                condition_dir = (
-                    output_dir
-                    / task["id"]
-                    / f"{framework}__{_safe_name(model)}"
-                )
+                key = (task["id"], framework, model)
+                previous_index = row_indexes.get(key)
+                previous = rows[previous_index] if previous_index is not None else None
+                if previous and previous["final_status"] not in retry_statuses:
+                    continue
+                base_name = f"{framework}__{_safe_name(model)}"
+                condition_dir = output_dir / task["id"] / base_name
+                if previous:
+                    retry_index = 1
+                    while (output_dir / task["id"] / f"{base_name}__retry_{retry_index:02d}").exists():
+                        retry_index += 1
+                    condition_dir = (
+                        output_dir
+                        / task["id"]
+                        / f"{base_name}__retry_{retry_index:02d}"
+                    )
                 try:
                     if framework == "custom":
                         result = run_compile_loop(
@@ -115,7 +143,15 @@ def run_experiment(
                         ),
                         "failure_reason": error,
                     }
-                rows.append(row)
+                if previous is not None and previous_index is not None:
+                    row["supersedes_artifact_directory"] = previous[
+                        "artifact_directory"
+                    ]
+                    row["retry_reason"] = "infrastructure_failure"
+                    rows[previous_index] = row
+                else:
+                    row_indexes[key] = len(rows)
+                    rows.append(row)
                 _write_json(output_dir / "manifest.json", {"runs": rows})
     return rows
 
@@ -129,15 +165,29 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--config", type=Path, default=root / "config" / "experiment.json"
     )
     parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--resume", type=Path)
+    parser.add_argument(
+        "--retry-status",
+        action="append",
+        default=[],
+        choices=("model_error", "timeout", "runner_error"),
+    )
     args = parser.parse_args(argv)
+    if args.resume and args.output_dir:
+        parser.error("--resume and --output-dir cannot be used together")
 
     config = _read_json(args.config)
     run_id = datetime.now().strftime("%Y%m%d_%H%M%S") + "_" + secrets.token_hex(3)
-    output_dir = args.output_dir or (
+    output_dir = args.resume or args.output_dir or (
         root / "experiments" / "raw" / args.phase / run_id
     )
     rows = run_experiment(
-        root=root, config=config, phase=args.phase, output_dir=output_dir
+        root=root,
+        config=config,
+        phase=args.phase,
+        output_dir=output_dir,
+        resume=args.resume is not None,
+        retry_statuses=set(args.retry_status),
     )
     print(json.dumps({"runs": rows}, ensure_ascii=True, indent=2))
     print(f"Artifacts: {output_dir.resolve()}")
