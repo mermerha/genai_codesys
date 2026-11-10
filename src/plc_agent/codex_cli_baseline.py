@@ -37,6 +37,46 @@ def _decode(value: bytes | str | None) -> str:
     return value.decode("utf-8", errors="replace")
 
 
+def _find_codex_executable() -> str | None:
+    codex_exe = shutil.which("codex")
+    if codex_exe is not None:
+        return codex_exe
+
+    local_app_data = Path(
+        os.environ.get("LOCALAPPDATA", Path.home() / "AppData" / "Local")
+    )
+    install_root = local_app_data / "OpenAI" / "Codex" / "bin"
+    candidates = sorted(
+        install_root.glob("*/codex.exe"),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    if candidates:
+        return str(candidates[0])
+
+    if os.name != "nt":
+        return None
+
+    try:
+        completed = subprocess.run(
+            [
+                "powershell.exe",
+                "-NoProfile",
+                "-NonInteractive",
+                "-Command",
+                "(Get-Command codex.exe -ErrorAction Stop).Source",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    candidate = completed.stdout.strip()
+    return candidate if completed.returncode == 0 and Path(candidate).is_file() else None
+
+
 def _render_prompt(
     template: Path, task: dict[str, Any], feedback: dict[str, Any] | None
 ) -> str:
@@ -118,9 +158,9 @@ def run_codex_cli_baseline(
     run_dir = Path(output_dir).resolve()
     run_dir.mkdir(parents=True, exist_ok=False)
     root = Path(__file__).resolve().parents[2]
-    codex_exe = shutil.which("codex")
+    codex_exe = _find_codex_executable()
     if codex_exe is None:
-        raise FileNotFoundError("codex CLI is not available on PATH")
+        raise FileNotFoundError("codex CLI could not be located")
     if not os.environ.get("DMXAPI_API_KEY"):
         raise ValueError("DMXAPI_API_KEY is not set")
 

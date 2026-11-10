@@ -226,7 +226,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         resume=args.resume is not None,
         retry_statuses=set(args.retry_status),
     )
-    print(json.dumps({"runs": rows}, ensure_ascii=True, indent=2))
     print(f"Artifacts: {output_dir.resolve()}")
     return 0 if all(row["final_status"] != "runner_error" for row in rows) else 1
 
