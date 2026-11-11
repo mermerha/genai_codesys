@@ -14,7 +14,7 @@
 \usepackage{xcolor}
 \usepackage{tikz}
 \usepackage{hyperref}
-\usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric}
+\usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric,calc}
 
 \graphicspath{{figures/}}
 \definecolor{zjublue}{HTML}{145DA0}
@@ -40,11 +40,11 @@
   subsection={format=\bfseries\zihao{4},beforeskip=1em,afterskip=0.45em},
   subsubsection={format=\bfseries\zihao{-4},beforeskip=0.7em,afterskip=0.3em}
 }
+\xeCJKsetup{CJKecglue={}}
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{面向 CODESYS 的 ST 代码生成 Agent}
-\fancyhead[R]{生成式人工智能课程大作业}
+\fancyhead[L]{GenAI赋能工业编程}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
@@ -54,7 +54,10 @@
   greenbox/.style={box,draw=green!50!black,fill=softgreen},
   orangebox/.style={box,draw=orange!70!black,fill=softorange},
   graybox/.style={box,draw=gray!70,fill=softgray},
-  flow/.style={-{Latex[length=2.4mm]},thick,zjublue}
+  widebox/.style={draw=zjublue,rounded corners=2pt,fill=softblue,minimum height=0.85cm,
+    align=center,text width=8.8cm,inner sep=5pt},
+  flow/.style={-{Latex[length=2.4mm]},thick,zjublue},
+  feedback/.style={-{Latex[length=2.2mm]},thick,red!70!black}
 }
 
 \newcommand{\placeholder}{\textcolor{red!75!black}{待补充}}
@@ -71,44 +74,22 @@
   \vspace{0.8cm}
   {\zihao{2}\bfseries Genai赋能工业编程\par}
   \vspace{1.2cm}
-  {\zihao{1}\bfseries 面向 CODESYS 的 ST 代码生成 Agent\par}
+  {\zihao{1}\bfseries 面向CODESYS的ST代码生成Agent\par}
   \vspace{0.4cm}
-  {\zihao{3}设计、实现与实验评估\par}
   \vspace{1.5cm}
   \renewcommand{\arraystretch}{1.55}
   \begin{tabular}{>{\raggedleft\arraybackslash}p{3.6cm}p{8.0cm}}
-    课程名称： & \linefield{7.2cm}{Genai赋能工业编程}\\
+    课程名称： & \linefield{7.2cm}{GenAI赋能工业编程}\\
     学院专业： & \linefield{7.2cm}{控制科学与工程学院}\\
-    小组成员： & \linefield{7.2cm}{\placeholder（五位成员姓名与学号）}\\
+    小组成员： & \linefield{7.2cm}{\placeholder{}（五位成员姓名与学号）}\\
     指导教师： & \linefield{7.2cm}{\placeholder}\\
-    完成日期： & \linefield{7.2cm}{2026 年 11 月}\\
+    完成日期： & \linefield{7.2cm}{2026年11月}\\
   \end{tabular}
   \vfill
 \end{titlepage}
 
 \pagenumbering{Roman}
 \section*{成员分工}
-\addcontentsline{toc}{section}{成员分工}
-\begin{table}[H]
-  \centering
-  \begin{tabularx}{\textwidth}{L{2.3cm}L{2.8cm}X}
-    \toprule
-    姓名 & 学号 & 主要工作\\
-    \midrule
-    \placeholder & \placeholder & 数据集整理与题目审核\\
-    \placeholder & \placeholder & LTL Spec 与测试用例\\
-    \placeholder & \placeholder & 自研 harness 与 CODESYS 接入\\
-    \placeholder & \placeholder & 基线实验与结果分析\\
-    \placeholder & \placeholder & 报告、PPT 与演示整理\\
-    \bottomrule
-  \end{tabularx}
-\end{table}
-
-\section*{摘\quad 要}
-\addcontentsline{toc}{section}{摘要}
-PLC Structured Text（ST）代码既要满足语言和工程接口要求，也要在扫描周期中实现正确的控制行为。围绕这一问题，本项目整理了由 20 道公共题和 10 道自建题构成的数据集，逐题编写工具无关的 LTL 规约和共享测试用例，共形成 30 道任务、136 条 LTL 性质、92 个测试用例和 352 个测试步骤。在此基础上，我们实现了一个轻量级 Agent harness，完成任务读取、提示词构建、结构化候选解析、接口预检、CODESYS 编译、编译错误反馈、有限轮修复、Simulation 自动测试和证据保存；同时选择 Codex CLI 作为现成 Agent 基线。实验采用两个框架与两个基座模型组成四种设置，在冻结题目、Spec、模型参数、候选次数和测试标准后完成 120 次正式运行。最终有 90 次首次编译通过、96 次在修复范围内通过编译，205/368 个计划测试通过，53 次运行通过本题全部测试，对应最终编译率 80.00\%、测试通过率 55.71\% 和任务成功率 44.17\%。结果显示，可编译代码与功能正确代码之间仍有明显差距；模型差异大于本实验中的框架差异。项目最终形成了一条从自然语言需求到 ST 候选、CODESYS 执行和可追溯评价的完整流程。
-
-\noindent\textbf{关键词：}PLC；Structured Text；Coding Agent；CODESYS；LTL；自动测试
 
 \tableofcontents
 \clearpage
@@ -150,7 +131,7 @@ PLC Structured Text（ST）代码既要满足语言和工程接口要求，也�
   \label{fig:overview}
 \end{figure}
 
-上面是我们的项目主线，首先题目与Spec定义输入和约束，然后Agent与模型产生候选，再之后CODESYS 提供真实编译和测试结果，为了对比公平性呢，我们的所有中间产物会进入一个原始证据目录。报告中的数字由这些记录重新汇总生成，可以更加方便对比和查看。
+上面是我们的项目主线，首先题目与Spec定义输入和约束，然后Agent与模型产生候选，再之后CODESYS 提供真实编译和测试结果，为了对比公平性，我们的所有中间产物会进入一个原始证据目录。报告中的数字由这些记录重新汇总生成，可以更加方便对比和查看。
 
 \section{数据规范}
 
@@ -163,7 +144,7 @@ PLC Structured Text（ST）代码既要满足语言和工程接口要求，也�
   \label{tab:dataset}
   \begin{tabular}{lrrrr}
     \toprule
-    类型 & 题目数 & LTL 性质 & 测试用例 & 测试步骤\\
+    类型 & 题目数 & LTL性质 & 测试用例 & 测试步骤\\
     \midrule
     公共题 & 20 & 92 & 62 & 263\\
     自建题 & 10 & 44 & 30 & 89\\
@@ -173,20 +154,19 @@ PLC Structured Text（ST）代码既要满足语言和工程接口要求，也�
   \end{tabular}
 \end{table}
 
-30 道题按统一标准分为 easy 9 道、medium 12 道和 hard 9 道。
+30道题按统一标准分为easy 9道、medium 12道和hard 9道。
 
 
 \subsection{公共题目转换}
 保持原始材料不变，但是实验使用转换后的JSON，这样可以每道题明确任务ID、需求、POU名称与类型、公开接口，以及难度和必要的编译上下文，转换之后可以解决原始题面与自动实验之间的接口衔接。
 
-其中，使用 DUT、数组和 \texttt{VAR\_IN\_OUT} 的题目需要在临时工程中创建固定类型并绑定实例；在分析ai的建议后，我们选择\texttt{public\_18} 的 FIFO 容量统一为 10，元素类型统一为 DINT。
+其中，使用DUT、数组和\texttt{VAR\_IN\_OUT}的题目需要在临时工程中创建固定类型并绑定实例；\texttt{public\_18}的FIFO容量统一为10，元素类型统一为DINT，四组实验都使用同一个版本。
 
 \subsection{自建题流程}
-10 道自建题由自主构思 2 道、经验改编 6 道和规则合成 2 道组成，难度分布为 easy 3 道、medium 4 道、hard 3 道。
 
 题目构建结合老师提供的公共题，遵循相同过程。先从现场控制场景提取一个边界清晰的功能任务，再确定公开输入输出和初始状态，补充急停、故障、复位、保持或最小时间等规则，最后由题面、Spec和测试交叉审核。
 
-例如，在题目生成后，我们进行微调，在\texttt{custom\_01}中强调急停锁存与人工复位，\texttt{custom\_06} 包含填充、混合、排空的批次状态推进，\texttt{custom\_09} 关注输送机在时间窗口内的堵料监测。这些任务能够用 PLC 扫描周期和现场信号自然表达，也覆盖了从布尔控制到多阶段时序逻辑的变化。由于我们的自编题接口、定义可能更加规范，所以后面在实验的时候自编的数据会表现得更好。
+在题目生成后，我们进行微调，在\texttt{custom\_01}中强调急停锁存与人工复位，\texttt{custom\_06} 包含填充、混合、排空的批次状态推进，\texttt{custom\_09} 关注输送机在时间窗口内的堵料监测。这些任务能够用 PLC 扫描周期和现场信号自然表达，也覆盖了从布尔控制到多阶段时序逻辑的变化。由于我们的自编题接口、定义可能更加规范，所以后面在实验的时候自编的数据会表现得更好。具体10道题的来源与逐题说明在后面补入附录。
 
 \begin{table}[H]
   \centering
@@ -197,7 +177,7 @@ PLC Structured Text（ST）代码既要满足语言和工程接口要求，也�
     \midrule
     \texttt{custom\_01} & 设备安全锁存 & 安全优先级 & 急停解除后不得自动恢复，必须人工复位\\
     \texttt{custom\_06} & 配料批次流程 & 多阶段状态机 & 填充、混合、排空顺序与阶段退出条件完整\\
-    \texttt{custom\_09} & 输送机堵料监控 & 定时与复位 & 连续异常达到时间窗口才报警，要明确回复条件\\
+    \texttt{custom\_09} & 输送机堵料监控 & 定时与复位 & 连续异常达到时间窗口才报警，并明确恢复条件\\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -209,15 +189,15 @@ PLC Structured Text（ST）代码既要满足语言和工程接口要求，也�
 
 这里以高低限报警题 \texttt{public\_03} 为例，题目要求高报警越过上限时置位，只有低于上限减滞回窗口后才清除；配置错误还要优先返回对应状态码。
 
-下面的表~\ref{tab:trace-example} 是给出了需求、性质与测试的对应关系
+表~\ref{tab:trace-example}给出需求、性质与测试的对应关系。具体30道题的逐条LTL将在下一步整理到电子附录
 
 \begin{table}[H]
   \centering
-  \caption{\texttt{public\_03} 的需求、LTL和测试对应示例}
+  \caption{\texttt{public\_03}的需求、LTL和测试对应示例}
   \label{tab:trace-example}
   \begin{tabularx}{\textwidth}{L{3.2cm}X L{3.0cm}}
     \toprule
-    需求 & LTL 性质 & 测试覆盖\\
+    需求 & LTL性质 & 测试覆盖\\
     \midrule
     上下限配置非法时优先报错 & $G(invalid\_levels \rightarrow X(error \land status\_8001))$ & 配置错误优先级\\
     越过高限后触发高报警 & $G((valid \land above\_hi) \rightarrow X(hi\_alarm))$ & 高报警置位\\
@@ -232,12 +212,12 @@ PLC Structured Text（ST）代码既要满足语言和工程接口要求，也�
   \begin{tikzpicture}[node distance=9mm,scale=0.96,transform shape]
     \node[box] (r) {自然语言需求};
     \node[box,right=of r] (p) {输入、输出\\状态与命题};
-    \node[greenbox,right=of p] (l) {LTL 性质\\安全与响应};
+    \node[greenbox,right=of p] (l) {LTL性质\\安全与响应};
     \node[orangebox,right=of l] (t) {扫描步骤\\预期输出};
     \draw[flow] (r)--(p); \draw[flow] (p)--(l); \draw[flow] (l)--(t);
-    \draw[flow,dashed] (t.south) to[bend right=25] node[below,font=\small]{发现歧义后回查} (r.south);
+    \draw[flow,dashed] (t.south) -- ++(0,-8mm) -| node[pos=0.25,below,font=\small]{发现歧义后回查} (r.south);
   \end{tikzpicture}
-  \caption{需求、LTL 与测试之间的追踪关系}
+  \caption{需求、LTL与测试之间的追踪关系}
   \label{fig:spec-trace}
 \end{figure}
 
@@ -249,16 +229,16 @@ PLC Structured Text（ST）代码既要满足语言和工程接口要求，也�
 \section{自研Agent harness}
 
 \subsection{最开始的实现}
-我们的项目先实现最小闭环，读取一道题，然后调用模型生成 ST，写入临时工程，启动 CODESYS 编译；若编译失败，则把错误反馈给模型，之后最多修复两次。这一步确认了模型 API、候选格式和 CODESYS 外部边界能够接通，但后面我们在使用的时候也发现三个问题。
+我们的项目先实现最小闭环，读取一道题，然后调用模型生成ST，写入临时工程，启动CODESYS编译；若编译失败，则把错误反馈给模型，之后最多修复两次。这一步确认了模型API、候选格式和CODESYS外部边界能够接通，但后面我们在使用的时候也发现三个问题。
 
-第一，部分候选的 POU 名称、类型或公开接口明显错误，仍会消耗一次 CODESYS 启动。
+第一，部分候选的POU名称、类型或公开接口明显错误，仍会消耗一次CODESYS启动。
 
 第二，自然语言题面对保持、优先级和状态变化的表达不够稳定，编译通过后的功能失败较多。
 
-第三，编译与测试分别启动 CODESYS，而测试脚本本身还要重新编译工程，形成重复开销。
+第三，编译与测试分别启动CODESYS，而测试脚本本身还要重新编译工程，形成重复开销。
 
 \subsection{问题改进}
-针对上述问题，我们不断迭代，最终实现增加了三个直接改动。候选进入 CODESYS 前先检查 POU 名称、类型、声明头和公开接口；逐题 LTL Spec 与自然语言需求一起提供给两个框架；编译与共享测试合并为一次 CODESYS 执行。最后正确率有所提高，同时也能减少中间修改带来的运行时间增加。
+针对上述问题，我们不断迭代，最终实现增加了三个直接改动。候选进入CODESYS前先检查POU名称、类型、声明头和公开接口；逐题LTL Spec与自然语言需求一起提供给两个框架；编译与共享测试合并为一次CODESYS执行。最后正确率有所提高，同时也能减少中间修改带来的运行时间增加。
 
 
 
@@ -270,8 +250,8 @@ PLC Structured Text（ST）代码既要满足语言和工程接口要求，也�
     开发中观察到的问题 & 修改 & 设计目的\\
     \midrule
     明显接口错误仍启动外部工具 & 增加本地候选预检 & 提前结束确定无效的候选\\
-    编译通过后存在语义错误 & 将逐题 LTL 加入共享上下文 & 明确安全、保持和状态变化要求\\
-    编译和测试重复启动 CODESYS & 合并为一次执行 & 减少外部进程启动和重复工程加载\\
+    编译通过后存在语义错误 & 将逐题LTL加入共享上下文 & 明确安全、保持和状态变化要求\\
+    编译和测试重复启动CODESYS & 合并为一次执行 & 减少外部进程启动和重复工程加载\\
     测试可能泄露预期行为 & 测试结果不进入修复上下文 & 保持评价独立与四组公平\\
     \bottomrule
   \end{tabularx}
@@ -279,63 +259,124 @@ PLC Structured Text（ST）代码既要满足语言和工程接口要求，也�
 
 \subsection{最终架构}
 
-最终我们的harness保持少量模块和直接数据流，任务加载器读取题目与 Spec；提示词模块生成首次请求或修复请求；模型客户端只负责调用 API；候选解析器提取结构化字段并执行接口预检；CODESYS 执行器创建临时工程、编译并运行测试；运行器控制候选次数、终止条件和证据目录；汇总脚本从原始记录生成 CSV、JSON、表格和图片。
+最终的harness保持少量模块和直接数据流。任务入口读取题目、LTL和共享测试；单题循环负责提示词、候选次数和终止条件；模型客户端只处理API请求；候选模块完成JSON解析和接口预检；CODESYS边界负责复制工程、编译、Simulation测试和结果读取；最后再由汇总脚本生成CSV、JSON、表格和图片。图~\ref{fig:architecture}先给出简要数据流，图~\ref{fig:architecture-detail}是具体的函数功能相关的架构。
 
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}[node distance=7mm and 8mm,scale=0.9,transform shape]
-    \node[graybox] (data) {统一测试条件题目\\接口与 LTL};
+    \node[graybox] (data) {统一题目\\接口与LTL};
     \node[box,right=of data] (prompt) {提示词构建};
-    \node[orangebox,right=of prompt] (api) {模型 API};
+    \node[orangebox,right=of prompt] (api) {模型API};
     \node[box,right=of api] (parse) {结构化解析\\接口预检};
-    \node[greenbox,below=of parse] (cs) {CODESYS 工程\\编译与测试};
-    \node[graybox,left=of cs] (raw) {原始证据\\JSON 与 ST};
-    \node[box,left=of raw] (sum) {汇总分析\\CSV 与图表};
+    \node[greenbox,below=of parse] (cs) {CODESYS工程\\编译与测试};
+    \node[graybox,left=of cs] (raw) {原始证据\\JSON与ST};
+    \node[box,left=of raw] (sum) {汇总分析\\CSV与图表};
     \draw[flow] (data)--(prompt); \draw[flow] (prompt)--(api); \draw[flow] (api)--(parse);
     \draw[flow] (parse)--(cs); \draw[flow] (cs)--(raw); \draw[flow] (raw)--(sum);
-    \draw[flow] (cs.west) to[bend left=35] node[above,font=\small]{编译错误} (prompt.south);
+    \coordinate (simplefb) at ($(prompt.north)+(0,8mm)$);
+    \draw[feedback] (cs.east) -- ++(10mm,0) |- (simplefb) -- node[left,font=\small]{编译错误} (prompt.north);
   \end{tikzpicture}
-  \caption{最终 harness 架构与数据流}
+  \caption{最终harness的简要数据流}
   \label{fig:architecture}
 \end{figure}
 
-\subsection{生成、编译、修复与终止}
-初次请求包含需求、公开接口、必要编译上下文和 LTL Spec。模型按固定 JSON 格式返回 \texttt{pou\_name}、\texttt{pou\_type}、\texttt{declaration} 和 \texttt{implementation}。
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=4.5mm,font=\small]
+    \node[widebox,fill=softgray,draw=gray!70] (source) {数据层：\texttt{data/tasks/}题目JSON + \texttt{data/specs/}LTL + \texttt{data/test\_cases/}测试JSON};
+    \node[widebox,below=of source] (experiment) {实验入口：\texttt{experiment\_cli.py}中的\texttt{\_task\_with\_formal\_spec()}和\texttt{run\_experiment()}};
+    \node[widebox,below=of experiment] (loop) {单题控制：\texttt{agent.py}中的\texttt{run\_compile\_loop()}构建提示、限制候选数并判断终止};
+    \node[widebox,below=of loop,fill=softorange,draw=orange!70!black] (model) {模型边界：\texttt{model\_client.py}中的\texttt{chat\_completion()}调用DMXAPI};
+    \node[widebox,below=of model] (check) {候选检查：\texttt{candidate.py}解析固定JSON；\texttt{precheck.py}核对POU与公开接口};
+    \node[widebox,below=of check,fill=softgreen,draw=green!50!black] (runner) {CODESYS边界：\texttt{codesys\_runner.py}复制模板、准备请求并启动无界面进程};
+    \node[widebox,below=of runner,fill=softgreen,draw=green!50!black] (inside) {CODESYS内部：\texttt{codesys/scripts/execute\_tests.py}替换候选、编译、登录Simulation并逐步测试};
+    \node[widebox,below=of inside,fill=softgray,draw=gray!70] (result) {证据与汇总：候选、编译消息、逐步差异、最终状态、CSV和报告图表};
+    \draw[flow] (source)--(experiment); \draw[flow] (experiment)--(loop); \draw[flow] (loop)--(model);
+    \draw[flow] (model)--(check); \draw[flow] (check)--(runner); \draw[flow] (runner)--(inside); \draw[flow] (inside)--(result);
+    \draw[feedback] (check.west) -- ++(-9mm,0) |- node[pos=0.3,left,align=right]{解析或预检失败\\回到修复提示} (loop.west);
+    \draw[feedback] (inside.east) -- ++(9mm,0) |- node[pos=0.28,right,align=left]{编译失败\\回传错误} (loop.east);
+  \end{tikzpicture}
+  \caption{harness架构}
+  \label{fig:architecture-detail}
+\end{figure}
 
-在解析成功且接口预检通过后，候选功能块会在临时 \texttt{PLC\_PRG}中实例化并调用，确保代码真正进入编译链。
+架构图中的每一层都能在代码里找到直接入口。表~\ref{tab:code-map}列出主要文件和函数
+
+\begin{table}[H]
+  \centering
+  \footnotesize
+  \caption{主要功能、Python文件与函数的对应关系}
+  \label{tab:code-map}
+  \begin{tabularx}{\textwidth}{L{2.7cm}L{5.7cm}X}
+    \toprule
+    功能 & 文件与函数 & 实际职责\\
+    \midrule
+    四组实验入口 & \path{experiment_cli.py}：\texttt{run\_experiment()} & 组合题目、框架和模型，持续写入运行清单\\
+    拼接LTL上下文 & \path{experiment_cli.py}：\texttt{\_task\_with\_formal\_spec()} & 将命题、假设和性质放入同一道题的模型上下文\\
+    单题闭环 & \path{agent.py}：\texttt{run\_compile\_loop()} & 控制生成、修复、编译、测试和最终状态\\
+    提示词渲染 & \path{agent.py}：\texttt{\_render\_prompt()} & 填入任务、上一候选和编译错误\\
+    模型调用 & \path{model_client.py}：\texttt{chat\_completion()} & 调用OpenAI兼容接口并保存原始响应与Token\\
+    候选解析 & \path{candidate.py}：\texttt{StCandidate.from\_model\_text()} & 限定四个JSON字段、POU类型和声明内容\\
+    接口预检 & \path{precheck.py}：\texttt{validate\_candidate()} & 核对POU名称、类型、声明头和公开变量\\
+    测试文档检查 & \path{codesys_runner.py}：\texttt{validate\_test\_document()} & 禁止测试读写非公开接口，检查步骤和等待时间\\
+    CODESYS启动 & \path{codesys_runner.py}：\texttt{execute\_tests()} & 复制模板、写请求文件并启动CODESYS脚本\\
+    工程包装 & \path{execute_tests.py}：\texttt{replace\_candidate()} & 创建功能块实例和\texttt{PLC\_PRG}调用链\\
+    Simulation测试 & \path{execute_tests.py}：\texttt{run\_tests()} & 冷复位、写输入、等待扫描、读输出并记录差异\\
+    输出比较 & \path{execute_tests.py}：\texttt{values\_equal()} & 比较BOOL、数值、时间、十六进制、数组和结构体值\\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{生成、编译、修复与终止}
+初次请求包含需求、公开接口、必要编译上下文和LTL Spec。模型按固定JSON格式返回\texttt{pou\_name}、\texttt{pou\_type}、\texttt{declaration}和\texttt{implementation}。
+
+在解析成功且接口预检通过后，候选功能块会在临时\texttt{PLC\_PRG}中实例化并调用，确保代码真正进入编译链。
 
 如果不幸编译失败，系统会提取错误对象、位置和文本，下一轮增加上一候选与编译错误。每题最多产生三个候选；编译成功后直接进入共享测试，测试结束即终止。如果候选次数达到上限或模型调用出现不可恢复错误时也会终止，比如网络断联，这时候会保存原因。
 
 \begin{figure}[H]
   \centering
-  \begin{tikzpicture}[node distance=6mm and 10mm,scale=0.88,transform shape]
-    \node[box] (start) {读取题目与 Spec};
+  \begin{tikzpicture}[node distance=7mm and 10mm,scale=0.88,transform shape]
+    \node[box] (start) {读取题目与Spec};
     \node[box,right=of start] (gen) {生成候选};
     \node[orangebox,right=of gen] (pre) {解析与预检};
     \node[greenbox,right=of pre] (run) {CODESYS\\编译与测试};
     \node[graybox,below=of run] (save) {保存证据与状态};
-    \node[box,below=of gen] (repair) {加入编译错误\\发起修复};
+    \node[box,below=of pre] (repair) {加入失败原因\\发起修复};
     \draw[flow] (start)--(gen); \draw[flow] (gen)--(pre); \draw[flow] (pre)--(run);
     \draw[flow] (run)--node[right,font=\small]{成功或测试完成}(save);
-    \draw[flow] (run.south west) |- node[below,font=\small]{编译失败且未达上限}(repair.east);
-    \draw[flow] (repair)--(gen);
-    \draw[flow] (pre.south) |- node[right,font=\small]{确定无效或达上限}(save.west);
+    \draw[flow] (pre)--node[right,font=\small]{解析或预检失败}(repair);
+    \draw[feedback] (repair.west) -- ++(-8mm,0) |- (gen.south);
+    \coordinate (retrybottom) at ($(repair.south)+(0,-7mm)$);
+    \draw[feedback] (run.east) -- ++(8mm,0) |- node[pos=0.25,right,font=\small]{编译失败} (retrybottom) -- (repair.south);
   \end{tikzpicture}
   \caption{生成、检查、修复和终止流程}
   \label{fig:loop}
 \end{figure}
 
-这一流程学习课程中的 propose--check--repair 思路，大致流程一致。首先模型提出候选，然后本地预检与 CODESYS 完成检查，编译错误驱动有限轮的修复。功能测试作为独立评价，在生成过程结束后给出最终判定。
+这一流程学习课程中的propose--check--repair思路，大致流程一致。首先模型提出候选，然后本地预检与CODESYS完成检查，编译错误驱动有限轮的修复。功能测试作为独立评价，在生成过程结束后给出最终判定。
+
 
 \subsection{Codex CLI 基线接入}
 现成 Agent 基线采用codex cli。开始时我们使用的是hugging face平台上面的smolagent，考虑到它比较简单，同时结构清晰也便于对比，但是使用之后发现和模型的协作能力实在太差，不能够和我们自己的harness进行完好的对比，遂放弃。之后采用推荐的codex cli。
 
-codex cli与自研 harness 使用相同模型、题目、Spec、候选上限和 CODESYS 执行器。Codex CLI 负责产生结构化候选，外部 Python 运行器把上一候选和编译错误交给下一轮。两个框架最终都输出同一数据结构，便于对比和分析。
+Codex CLI与自研harness使用相同模型、题目、Spec、候选上限和CODESYS执行器。Codex CLI负责产生结构化候选，外部Python运行器把上一候选和编译错误交给下一轮。两个框架最终都输出同一数据结构，便于对比和分析。
+
+\subsection{自动化测试与批量运行}
+
+自动化测试保持为四个步骤。第一，Python读取逐题测试JSON，检查测试只能通过公开接口读写，并为当前候选复制独立的CODESYS模板工程。第二，CODESYS脚本写入候选；功能块任务会自动生成\texttt{PLC\_PRG}调用链，然后重建整个工程。第三，编译通过后进入Simulation，每个用例先执行Cold Reset，再按步骤写入输入、等待扫描并读取公开输出。第四，执行器比较预期值和实际值，将编译消息、用例通过数和首个失败步骤写入\texttt{test\_results.json}
+
+正式实验从项目根目录启动。运行前在本地\texttt{.env}中配置模型接口，并确认CODESYS没有被其他进程占用，然后执行：
+\begin{verbatim}
+D:\python\python.exe -m src.plc_agent.experiment_cli --phase formal
+\end{verbatim}
+程序读取\path{config/experiment.json}，依次组合30道题、两种框架和两个模型，共执行120个条件。终端逐题显示题号、框架、模型、最终状态、编译结果、测试通过数、耗时和证据目录。原始响应、候选ST、编译消息、测试结果、配置快照和运行清单会自动保存到\path{experiments/raw/formal/}下新建的时间戳批次目录。如果运行中断，在同一命令后增加\texttt{--resume}并传入该批次目录继续，已完成的不会重复执行。
+
 
 \section{实验环境与公平实验设计}
 
 \subsection{实验环境}
-正式实验在同一台计算机上顺序执行，环境见表~\ref{tab:environment}。模型通过 DMXAPI 接入，PLC 代码在 CODESYS Simulation 中运行。当前 Codex CLI 的版本号来自正式实验配置。
+正式实验在同一台计算机上顺序执行，环境见表~\ref{tab:environment}。这里把硬件、软件、两个基座模型、两种Agent框架和调用限制放在一起，读者可以直接看到完整运行条件。模型通过DMXAPI接入，PLC代码在CODESYS Simulation中运行，Codex CLI版本号来自正式实验配置。
 
 \begin{table}[H]
   \centering
@@ -345,54 +386,55 @@ codex cli与自研 harness 使用相同模型、题目、Spec、候选上限和 
     \toprule
     项目 & 配置\\
     \midrule
-    操作系统 & Microsoft Windows 11 家庭中文版，10.0.26200\\
-    处理器与内存 & AMD Ryzen 7 7840H，15.2 GB 可用物理内存\\
+    操作系统 & Microsoft Windows 11家庭中文版，10.0.26200\\
+    处理器与内存 & AMD Ryzen 7 7840H，15.2 GB可用物理内存\\
     Python & 3.12.4\\
-    PLC 开发环境 & CODESYS V3.5 SP22 Patch 4，Simulation\\
-    现成 Agent & Codex CLI 0.167.0-alpha.3.2\\
-    模型接入 & DMXAPI，HTTP API\\
-    自研部分 & Python harness、CODESYS 自动化脚本、汇总与绘图脚本\\
+    PLC开发环境 & CODESYS V3.5 SP22 Patch 4，Simulation\\
+    基座模型A & \texttt{deepseek-v4.1-flash-1017}\\
+    基座模型B & \texttt{qwen3-coder-flash}\\
+    现成Agent基线 & Codex CLI 0.167.0-alpha.3.2\\
+    自研Agent框架 & Python harness、候选预检、编译修复和自动测试\\
+    模型接入方式 & DMXAPI的OpenAI兼容HTTP接口\\
+    资源与时间限制 & 单机顺序运行；模型请求300 s，最多2次修复，测试进程300 s\\
     \bottomrule
   \end{tabularx}
 \end{table}
 
 \subsection{模型、参数与四种设置}
-模型 A 为 \texttt{deepseek-v4.1-flash-1017}，模型 B 为 \texttt{qwen3-coder-flash}。单次请求超时为 300 秒，每题允许一次首次生成和最多两次修复。自动测试默认等待 50 ms，以覆盖 PLC 扫描。
+模型A为\texttt{deepseek-v4.1-flash-1017}，模型B为\texttt{qwen3-coder-flash}。单次请求超时为300秒，每题允许一次首次生成和最多两次修复。自动测试默认等待50 ms，以覆盖PLC扫描。
 
 \begin{table}[H]
   \centering
   \caption{四种正式实验设置}
   \begin{tabular}{lcc}
     \toprule
-    Agent 框架 & DeepSeek & Qwen\\
+    Agent框架 & DeepSeek & Qwen\\
     \midrule
-    Codex CLI & 30 道题 & 30 道题\\
-    自研 harness & 30 道题 & 30 道题\\
+    Codex CLI & 30道题 & 30道题\\
+    自研harness & 30道题 & 30道题\\
     \bottomrule
   \end{tabular}
 \end{table}
 
 \subsection{公平性控制}
-输入阶段，同一道题使用相同需求、公开接口、编译上下文和 LTL Spec；执行阶段，两个框架使用相同模型、候选次数、超时和 CODESYS 执行器；判定阶段，四组使用相同测试，测试内容不向 Agent 开放。模型质量失败、编译失败和功能测试失败按真实结果保留，在原始记录能证明 SSL、连接重试或执行器故障时允许重跑。
+输入阶段，同一道题使用相同需求、公开接口、编译上下文和LTL Spec；执行阶段，两个框架使用相同模型、候选次数、超时和CODESYS执行器；判定阶段，四组使用相同测试，测试内容不向Agent开放。模型质量失败、编译失败和功能测试失败按真实结果保留，在原始记录能证明SSL、连接重试或执行器故障时允许重跑。
 
-每次运行都保存配置快照、提示词、模型原始响应、候选 ST、编译消息、测试步骤输出和最终状态。便于我们回看分析数据
+每次运行都保存配置快照、提示词、模型原始响应、候选ST、编译消息、测试步骤输出和最终状态。便于我们回看分析数据
 
-\subsection{评价指标}
-首次编译通过率衡量第一个候选的可编译性；最终编译通过率衡量三个候选范围内的可编译性；测试通过率以每组固定的 92 个计划测试为分母；任务成功要求候选通过编译且本题全部测试通过。运行时间从任务开始到最终状态，Token 与已知费用直接读取接口记录。
 
 \section{最终实验结果}
 
 \subsection{总体结果}
-120 次正式运行全部产生有效结果，90 次首次候选编译通过，修复后共有 96 次通过编译；这 96 次中，53 次通过本题全部测试，另外 43 次存在至少一个功能测试失败。总体测试通过数为 205/368。
+120次正式运行全部产生有效结果，90次首次候选编译通过，修复后共有96次通过编译；这96次中，53次通过本题全部测试，另外43次存在至少一个功能测试失败。总体测试通过数为205/368。
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.78\textwidth]{result_funnel.png}
-  \caption{120 次正式运行的结果}
+  \caption{120次正式运行的结果}
   \label{fig:funnel}
 \end{figure}
 
-由图~\ref{fig:funnel} 可得首次编译率为 75.00\%，最终编译率为 80.00\%，测试通过率为 55.71\%，任务成功率为 44.17\%。最终编译率与任务成功率相差 35.83 个百分点，这个差距值得后面分析。
+由图~\ref{fig:funnel} 可得首次编译率为75.00\%，最终编译率为80.00\%，测试通过率为55.71\%，任务成功率为44.17\%。最终编译率与任务成功率相差35.83个百分点，这个差距值得后面分析。
 
 \subsection{四种设置对比}
 \begin{table}[H]
@@ -406,8 +448,8 @@ codex cli与自研 harness 使用相同模型、题目、Spec、候选上限和 
     \midrule
     Codex CLI & DeepSeek & 96.67\% & 100.00\% & 77.17\% & 63.33\% & 0.033 & 129.37\\
     Codex CLI & Qwen & 50.00\% & 56.67\% & 39.13\% & 30.00\% & 0.967 & 129.43\\
-    自研 harness & DeepSeek & 93.33\% & 100.00\% & 69.57\% & 53.33\% & 0.067 & 119.52\\
-    自研 harness & Qwen & 60.00\% & 63.33\% & 36.96\% & 30.00\% & 0.767 & 80.02\\
+    自研harness & DeepSeek & 93.33\% & 100.00\% & 69.57\% & 53.33\% & 0.067 & 119.52\\
+    自研harness & Qwen & 60.00\% & 63.33\% & 36.96\% & 30.00\% & 0.767 & 80.02\\
     \bottomrule
   \end{tabular}}
 \end{table}
@@ -424,7 +466,7 @@ codex cli与自研 harness 使用相同模型、题目、Spec、候选上限和 
 出于api费用等考虑，我们没有继续搜索比deepseek效果高得多的模型，在最后比较合适的价位找到的qwen，它的效果会差一点，但是也可以作为一个对比，能够发现不是很优秀的模型在我们的项目架构改进的过程中，会发生什么变化。
 
 \subsection{模型框架结果分析}
-合并框架数据后，DeepSeek 在 60 次运行中成功 35 次，任务成功率为 58.33\%，测试通过率为 73.37\%；Qwen 成功 18 次，任务成功率为 30.00\%，测试通过率为 38.04\%。合并模型后，Codex CLI 成功 28/60，自研 harness 成功 25/60，对应 46.67\% 和 41.67\%。模型之间的差距明显大于框架之间的总体差距。
+合并框架数据后，DeepSeek在60次运行中成功35次，任务成功率为58.33\%，测试通过率为73.37\%；Qwen成功18次，任务成功率为30.00\%，测试通过率为38.04\%。合并模型后，Codex CLI成功28/60，自研harness成功25/60，对应46.67\% 和41.67\%。模型之间的差距明显大于框架之间的总体差距。
 
 \begin{table}[H]
   \centering
@@ -443,19 +485,19 @@ codex cli与自研 harness 使用相同模型、题目、Spec、候选上限和 
   \end{tabular}
 \end{table}
 
-hard 在本次实验中高于 medium，可能这与具体题目组成和需求表达有关。在前有论述，自建题的需求边界、接口和审核记录更统一，阐述更加规范，所以其总体结果高于公共题。
+hard在本次实验中高于medium，可能这与具体题目组成和需求表达有关。在前有论述，自建题的需求边界、接口和审核记录更统一，阐述更加规范，所以其总体结果高于公共题。
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.83\textwidth]{status_heatmap.png}
-  \caption{30 道题在四种设置下的结果（绿：成功；橙：测试失败；红：编译失败）}
+  \caption{30道题在四种设置下的结果（绿：成功；橙：测试失败；红：编译失败）}
   \label{fig:heatmap}
 \end{figure}
 
-热力图显示，\texttt{custom\_01}、\texttt{custom\_02}、\texttt{custom\_05}、\texttt{public\_01}、\texttt{public\_03} 和 \texttt{public\_20} 在四组中均成功
+热力图显示，\texttt{custom\_01}、\texttt{custom\_02}、\texttt{custom\_05}、\texttt{public\_01}、\texttt{public\_03}和\texttt{public\_20}在四组中均成功
 
 \subsection{项目前后改进变化}
-为了观察项目改进带来的整体变化，我们比较了两个覆盖相同 120 个条件的完整实验。该比较同时包含上下文、预检和执行方式等系统改进，用于展示迭代结果
+为了观察项目改进带来的整体变化，我们比较了两个覆盖相同120个条件的完整实验。该比较同时包含上下文、预检和执行方式等系统改进，用于展示迭代结果
 
 \begin{figure}[H]
   \centering
@@ -464,58 +506,59 @@ hard 在本次实验中高于 medium，可能这与具体题目组成和需求�
   \label{fig:initial-final}
 \end{figure}
 
-任务成功数由 43 增加到 53，测试通过数由 192 增加到 205，最终编译数由 95 增加到 96。对应地，任务成功率提高 8.34 个百分点，测试通过率提高 3.54 个百分点。配对比较中有 19 个条件的终态改善，92 个不变，9 个下降。
+任务成功数由43增加到53，测试通过数由192增加到205，最终编译数由95增加到96。对应地，任务成功率提高8.34个百分点，测试通过率提高3.54个百分点。配对比较中有19个条件的终态改善，92个不变，9个下降。
 
-合并编译与测试后进行查看，原始目录中的 CODESYS 编译/测试进程记录由 271 次减少到 170 次，下降 37.27\%。端到端平均任务耗时由 111.25 s 增至 114.59 s，增加约 3.00\%。外部进程启动减少，但模型响应波动、候选差异和更完整的上下文共同影响了最后执行的时间。因此本次优化主要改善执行结构，但是没有形成稳定的总耗时下降。
+合并编译与测试后进行查看，原始目录中的CODESYS编译/测试进程记录由271次减少到170次，下降37.27\%。端到端平均任务耗时由111.25 s增至114.59 s，增加约3.00\%。外部进程启动减少，但模型响应波动、候选差异和更完整的上下文共同影响了最后执行的时间。因此本次优化主要改善执行结构，但是没有形成稳定的总耗时下降。
 
 \section{结果分析}
 
 \subsection{编译通过与功能分析}
-96 个条件通过最终编译，其中 43 个没有通过本题全部测试。这些候选已满足 ST 语法、类型、接口和工程调用链，却在部分需求上不一致。编译器解决的是程序能否进入 PLC 工程，功能测试回答程序在指定场景中做得是否正确，这也是课堂上说的语法和语义的区别。两类证据共同使用，才能判断任务是否完成。
+96个条件通过最终编译，其中43个没有通过本题全部测试。这些候选已满足ST语法、类型、接口和工程调用链，却在部分需求上不一致。编译器解决的是程序能否进入PLC工程，功能测试回答程序在指定场景中做得是否正确，这也是课堂上说的语法和语义的区别。两类证据共同使用，才能判断任务是否完成。
 
-测试通过率 55.71\% 高于任务成功率 44.17\%，也说明不少失败任务并非全部逻辑错误，而是在部分场景中出现偏差。逐步骤记录能够定位第一个不一致的扫描周期，为后续分析提供依据。
+测试通过率55.71\% 高于任务成功率44.17\%，也说明不少失败任务并非全部逻辑错误，而是在部分场景中出现偏差。逐步骤记录能够定位第一个不一致的扫描周期，为后续分析提供依据。
 
 \subsection{模型差异}
-DeepSeek 在两个框架下均达到 100\% 最终编译率，Qwen 合并后的最终编译率为 60\%。两者的测试通过率分别为 73.37\% 和 38.04\%。从逐题结果看，Qwen 在复杂接口、多模式状态推进和较长上下文下更容易出现编译或功能问题。因此，在本实验的数据集和参数范围内，基座模型能力是影响最终结果的主要因素之一。
+DeepSeek在两个框架下均达到100\% 最终编译率，Qwen合并后的最终编译率为60\%。两者的测试通过率分别为73.37\% 和38.04\%。从逐题结果看，Qwen在复杂接口、多模式状态推进和较长上下文下更容易出现编译或功能问题。因此，在本实验的数据集和参数范围内，基座模型能力是影响最终结果的主要因素之一。
 
 害怕额度花完，我们也进行了能够查看范围内的token记录。Token记录也呈现出不同调用特征，Codex CLI + Qwen 的总 Token 为 3,248,894，明显高于其他三组；自研 harness 的两个模型合计 Token 较少。Codex的agent架构可能会引入更多的上下文和更多请求，增加token消耗。
 
 \subsection{框架差异}
-Codex CLI 的总体任务成功率为 46.67\%，自研 harness 为 41.67\%，相差 5 个百分点。即使是换用很好的框架，也不能非常大幅提高成功率。DeepSeek 下 Codex CLI 高 10 个百分点，Qwen 下两者任务成功率相同；自研 harness + Qwen 的最终编译率高 6.66 个百分点，框架影响会随模型和题目变化。
+Codex CLI的总体任务成功率为46.67\%，自研harness为41.67\%，相差5个百分点。即使是换用很好的框架，也不能非常大幅提高成功率。DeepSeek下Codex CLI高10个百分点，Qwen下两者任务成功率相同；自研harness + Qwen的最终编译率高6.66个百分点，框架影响会随模型和题目变化。
 
-自研 harness 的价值还体现在实验控制能力，它能够更加符合我们的需求。任务上下文、候选格式、修复上限、外部工具调用、测试隔离和证据目录都有明确边界，它没有依赖多 Agent 编排或复杂插件系统，主要模块可以直接追踪到课程要求中的生成、编译、修复、测试和公平比较。
+自研harness的价值还体现在实验控制能力，它能够更加符合我们的需求。任务上下文、候选格式、修复上限、外部工具调用、测试隔离和证据目录都有明确边界，它没有依赖多Agent编排或复杂插件系统，主要模块可以直接追踪到课程要求中的生成、编译、修复、测试和公平比较。
 
 下面对几个结果进行分析：
 
 \subsection{成功案例：\texttt{public\_20}}
-\texttt{public\_20} 是五工位生产控制任务，难度为 hard，包含多工位状态和协同控制。四种设置均通过编译并通过 4/4 测试。该结果说明，当题目的模式边界、接口和状态推进足够明确时，不同框架和模型都可能形成可执行的完整控制逻辑。
+\texttt{public\_20}是五工位生产控制任务，难度为hard，包含多工位状态和协同控制。四种设置均通过编译并通过4/4测试。该结果说明，当题目的模式边界、接口和状态推进足够明确时，不同框架和模型都可能形成可执行的完整控制逻辑。
 
-这个案例也解释了 hard 组结果没有低于 medium 的一部分原因，难度标签描述任务包含的结构，但题面表达质量和测试路径同样影响模型表现。\texttt{public\_20} 虽然状态较多，流程关系相对清晰。
+这个案例也解释了hard组结果没有低于medium的一部分原因，难度标签描述任务包含的结构，但题面表达质量和测试路径同样影响模型表现。\texttt{public\_20}虽然状态较多，流程关系相对清晰。
 
 \subsection{语义失败案例：\texttt{custom\_06}}
-\texttt{custom\_06} 描述填充、混合、排空三个阶段。四种设置全部通过编译，但没有一组通过全部测试；四组共通过 6/12 个测试。候选能够建立基本状态机，却会在阶段退出、计时完成或复位后的状态上产生偏差。
+\texttt{custom\_06}描述填充、混合、排空三个阶段。四种设置全部通过编译，但没有一组通过全部测试；四组共通过6/12个测试。候选能够建立基本状态机，却会在阶段退出、计时完成或复位后的状态上产生偏差。
 
 这个案例说明了编译通过不等于功能正确。若实验只记录编译结果，四组都会被判为成功；加入共享测试后，才能发现多阶段任务中的控制语义问题。
 
 \subsection{组合差异案例：\texttt{public\_19}}
-\texttt{public\_19} 包含手动、单步、单周期和连续模式。四种设置都通过编译，只有 Codex CLI + DeepSeek 通过全部 4 个测试，其余三组存在功能失败。该题需要同时处理模式互斥、状态推进和复位，模型与框架组合会影响上下文理解和最终控制结构。
+\texttt{public\_19}包含手动、单步、单周期和连续模式。四种设置都通过编译，只有Codex CLI + DeepSeek通过全部4个测试，其余三组存在功能失败。该题需要同时处理模式互斥、状态推进和复位，模型与框架组合会影响上下文理解和最终控制结构。
 
 \subsection{失败类型与局限}
 
-由于时间限制，本实验仍有部分局限。第一，正式结果来自一台计算机和一个 CODESYS 版本。第二，每个条件正式运行一次，无法估计模型输出方差。第三，初始到最终实现同时修改多个部分，完整实验对比不能分离单项贡献。第四，LTL 用于需求组织和上下文，尚未接入 PLCVerif。第五，92 个测试只能覆盖主要行为，仍不能穷尽所有输入和状态。
+
+这套实验仍有几项局限。首先，测试运行在CODESYS Simulation中，没有覆盖真实PLC的扫描周期波动、物理I/O延迟、通信故障和硬件资源限制。其次，92个测试用例和352个步骤覆盖了主要流程、边界和安全场景，通过测试只能说明候选满足当前测试集合。第三，LTL目前用于整理需求、检查测试覆盖并补充模型上下文，我们还没有接入PLCVerif等模型检查工具。最后，每个题目与设置只保留一次正式运行，但是模型输出具有随机性。
 
 \section{结论}
-本项目围绕 PLC ST 代码生成建立了完整、可执行的实验链路。数据部分包含 30 道题、136 条 LTL 性质、92 个测试用例和 352 个测试步骤；系统部分实现了自研 harness、Codex CLI 基线、两个模型接入、CODESYS 编译和 Simulation 自动测试；实验部分完成了四种设置共 120 次正式运行，并保存从原始响应到逐步骤测试结果的证据。
+本项目围绕PLC ST代码生成建立了完整、可执行的实验链路。数据部分包含30道题、136条LTL性质、92个测试用例和352个测试步骤；系统部分实现了自研harness、Codex CLI基线、两个模型接入、CODESYS编译和Simulation自动测试；实验部分完成了四种设置共120次正式运行，并保存从原始响应到逐步骤测试结果的证据。
 
 
-项目改进围绕真实问题逐步展开。本地预检能够减少无效外部调用，LTL 上下文补充语义约束，编译与测试合并减少重复 CODESYS 启动。
+项目改进围绕真实问题逐步推进。本地预检能够减少无效外部调用，LTL上下文补充语义约束，编译与测试合并减少重复CODESYS启动。
 
-最终实验的首次编译率为 75.00\%，最终编译率为 80.00\%，测试通过率为 55.71\%，任务成功率为 44.17\%。DeepSeek 的总体表现明显高于 Qwen，两个框架的总体差距相对较小。96 个可编译条件中有 43 个仍存在功能失败，说明 PLC 代码生成的主要难点已经从语法完整延伸到状态、优先级和时序语义。
+最终实验的首次编译率为75.00\%，最终编译率为80.00\%，测试通过率为55.71\%，任务成功率为44.17\%。DeepSeek的总体表现明显高于Qwen，两个框架的总体差距相对较小。96个可编译条件中有43个仍存在功能失败，说明PLC代码生成的主要难点已经从语法完整延伸到状态、优先级和时序语义。
 
 
 \appendix
 \section{电子附录与证据目录}
-完整题目位于 \path{data/tasks/}，逐题 LTL 位于 \path{data/specs/}，共享测试位于 \path{data/test_cases/}。最终正式实验原始证据位于 \path{experiments/raw/formal/20261111_102220_v4_formal/}；报告使用的逐任务汇总、四组汇总和初始—最终对比分别保存在 \path{experiments/processed/} 下。本文中的表格和图片由 \path{experiments/analysis/} 中的脚本从上述 JSON 生成。
+完整题目位于\path{data/tasks/}，逐题LTL位于\path{data/specs/}，共享测试位于\path{data/test_cases/}。最终正式实验原始证据位于\path{experiments/raw/formal/20261111_102220_v4_formal/}；报告使用的逐任务汇总、四组汇总和初始—最终对比分别保存在\path{experiments/processed/}下。本文中的表格和图片由\path{experiments/analysis/}中的脚本从上述JSON生成。
 
 \section{报告数字追溯表}
 \begin{longtable}{L{4.0cm}L{5.3cm}L{4.0cm}}
@@ -527,11 +570,11 @@ Codex CLI 的总体任务成功率为 46.67\%，自研 harness 为 41.67\%，相
   报告内容 & 处理后数据 & 原始来源\\
   \midrule
   \endhead
-  四种设置结果 & \path{formal_summary.json/csv} & 最终正式批次 120 个运行目录\\
-  逐题终态与耗时 & \path{formal_runs.json/csv} & 每个条件的 \path{run_result.json}\\
+  四种设置结果 & \path{formal_summary.json/csv} & 最终正式批次120个运行目录\\
+  逐题终态与耗时 & \path{formal_runs.json/csv} & 每个条件的\path{run_result.json}\\
   初始与最终对比 & \path{initial_final_comparison.json/csv} & 两个完整正式批次\\
   报告分析表 & \path{formal_analysis.md} & 汇总脚本自动生成\\
-  图~\ref{fig:four-metrics}、\ref{fig:heatmap}、\ref{fig:initial-final} & \path{generate_report_figures.py} & 处理后 JSON\\
+  图~\ref{fig:four-metrics}、\ref{fig:heatmap}、\ref{fig:initial-final} & \path{generate_report_figures.py} & 处理后JSON\\
   \bottomrule
 \end{longtable}
 
