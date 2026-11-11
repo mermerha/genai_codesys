@@ -4,7 +4,7 @@
   "difficulty": "easy",
   "source_type": "custom",
   "source_reference": "自主构思：输送线电机启停与安全联锁",
-  "requirements": "Implement a conveyor motor function block. A start command latches motorRun when stop, emergencyStop and overload are FALSE. stop or emergencyStop stops the motor immediately. overload stops the motor and latches fault. reset clears fault only when overload is FALSE. The motor cannot run while fault is TRUE.",
+  "requirements": "Implement a conveyor motor function block. A start command latches motorRun only when stop, emergencyStop, overload and fault are FALSE. stop stops the motor without creating a fault. emergencyStop or overload stops the motor immediately and latches fault, so releasing the safety input must not restart the conveyor. reset clears fault only when emergencyStop and overload are both FALSE; a reset scan keeps motorRun FALSE, and a later start command is required. The motor cannot run while fault is TRUE.",
   "pou_name": "FB_ConveyorMotor",
   "pou_type": "FUNCTION_BLOCK",
   "interface": [
@@ -21,10 +21,10 @@
     "source_type": "self_conceived",
     "source_url": null,
     "creation_process": ["从常见输送线启停回路抽象出启动保持、停止和过载保护"],
-    "human_modifications": ["将安全输入优先级和故障复位条件写成确定规则"],
-    "review_process": ["检查所有输入均可由常见 PLC 数字量模块提供", "检查急停、过载时输出必定断开"]
+    "human_modifications": ["将急停与过载统一为锁存安全故障，并规定安全输入解除后仍需人工复位和再次启动"],
+    "review_process": ["检查所有输入均可由常见 PLC 数字量模块提供", "逐项检查停止、急停、过载、复位和重新启动的优先级，确认安全输入解除不会导致自动重启"]
   },
   "plc_rationale": "输送线电机是典型 PLC 离散控制对象，启停保持、安全联锁和故障锁存可直接映射到现场 I/O。",
-  "diversity_tags": ["离散控制", "安全联锁", "状态锁存", "easy"],
-  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["接口仅使用基础类型，适合首版单 POU harness。"]}
+  "diversity_tags": ["离散控制", "安全联锁", "故障锁存", "人工复位", "easy"],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["v3 增加急停锁存和防自动重启规则，接口仍只使用基础类型。"]}
 }

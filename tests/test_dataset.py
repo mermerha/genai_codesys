@@ -22,6 +22,28 @@ class DatasetTests(unittest.TestCase):
                 with self.subTest(task=task["id"]):
                     validate_test_document(task, tests, minimum_advance_ms=50)
 
+    def test_custom_tasks_record_provenance_rationale_and_diversity(self):
+        allowed_sources = {
+            "self_conceived",
+            "experience_based",
+            "synthetic",
+            "public_web",
+        }
+        for task_path in sorted(
+            (PROJECT_ROOT / "data" / "tasks" / "custom").glob("*.json")
+        ):
+            task = json.loads(task_path.read_text(encoding="utf-8"))
+            provenance = task["provenance"]
+            with self.subTest(task=task["id"]):
+                self.assertIn(provenance["source_type"], allowed_sources)
+                self.assertTrue(provenance["creation_process"])
+                self.assertTrue(provenance["human_modifications"])
+                self.assertTrue(provenance["review_process"])
+                if provenance["source_type"] == "public_web":
+                    self.assertTrue(provenance["source_url"])
+                self.assertTrue(task["plc_rationale"].strip())
+                self.assertGreaterEqual(len(task["diversity_tags"]), 3)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -29,10 +29,37 @@ def _safe_name(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", value)
 
 
+def _task_with_formal_spec(
+    task: dict[str, Any], spec: dict[str, Any]
+) -> dict[str, Any]:
+    return {
+        **task,
+        "formal_spec": {
+            "state_semantics": spec["state_semantics"],
+            "propositions": spec["propositions"],
+            "assumptions": spec.get("assumptions", []),
+            "properties": [
+                {
+                    "id": item["id"],
+                    "type": item["type"],
+                    "description": item["description"],
+                    "ltl": item["ltl"],
+                }
+                for item in spec["properties"]
+            ],
+        },
+    }
+
+
 def _task_paths(root: Path, phase: str, config: dict[str, Any]) -> list[Path]:
-    if phase == "pre_run":
+    configured_ids = (
+        config["pre_run_tasks"]
+        if phase == "pre_run"
+        else config.get("formal_tasks")
+    )
+    if configured_ids is not None:
         paths = []
-        for task_id in config["pre_run_tasks"]:
+        for task_id in configured_ids:
             matches = list((root / "data" / "tasks").glob(f"*/{task_id}.json"))
             if len(matches) != 1:
                 raise ValueError(f"expected one task file for {task_id}")
@@ -76,6 +103,11 @@ def run_experiment(
     for task_path in task_paths:
         task = _read_json(task_path)
         kind = task_path.parent.name
+        if config.get("include_formal_spec", False):
+            spec = _read_json(
+                root / "data" / "specs" / kind / f"{task['id']}.json"
+            )
+            task = _task_with_formal_spec(task, spec)
         tests = _read_json(
             root / "data" / "test_cases" / kind / f"{task['id']}.json"
         )
@@ -123,6 +155,9 @@ def run_experiment(
                             regenerate_on_repeated_error=config.get(
                                 "regenerate_on_repeated_error", False
                             ),
+                            combine_compile_and_test=config.get(
+                                "combine_compile_and_test", False
+                            ),
                         )
                     elif framework == "codex_cli":
                         result = run_codex_cli_baseline(
@@ -133,6 +168,9 @@ def run_experiment(
                             output_dir=condition_dir,
                             max_repairs=config["max_repairs"],
                             model_timeout_seconds=config["model_timeout_seconds"],
+                            combine_compile_and_test=config.get(
+                                "combine_compile_and_test", False
+                            ),
                         )
                     else:
                         raise ValueError(f"unsupported framework: {framework}")

@@ -4,7 +4,7 @@
   "difficulty": "easy",
   "source_type": "custom",
   "source_reference": "经验改编：压缩机停机后的防频繁启动",
-  "requirements": "Implement compressor control with a fixed 5 second restart delay. demand starts compressorRun immediately when no trip has occurred since power-up. trip stops the compressor and latches tripLatched. reset clears tripLatched only when trip is FALSE, but a new start is allowed only after 5 seconds have elapsed since trip became TRUE. Count every FALSE-to-TRUE transition of compressorRun in startCount.",
+  "requirements": "Implement compressor control with a fixed 5 second minimum-off delay. The first demand after power-up may start compressorRun immediately. trip stops the compressor and latches tripLatched; reset clears tripLatched only when trip is FALSE. Every transition of compressorRun from TRUE to FALSE, whether caused by trip or demand becoming FALSE, starts the 5 second delay. A new start requires demand TRUE, tripLatched FALSE and the delay elapsed. Count every FALSE-to-TRUE transition of compressorRun in startCount.",
   "pou_name": "FB_CompressorDelay",
   "pou_type": "FUNCTION_BLOCK",
   "interface": [
@@ -19,11 +19,11 @@
   "provenance": {
     "source_type": "experience_based",
     "source_url": null,
-    "creation_process": ["从制冷与气源设备常见防短周期需求提炼固定延时控制"],
-    "human_modifications": ["固定延时为 5 秒，并明确首次启动不等待、复位不绕过延时"],
-    "review_process": ["检查定时起点、复位条件和启动计数边沿", "确认题目可用 TON 和边沿状态实现"]
+    "creation_process": ["从制冷与气源设备常见防短周期需求提炼固定最小停机时间控制"],
+    "human_modifications": ["固定延时为 5 秒，明确首次启动不等待，并将跳闸和正常需求撤销后的再次启动都纳入防短周期约束"],
+    "review_process": ["分别检查跳闸停机与正常停机的定时起点、复位条件和启动计数边沿", "确认题目可用 TON、运行边沿和少量内部状态在单个功能块中实现"]
   },
   "plc_rationale": "压缩机停机后延迟重启可减小机械和电气冲击，PLC 定时器与启动计数均为常见功能。",
-  "diversity_tags": ["定时控制", "故障锁存", "计数", "easy"],
-  "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+  "diversity_tags": ["定时控制", "防短周期", "故障锁存", "计数", "easy"],
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["v3 将最小停机延时扩展到所有停机事件。"]}
 }

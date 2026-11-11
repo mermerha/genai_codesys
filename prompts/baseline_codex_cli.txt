@@ -5,6 +5,8 @@ Do not use shell commands, files, tools, the network, or test cases. Return one 
 Candidate JSON must contain exactly `pou_name`, `pou_type`, `declaration`, and `implementation`.
 Use exactly the `pou_name`, `pou_type`, and interface from the task. `declaration` must be the complete POU declaration, including the `PROGRAM` or `FUNCTION_BLOCK` header and its matching end keyword. `implementation` contains only the ST body.
 
+When `formal_spec` is present, treat its propositions and LTL properties as authoritative behavioral requirements. Silently check safety priorities, state retention, timer boundaries, and every property before returning the candidate. Test cases remain unavailable.
+
 TASK:
 {task_json}
 

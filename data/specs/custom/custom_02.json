@@ -7,6 +7,7 @@
     "low": "level <= lowLevel",
     "high": "level >= highLevel",
     "high_high": "level >= 95.0",
+    "valid_alarm_reset": "alarmReset 为真且 level < 90.0",
     "pump_run": "pumpRun 为真",
     "alarm": "highHighAlarm 为真",
     "error": "configError 为真"
@@ -16,7 +17,7 @@
     {"id": "custom_02_p01", "type": "safety", "description": "非法配置报错并停泵", "ltl": "G(invalid_config -> X(error && !pump_run))", "tool_expression": null},
     {"id": "custom_02_p02", "type": "response", "description": "低液位启动补液泵", "ltl": "G((!invalid_config && !disabled && low) -> X(pump_run))", "tool_expression": null},
     {"id": "custom_02_p03", "type": "response", "description": "高液位或禁用停止泵", "ltl": "G((high || disabled) -> X(!pump_run))", "tool_expression": null},
-    {"id": "custom_02_p04", "type": "response", "description": "高高液位产生报警", "ltl": "G(high_high -> X(alarm)) && G(!high_high -> X(!alarm))", "tool_expression": null}
+    {"id": "custom_02_p04", "type": "response", "description": "高高液位锁存报警，只有低于安全复位液位时才允许人工清除", "ltl": "G(high_high -> X(alarm)) && G((alarm && !valid_alarm_reset) -> X(alarm)) && G(valid_alarm_reset -> X(!alarm))", "tool_expression": null}
   ],
-  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["按工具无关 LTL 冻结。"]}
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["v3 增加报警锁存和 90% 以下安全复位条件。"]}
 }

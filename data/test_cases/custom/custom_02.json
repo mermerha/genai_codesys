@@ -4,24 +4,27 @@
     {
       "id": "custom_02_tc01", "task_id": "custom_02", "name": "泵滞回控制", "initial_state": {},
       "steps": [
-        {"cycle": 0, "inputs": {"enable": true, "level": 20.0, "lowLevel": 20.0, "highLevel": 80.0}, "expected_outputs": {"pumpRun": true, "configError": false}, "check": "低阈值启动"},
+        {"cycle": 0, "inputs": {"enable": true, "level": 20.0, "lowLevel": 20.0, "highLevel": 80.0, "alarmReset": false}, "expected_outputs": {"pumpRun": true, "configError": false}, "check": "低阈值启动"},
         {"cycle": 1, "inputs": {"enable": true, "level": 50.0, "lowLevel": 20.0, "highLevel": 80.0}, "expected_outputs": {"pumpRun": true}, "check": "区间内保持运行"},
         {"cycle": 2, "inputs": {"enable": true, "level": 80.0, "lowLevel": 20.0, "highLevel": 80.0}, "expected_outputs": {"pumpRun": false}, "check": "高阈值停止"}
       ],
       "coverage": ["hysteresis", "boundary_values"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
     },
     {
-      "id": "custom_02_tc02", "task_id": "custom_02", "name": "高高报警与禁用", "initial_state": {},
+      "id": "custom_02_tc02", "task_id": "custom_02", "name": "高高报警锁存与安全复位", "initial_state": {},
       "steps": [
-        {"cycle": 0, "inputs": {"enable": true, "level": 96.0, "lowLevel": 20.0, "highLevel": 80.0}, "expected_outputs": {"pumpRun": false, "highHighAlarm": true}, "check": "高高液位报警"},
-        {"cycle": 1, "inputs": {"enable": false, "level": 10.0, "lowLevel": 20.0, "highLevel": 80.0}, "expected_outputs": {"pumpRun": false, "highHighAlarm": false}, "check": "禁用强制停泵"}
+        {"cycle": 0, "inputs": {"enable": true, "level": 96.0, "lowLevel": 20.0, "highLevel": 80.0, "alarmReset": false}, "expected_outputs": {"pumpRun": false, "highHighAlarm": true}, "check": "高高液位触发锁存报警"},
+        {"cycle": 1, "inputs": {"enable": true, "level": 92.0, "lowLevel": 20.0, "highLevel": 80.0, "alarmReset": false}, "expected_outputs": {"pumpRun": false, "highHighAlarm": true}, "check": "离开触发点后报警保持"},
+        {"cycle": 2, "inputs": {"enable": true, "level": 92.0, "lowLevel": 20.0, "highLevel": 80.0, "alarmReset": true}, "expected_outputs": {"pumpRun": false, "highHighAlarm": true}, "check": "液位未降到安全值时拒绝复位"},
+        {"cycle": 3, "inputs": {"enable": true, "level": 85.0, "lowLevel": 20.0, "highLevel": 80.0, "alarmReset": true}, "expected_outputs": {"pumpRun": false, "highHighAlarm": false}, "check": "安全液位下人工复位"},
+        {"cycle": 4, "inputs": {"enable": false, "level": 10.0, "lowLevel": 20.0, "highLevel": 80.0, "alarmReset": false}, "expected_outputs": {"pumpRun": false, "highHighAlarm": false}, "check": "禁用强制停泵"}
       ],
-      "coverage": ["high_high_alarm", "disable"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+      "coverage": ["high_high_alarm", "alarm_latch", "safe_reset", "disable"], "review": {"status": "frozen", "reviewer": "Codex", "notes": ["v3 覆盖报警保持、拒绝过早复位和安全复位。"]}
     },
     {
       "id": "custom_02_tc03", "task_id": "custom_02", "name": "阈值配置错误", "initial_state": {},
       "steps": [
-        {"cycle": 0, "inputs": {"enable": true, "level": 10.0, "lowLevel": 80.0, "highLevel": 80.0}, "expected_outputs": {"pumpRun": false, "configError": true}, "check": "相等阈值非法"},
+        {"cycle": 0, "inputs": {"enable": true, "level": 10.0, "lowLevel": 80.0, "highLevel": 80.0, "alarmReset": false}, "expected_outputs": {"pumpRun": false, "configError": true}, "check": "相等阈值非法"},
         {"cycle": 1, "inputs": {"enable": true, "level": 10.0, "lowLevel": 20.0, "highLevel": 80.0}, "expected_outputs": {"pumpRun": true, "configError": false}, "check": "配置恢复后正常处理"}
       ],
       "coverage": ["configuration_error", "recovery"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}

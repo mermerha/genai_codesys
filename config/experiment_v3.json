@@ -1,0 +1,24 @@
+{
+  "config_id": "formal_v3_spec_aware",
+  "models": [
+    "deepseek-v4.1-flash-1017",
+    "qwen3-coder-flash"
+  ],
+  "frameworks": [
+    "custom",
+    "codex_cli"
+  ],
+  "max_repairs": 2,
+  "model_timeout_seconds": 300,
+  "compile_timeout_seconds": 120,
+  "test_timeout_seconds": 300,
+  "reasoning_effort": null,
+  "test_mode": "codesys_simulation",
+  "test_settle_ms": 50,
+  "include_formal_spec": true,
+  "enable_candidate_precheck": true,
+  "regenerate_on_repeated_error": false,
+  "pre_run_tasks": [
+    "custom_01"
+  ]
+}

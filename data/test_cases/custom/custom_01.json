@@ -16,17 +16,20 @@
         {"cycle": 0, "inputs": {"start": true, "stop": false, "emergencyStop": false, "overload": false, "reset": false}, "expected_outputs": {"motorRun": true}, "check": "先运行"},
         {"cycle": 1, "inputs": {"start": false, "stop": false, "emergencyStop": false, "overload": true, "reset": false}, "expected_outputs": {"motorRun": false, "fault": true}, "check": "过载停机并锁存"},
         {"cycle": 2, "inputs": {"start": false, "stop": false, "emergencyStop": false, "overload": true, "reset": true}, "expected_outputs": {"fault": true}, "check": "过载仍在时不能复位"},
-        {"cycle": 3, "inputs": {"start": false, "stop": false, "emergencyStop": false, "overload": false, "reset": true}, "expected_outputs": {"motorRun": false, "fault": false}, "check": "安全条件下复位"}
+        {"cycle": 3, "inputs": {"start": false, "stop": false, "emergencyStop": false, "overload": false, "reset": true}, "expected_outputs": {"motorRun": false, "fault": false}, "check": "安全条件下复位且保持停机"},
+        {"cycle": 4, "inputs": {"start": true, "stop": false, "emergencyStop": false, "overload": false, "reset": false}, "expected_outputs": {"motorRun": true, "fault": false}, "check": "复位后必须再次启动"}
       ],
       "coverage": ["overload", "fault_latch", "reset_interlock"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
     },
     {
-      "id": "custom_01_tc03", "task_id": "custom_01", "name": "急停阻止启动", "initial_state": {},
+      "id": "custom_01_tc03", "task_id": "custom_01", "name": "急停锁存与防自动重启", "initial_state": {},
       "steps": [
-        {"cycle": 0, "inputs": {"start": true, "stop": false, "emergencyStop": true, "overload": false, "reset": false}, "expected_outputs": {"motorRun": false}, "check": "急停时拒绝启动"},
-        {"cycle": 1, "inputs": {"start": true, "stop": false, "emergencyStop": false, "overload": false, "reset": false}, "expected_outputs": {"motorRun": true}, "check": "急停解除后允许启动"}
+        {"cycle": 0, "inputs": {"start": true, "stop": false, "emergencyStop": true, "overload": false, "reset": false}, "expected_outputs": {"motorRun": false, "fault": true}, "check": "急停时拒绝启动并锁存故障"},
+        {"cycle": 1, "inputs": {"start": true, "stop": false, "emergencyStop": false, "overload": false, "reset": false}, "expected_outputs": {"motorRun": false, "fault": true}, "check": "急停解除后不得自动启动"},
+        {"cycle": 2, "inputs": {"start": false, "stop": false, "emergencyStop": false, "overload": false, "reset": true}, "expected_outputs": {"motorRun": false, "fault": false}, "check": "人工复位保持停机"},
+        {"cycle": 3, "inputs": {"start": true, "stop": false, "emergencyStop": false, "overload": false, "reset": false}, "expected_outputs": {"motorRun": true, "fault": false}, "check": "新的启动命令恢复运行"}
       ],
-      "coverage": ["emergency_stop", "restart"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+      "coverage": ["emergency_stop", "fault_latch", "manual_reset", "anti_automatic_restart"], "review": {"status": "frozen", "reviewer": "Codex", "notes": ["v3 增加急停解除后的锁存和人工复位路径。"]}
     }
   ]
 }

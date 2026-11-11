@@ -51,12 +51,21 @@ class CompileResult:
 class TestExecutionResult:
     success: bool
     compile_success: bool
+    compile_messages: tuple[CompileMessage, ...]
     test_passed: int
     test_total: int
     exception: str | None
     project_path: Path
     result_path: Path
     process_returncode: int
+
+    @property
+    def errors(self) -> tuple[CompileMessage, ...]:
+        return tuple(
+            message
+            for message in self.compile_messages
+            if message.severity in {"error", "fatal_error"}
+        )
 
 
 class CodesysExecutionError(RuntimeError):
@@ -198,8 +207,7 @@ def _write_process_record(
     )
 
 
-def _read_compile_result(result_path: Path, returncode: int) -> CompileResult:
-    payload: dict[str, Any] = json.loads(result_path.read_text(encoding="utf-8-sig"))
+def _compile_messages(payload: list[dict[str, Any]]) -> tuple[CompileMessage, ...]:
     messages = tuple(
         CompileMessage(
             category=message.get("category"),
@@ -209,8 +217,14 @@ def _read_compile_result(result_path: Path, returncode: int) -> CompileResult:
             object_name=message.get("object"),
             position=message.get("position"),
         )
-        for message in payload.get("messages", [])
+        for message in payload
     )
+    return messages
+
+
+def _read_compile_result(result_path: Path, returncode: int) -> CompileResult:
+    payload: dict[str, Any] = json.loads(result_path.read_text(encoding="utf-8-sig"))
+    messages = _compile_messages(payload.get("messages", []))
     return CompileResult(
         success=bool(payload.get("success")),
         messages=messages,
@@ -486,6 +500,7 @@ def execute_tests(
     return TestExecutionResult(
         success=bool(payload.get("success")),
         compile_success=bool(payload.get("compile_success")),
+        compile_messages=_compile_messages(payload.get("compile_messages", [])),
         test_passed=int(payload.get("test_passed", 0)),
         test_total=int(payload.get("test_total", 0)),
         exception=payload.get("exception"),

@@ -9,11 +9,72 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from plc_agent.agent import run_compile_loop
-from plc_agent.codesys_runner import CompileMessage, CompileResult
+from plc_agent.codesys_runner import (
+    CompileMessage,
+    CompileResult,
+    TestExecutionResult,
+)
 from plc_agent.model_client import ChatCompletion
 
 
 class AgentLoopTests(unittest.TestCase):
+    def test_combined_execution_compiles_and_tests_once(self):
+        candidate = {
+            "pou_name": "MotorControl",
+            "pou_type": "FUNCTION_BLOCK",
+            "declaration": "FUNCTION_BLOCK MotorControl",
+            "implementation": "Motor := FALSE;",
+        }
+
+        def fake_chat(**kwargs):
+            content = json.dumps(candidate)
+            return ChatCompletion(
+                content=content,
+                model=kwargs["model"],
+                usage={},
+                raw_response={"content": content},
+            )
+
+        def fail_if_compiled_separately(**kwargs):
+            self.fail("combined execution must not call compile_project")
+
+        test_calls = []
+
+        def fake_test(**kwargs):
+            test_calls.append(kwargs)
+            result_path = Path(kwargs["output_dir"]) / "test_results.json"
+            result_path.parent.mkdir()
+            result_path.write_text("{}", encoding="utf-8")
+            return TestExecutionResult(
+                success=True,
+                compile_success=True,
+                compile_messages=(),
+                test_passed=1,
+                test_total=1,
+                exception=None,
+                project_path=Path("candidate.project"),
+                result_path=result_path,
+                process_returncode=0,
+            )
+
+        with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "tests") as temporary_directory:
+            result = run_compile_loop(
+                task={"id": "fixture", "pou_type": "FUNCTION_BLOCK"},
+                tests={"task_id": "fixture", "tests": [{"id": "tc01"}]},
+                model="test-model",
+                template_project="template.project",
+                output_dir=Path(temporary_directory) / "run",
+                combine_compile_and_test=True,
+                chat_function=fake_chat,
+                compile_function=fail_if_compiled_separately,
+                test_function=fake_test,
+            )
+
+        self.assertEqual(result["final_status"], "success")
+        self.assertEqual(result["test_passed"], 1)
+        self.assertEqual(len(test_calls), 1)
+        self.assertEqual(test_calls[0]["output_dir"].name, "combined_execution")
+
     def test_repairs_after_compile_error_and_preserves_artifacts(self):
         model_outputs = [
             {

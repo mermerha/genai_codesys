@@ -10,6 +10,7 @@ import subprocess
 import tempfile
 import time
 from dataclasses import asdict
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +38,7 @@ def _decode(value: bytes | str | None) -> str:
     return value.decode("utf-8", errors="replace")
 
 
+@lru_cache(maxsize=1)
 def _find_codex_executable() -> str | None:
     codex_exe = shutil.which("codex")
     if codex_exe is not None:
@@ -81,7 +83,7 @@ def _render_prompt(
     template: Path, task: dict[str, Any], feedback: dict[str, Any] | None
 ) -> str:
     return (
-        template.read_text(encoding="utf-8")
+        _read_prompt(template)
         .replace("{task_json}", json.dumps(task, ensure_ascii=False, indent=2))
         .replace(
             "{feedback_json}",
@@ -90,6 +92,18 @@ def _render_prompt(
             else "No compiler feedback; produce the first candidate.",
         )
     )
+
+
+@lru_cache(maxsize=None)
+def _read_prompt(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+
+@lru_cache(maxsize=1)
+def _codex_version(codex_exe: str) -> str:
+    return subprocess.run(
+        [codex_exe, "--version"], capture_output=True, text=True, check=False
+    ).stdout.strip()
 
 
 def _read_usage(trace_path: Path) -> dict[str, Any]:
@@ -152,6 +166,7 @@ def run_codex_cli_baseline(
     output_dir: str | Path,
     max_repairs: int = 2,
     model_timeout_seconds: float = 300.0,
+    combine_compile_and_test: bool = False,
 ) -> dict[str, Any]:
     if max_repairs < 0:
         raise ValueError("max_repairs must not be negative")
@@ -164,9 +179,7 @@ def run_codex_cli_baseline(
     if not os.environ.get("DMXAPI_API_KEY"):
         raise ValueError("DMXAPI_API_KEY is not set")
 
-    version = subprocess.run(
-        [codex_exe, "--version"], capture_output=True, text=True, check=False
-    ).stdout.strip()
+    version = _codex_version(codex_exe)
     _write_json(run_dir / "task.json", task)
     _write_json(
         run_dir / "run_config.json",
@@ -181,6 +194,7 @@ def run_codex_cli_baseline(
             "model_timeout_seconds": model_timeout_seconds,
             "sandbox": "read-only",
             "automatic_tests": tests is not None,
+            "combine_compile_and_test": combine_compile_and_test,
             "template_project": str(Path(template_project).resolve()),
         },
     )
@@ -200,6 +214,7 @@ def run_codex_cli_baseline(
     feedback: dict[str, Any] | None = None
     attempts: list[dict[str, Any]] = []
     successful: dict[str, Any] | None = None
+    successful_test_result = None
     started = time.monotonic()
 
     for attempt_index in range(max_repairs + 1):
@@ -257,6 +272,7 @@ def run_codex_cli_baseline(
             "success": False,
             "errors": [],
         }
+        attempt_test_result = None
         if timed_out:
             record["errors"] = [{"kind": "timeout", "text": stderr}]
         elif returncode != 0 or not output_path.is_file():
@@ -279,21 +295,39 @@ def run_codex_cli_baseline(
                 implementation_path.write_text(
                     candidate.implementation + "\n", encoding="utf-8"
                 )
-                result = compile_project(
-                    template_project=template_project,
-                    declaration_path=declaration_path,
-                    implementation_path=implementation_path,
-                    output_dir=attempt_dir / "compile",
-                    pou_name=candidate.pou_name,
-                    pou_type=candidate.pou_type,
-                    compile_context=compile_context,
-                )
-                record["success"] = result.success
-                record["errors"] = [asdict(message) for message in result.errors]
+                if combine_compile_and_test and tests is not None:
+                    attempt_test_result = execute_tests(
+                        template_project=template_project,
+                        declaration_path=declaration_path,
+                        implementation_path=implementation_path,
+                        task=task,
+                        tests=tests,
+                        output_dir=attempt_dir / "combined_execution",
+                        compile_context=compile_context,
+                    )
+                    record["success"] = attempt_test_result.compile_success
+                    record["errors"] = [
+                        asdict(message) for message in attempt_test_result.errors
+                    ]
+                else:
+                    result = compile_project(
+                        template_project=template_project,
+                        declaration_path=declaration_path,
+                        implementation_path=implementation_path,
+                        output_dir=attempt_dir / "compile",
+                        pou_name=candidate.pou_name,
+                        pou_type=candidate.pou_type,
+                        compile_context=compile_context,
+                    )
+                    record["success"] = result.success
+                    record["errors"] = [
+                        asdict(message) for message in result.errors
+                    ]
         _write_json(attempt_dir / "attempt_result.json", record)
         attempts.append(record)
         if record["success"]:
             successful = record
+            successful_test_result = attempt_test_result
             break
         if record["errors"] and record["errors"][0].get("kind") in {
             "codex_cli_error",
@@ -305,8 +339,8 @@ def run_codex_cli_baseline(
             "errors": record["errors"],
         }
 
-    test_result = None
-    if successful is not None and tests is not None:
+    test_result = successful_test_result
+    if successful is not None and tests is not None and test_result is None:
         attempt_dir = run_dir / f"attempt_{successful['attempt']:02d}"
         test_result = execute_tests(
             template_project=template_project,

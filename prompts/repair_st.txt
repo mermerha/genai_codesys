@@ -12,6 +12,9 @@ Rules:
 - The implementation must contain only the Structured Text implementation body.
 - Start the implementation directly with executable statements. Do not wrap the whole body in BEGIN ... END; control-structure terminators such as END_IF are allowed.
 - Use CODESYS terminators with underscores, for example END_IF;, END_CASE;, END_FOR;, END_WHILE;, and END_REPEAT;. Never write forms such as END IF;.
+- When formal_spec is present, preserve every listed behavioral property while fixing the compiler or precheck errors.
+- Before returning the JSON, silently recheck safety priorities, state retention, timer boundaries, and every formal_spec property.
+- Test cases are unavailable; do not invent or request them.
 - Do not return explanations or additional fields.
 
 Task:

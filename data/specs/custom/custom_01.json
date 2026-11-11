@@ -2,19 +2,20 @@
   "task_id": "custom_01",
   "state_semantics": "每个步骤执行一次 PLC 扫描，X 表示该扫描后的输出状态。",
   "propositions": {
-    "safe_start": "start 且 stop、emergencyStop、overload 和 fault 均为假",
-    "stop_request": "stop 或 emergencyStop",
-    "overload": "过载输入为真",
-    "valid_reset": "reset 为真且 overload 为假",
+    "safe_start": "start 为真且 stop、emergencyStop、overload、reset 和 fault 均为假",
+    "stop_request": "stop 为真",
+    "safety_trip": "emergencyStop 或 overload 为真",
+    "valid_reset": "reset 为真且 emergencyStop 和 overload 均为假",
     "motor_run": "motorRun 为真",
     "fault": "fault 为真"
   },
   "assumptions": [],
   "properties": [
-    {"id": "custom_01_p01", "type": "safety", "description": "停止或急停立即关闭电机", "ltl": "G(stop_request -> X(!motor_run))", "tool_expression": null},
-    {"id": "custom_01_p02", "type": "safety", "description": "过载停机并锁存故障", "ltl": "G(overload -> X(!motor_run && fault))", "tool_expression": null},
+    {"id": "custom_01_p01", "type": "safety", "description": "停止命令立即关闭电机", "ltl": "G(stop_request -> X(!motor_run))", "tool_expression": null},
+    {"id": "custom_01_p02", "type": "safety", "description": "急停或过载立即停机并锁存故障", "ltl": "G(safety_trip -> X(!motor_run && fault))", "tool_expression": null},
     {"id": "custom_01_p03", "type": "response", "description": "安全启动使电机运行", "ltl": "G(safe_start -> X(motor_run))", "tool_expression": null},
-    {"id": "custom_01_p04", "type": "response", "description": "只在有效复位时清除故障", "ltl": "G(valid_reset -> X(!fault)) && G((fault && !valid_reset) -> X(fault))", "tool_expression": null}
+    {"id": "custom_01_p04", "type": "response", "description": "有效复位清除故障但不在同一扫描启动", "ltl": "G(valid_reset -> X(!fault && !motor_run)) && G((fault && !valid_reset) -> X(fault))", "tool_expression": null},
+    {"id": "custom_01_p05", "type": "safety", "description": "故障锁存期间禁止电机运行", "ltl": "G(fault -> X(!motor_run))", "tool_expression": null}
   ],
-  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["按工具无关 LTL 冻结。"]}
+  "review": {"status": "frozen", "reviewer": "Codex", "notes": ["v3 覆盖停止、急停/过载锁存、有效复位和防自动重启。"]}
 }

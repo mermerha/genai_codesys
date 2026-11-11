@@ -6,6 +6,7 @@ import json
 import hashlib
 import time
 from dataclasses import asdict
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Callable
 
@@ -32,8 +33,13 @@ def _write_json(path: Path, payload: Any) -> None:
     )
 
 
+@lru_cache(maxsize=None)
+def _read_prompt(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+
 def _render_prompt(path: Path, replacements: dict[str, str]) -> str:
-    prompt = path.read_text(encoding="utf-8")
+    prompt = _read_prompt(path)
     for name, value in replacements.items():
         prompt = prompt.replace("{" + name + "}", value)
     return prompt
@@ -70,6 +76,7 @@ def run_compile_loop(
     tests: dict[str, Any] | None = None,
     enable_candidate_precheck: bool = False,
     regenerate_on_repeated_error: bool = False,
+    combine_compile_and_test: bool = False,
     chat_function: ChatFunction = chat_completion,
     compile_function: CompileFunction = compile_project,
     test_function: TestFunction = execute_tests,
@@ -97,6 +104,7 @@ def run_compile_loop(
             "automatic_tests": tests is not None,
             "enable_candidate_precheck": enable_candidate_precheck,
             "regenerate_on_repeated_error": regenerate_on_repeated_error,
+            "combine_compile_and_test": combine_compile_and_test,
         },
     )
 
@@ -130,6 +138,8 @@ def run_compile_loop(
             "compiled": False,
             "compile_passed": False,
         }
+        compile_success = False
+        test_result: TestExecutionResult | None = None
 
         try:
             completion = chat_function(
@@ -199,24 +209,37 @@ def run_compile_loop(
                     candidate.implementation + "\n", encoding="utf-8"
                 )
 
-                compile_result = compile_function(
-                    template_project=template_project,
-                    declaration_path=declaration_path,
-                    implementation_path=implementation_path,
-                    output_dir=attempt_dir / "compile",
-                    pou_name=candidate.pou_name,
-                    pou_type=candidate.pou_type,
-                    compile_context=compile_context,
-                )
+                if combine_compile_and_test and tests is not None:
+                    test_result = test_function(
+                        template_project=template_project,
+                        declaration_path=declaration_path,
+                        implementation_path=implementation_path,
+                        task=task,
+                        tests=tests,
+                        output_dir=attempt_dir / "combined_execution",
+                        compile_context=compile_context,
+                    )
+                    compile_success = test_result.compile_success
+                    errors = [asdict(message) for message in test_result.errors]
+                else:
+                    compile_result = compile_function(
+                        template_project=template_project,
+                        declaration_path=declaration_path,
+                        implementation_path=implementation_path,
+                        output_dir=attempt_dir / "compile",
+                        pou_name=candidate.pou_name,
+                        pou_type=candidate.pou_type,
+                        compile_context=compile_context,
+                    )
+                    compile_success = compile_result.success
+                    errors = _compile_errors(compile_result)
                 attempt_detail["compiled"] = True
-                attempt_detail["compile_passed"] = compile_result.success
-                errors = _compile_errors(compile_result)
-            if not precheck_errors and compile_result.success:
+                attempt_detail["compile_passed"] = compile_success
+            if not precheck_errors and compile_success:
                 attempt_detail["errors"] = []
                 attempts_detail.append(attempt_detail)
                 _write_json(attempt_dir / "attempt_result.json", attempt_detail)
-                test_result = None
-                if tests is not None:
+                if tests is not None and test_result is None:
                     test_result = test_function(
                         template_project=template_project,
                         declaration_path=declaration_path,

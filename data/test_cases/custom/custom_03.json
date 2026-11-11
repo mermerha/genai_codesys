@@ -20,13 +20,15 @@
       "coverage": ["reset_interlock"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
     },
     {
-      "id": "custom_03_tc03", "task_id": "custom_03", "name": "需求撤销不增加计数", "initial_state": {},
+      "id": "custom_03_tc03", "task_id": "custom_03", "name": "正常停机后的防短周期重启", "initial_state": {},
       "steps": [
         {"cycle": 0, "inputs": {"demand": true, "trip": false, "reset": false}, "expected_outputs": {"compressorRun": true, "startCount": 1}, "check": "第一次启动"},
         {"cycle": 1, "inputs": {"demand": false, "trip": false, "reset": false}, "expected_outputs": {"compressorRun": false, "startCount": 1}, "check": "需求撤销停机"},
-        {"cycle": 2, "inputs": {"demand": true, "trip": false, "reset": false}, "expected_outputs": {"compressorRun": true, "startCount": 2}, "check": "第二次启动计数"}
+        {"cycle": 2, "inputs": {"demand": true, "trip": false, "reset": false}, "expected_outputs": {"compressorRun": false, "startCount": 1}, "check": "五秒未到拒绝立即重启"},
+        {"cycle": 3, "advance_ms": 4000, "inputs": {"demand": true, "trip": false, "reset": false}, "expected_outputs": {"compressorRun": false, "startCount": 1}, "check": "四秒时继续等待"},
+        {"cycle": 4, "advance_ms": 1000, "inputs": {"demand": true, "trip": false, "reset": false}, "expected_outputs": {"compressorRun": true, "startCount": 2}, "check": "五秒后重启并计数"}
       ],
-      "coverage": ["demand", "counter_edge"], "review": {"status": "frozen", "reviewer": "Codex", "notes": []}
+      "coverage": ["normal_stop", "minimum_off_time", "counter_edge"], "review": {"status": "frozen", "reviewer": "Codex", "notes": ["v3 将正常需求撤销纳入防短周期逻辑。"]}
     }
   ]
 }

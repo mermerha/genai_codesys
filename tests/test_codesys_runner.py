@@ -227,6 +227,71 @@ class CodesysRunnerTests(unittest.TestCase):
             self.assertEqual(result.test_total, 1)
             self.assertTrue((root / "run" / "test_request.json").is_file())
 
+    def test_execute_tests_exposes_compile_errors(self):
+        with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "tests") as temporary_directory:
+            root = Path(temporary_directory)
+            files = {}
+            for name in (
+                "codesys_stub.txt",
+                "template.project",
+                "execute_tests.py",
+                "declaration.st",
+                "implementation.st",
+            ):
+                path = root / name
+                path.write_text("fixture", encoding="utf-8")
+                files[name] = path
+
+            def fake_run(command, **kwargs):
+                result_path = Path(kwargs["env"]["PLC_AGENT_RESULT_PATH"])
+                result_path.write_text(
+                    json.dumps(
+                        {
+                            "success": False,
+                            "compile_success": False,
+                            "compile_messages": [
+                                {
+                                    "severity": "error",
+                                    "number": "C0046",
+                                    "text": "Identifier not defined",
+                                    "object": "MotorControl",
+                                    "position": "line 1",
+                                }
+                            ],
+                            "test_passed": 0,
+                            "test_total": 1,
+                            "exception": "compile failed",
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                return __import__("subprocess").CompletedProcess(command, 1, "", "")
+
+            task = {
+                "id": "fixture",
+                "pou_type": "FUNCTION_BLOCK",
+                "interface": [],
+            }
+            tests = {
+                "task_id": "fixture",
+                "tests": [{"id": "tc01", "initial_state": {}, "steps": []}],
+            }
+            with patch("plc_agent.codesys_runner.subprocess.run", side_effect=fake_run):
+                result = execute_tests(
+                    template_project=files["template.project"],
+                    declaration_path=files["declaration.st"],
+                    implementation_path=files["implementation.st"],
+                    task=task,
+                    tests=tests,
+                    output_dir=root / "run",
+                    codesys_exe=files["codesys_stub.txt"],
+                    script_path=files["execute_tests.py"],
+                )
+
+            self.assertFalse(result.compile_success)
+            self.assertEqual(len(result.errors), 1)
+            self.assertEqual(result.errors[0].number, "C0046")
+
 
 if __name__ == "__main__":
     unittest.main()
