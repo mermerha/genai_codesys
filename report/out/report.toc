@@ -32,5 +32,5 @@
 \contentsline {subsection}{\numberline {6.6}组合差异案例：\texttt {public\_19}}{16}{subsection.6.6}%
 \contentsline {subsection}{\numberline {6.7}失败类型与局限}{17}{subsection.6.7}%
 \contentsline {section}{\numberline {7}结论}{17}{section.7}%
-\contentsline {section}{\numberline {A}电子附录与证据目录}{17}{appendix.A}%
-\contentsline {section}{\numberline {B}报告数字追溯表}{17}{appendix.B}%
+\contentsline {section}{\numberline {A}附录pdf}{18}{appendix.A}%
+\contentsline {section}{\numberline {B}最终的数据整合文件}{18}{appendix.B}%

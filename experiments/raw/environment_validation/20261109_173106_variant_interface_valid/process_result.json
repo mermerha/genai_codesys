@@ -1,8 +1,0 @@
-{
-  "command": "\"F:\\genai\\CODESYS\\Common\\CODESYS.exe\" --profile=\"CODESYS V3.5 SP22 Patch 4\" --runscript=\"G:\\Genai_codesys\\codesys\\scripts\\compile_project.py\" --noUI",
-  "returncode": 2,
-  "elapsed_seconds": 25.547,
-  "stdout": "CODESYS_COMPILE_RESULT=G:\\Genai_codesys\\experiments\\raw\\environment_validation\\20261109_173106_variant_interface_valid\\compile_result.json\r\nCODESYS_COMPILE_SUCCESS=False\r\n",
-  "stderr": "编译: Text: C0: ------ 开始构建应用程序 Device.Application -------\r\n编译: Text: C0: 代码典型化...\r\n编译: Error: C311: 变量类型为'ANY'只允许输入功能。\r\n编译: Error: C311: 变量类型为'ANY'只允许输入功能。\r\n编译: Error: C201: 类型 'DINT' 不等于类型 VAR_IN_OUT 'item'的'__SYSTEM.AnyType' \r\n编译: Error: C201: 类型 'ARRAY [1..10] OF DINT' 不等于类型 VAR_IN_OUT 'buffer'的'__SYSTEM.AnyType' \r\n附加代码检查: Text: SA0: 其他代码检查...\r\n附加代码检查: Text: SA0: 其他代码检查完成-0 个错误\r\n编译: Text: C0: 编译完成--4错误,0警告\r\n",
-  "timed_out": false
-}

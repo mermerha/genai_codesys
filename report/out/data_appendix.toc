@@ -1,0 +1,165 @@
+\contentsline {section}{\numberline {A}自建题构建与审核记录}{2}{section.1}%
+\contentsline {subsection}{\numberline {A.1}{\ttfamily custom\_01} Conveyor Motor Safety Latch}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {A.2}{\ttfamily custom\_02} Tank Level Pump Hysteresis}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {A.3}{\ttfamily custom\_03} Compressor Restart Delay}{2}{subsection.1.3}%
+\contentsline {subsection}{\numberline {A.4}{\ttfamily custom\_04} Pedestrian Traffic Light Sequence}{3}{subsection.1.4}%
+\contentsline {subsection}{\numberline {A.5}{\ttfamily custom\_05} Dual Pump Duty Standby}{3}{subsection.1.5}%
+\contentsline {subsection}{\numberline {A.6}{\ttfamily custom\_06} Batch Fill Mix Drain}{3}{subsection.1.6}%
+\contentsline {subsection}{\numberline {A.7}{\ttfamily custom\_07} Pressure Signal Scaling}{4}{subsection.1.7}%
+\contentsline {subsection}{\numberline {A.8}{\ttfamily custom\_08} Two Door Airlock Interlock}{4}{subsection.1.8}%
+\contentsline {subsection}{\numberline {A.9}{\ttfamily custom\_09} Conveyor Jam Detection}{4}{subsection.1.9}%
+\contentsline {subsection}{\numberline {A.10}{\ttfamily custom\_10} Two Stage Boiler Heating}{4}{subsection.1.10}%
+\contentsline {section}{\numberline {B}逐题LTL规约}{5}{section.2}%
+\contentsline {subsection}{\numberline {B.1}{\ttfamily public\_01} Automated Filling Line Control}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {B.2}{\ttfamily public\_02} Dual-Word Edge Detection}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {B.3}{\ttfamily public\_03} Alarm Handling}{6}{subsection.2.3}%
+\contentsline {subsection}{\numberline {B.4}{\ttfamily public\_04} Jam Pump Debouncing and Runtime Maintenance}{7}{subsection.2.4}%
+\contentsline {subsection}{\numberline {B.5}{\ttfamily public\_05} Weld Gap Alarm and Startup Inhibition}{8}{subsection.2.5}%
+\contentsline {subsection}{\numberline {B.6}{\ttfamily public\_06} Aeration Blower Delayed Start}{8}{subsection.2.6}%
+\contentsline {subsection}{\numberline {B.7}{\ttfamily public\_07} Multi-Pump Switching Control System}{9}{subsection.2.7}%
+\contentsline {subsection}{\numberline {B.8}{\ttfamily public\_08} Analog Batch Processing}{9}{subsection.2.8}%
+\contentsline {subsection}{\numberline {B.9}{\ttfamily public\_09} Calculate Moving Average}{10}{subsection.2.9}%
+\contentsline {subsection}{\numberline {B.10}{\ttfamily public\_10} Temperature Logic Control}{11}{subsection.2.10}%
+\contentsline {subsection}{\numberline {B.11}{\ttfamily public\_11} Automated Production Line Control}{11}{subsection.2.11}%
+\contentsline {subsection}{\numberline {B.12}{\ttfamily public\_12} Slab Thickness Alarm and Fault History}{12}{subsection.2.12}%
+\contentsline {subsection}{\numberline {B.13}{\ttfamily public\_13} Office HVAC Multi-mode Energy-Saving Control}{13}{subsection.2.13}%
+\contentsline {subsection}{\numberline {B.14}{\ttfamily public\_14} IPv4 Parsing with Format and Range Checks}{14}{subsection.2.14}%
+\contentsline {subsection}{\numberline {B.15}{\ttfamily public\_15} Material Proportioning Process Control}{14}{subsection.2.15}%
+\contentsline {subsection}{\numberline {B.16}{\ttfamily public\_16} Flexible Processing Control}{15}{subsection.2.16}%
+\contentsline {subsection}{\numberline {B.17}{\ttfamily public\_17} Recipe Management System}{15}{subsection.2.17}%
+\contentsline {subsection}{\numberline {B.18}{\ttfamily public\_18} FIFO First-In-First-Out Queue}{16}{subsection.2.18}%
+\contentsline {subsection}{\numberline {B.19}{\ttfamily public\_19} Mechanical Arm Control}{17}{subsection.2.19}%
+\contentsline {subsection}{\numberline {B.20}{\ttfamily public\_20} Production Control}{18}{subsection.2.20}%
+\contentsline {subsection}{\numberline {B.21}{\ttfamily custom\_01} Conveyor Motor Safety Latch}{19}{subsection.2.21}%
+\contentsline {subsection}{\numberline {B.22}{\ttfamily custom\_02} Tank Level Pump Hysteresis}{19}{subsection.2.22}%
+\contentsline {subsection}{\numberline {B.23}{\ttfamily custom\_03} Compressor Restart Delay}{20}{subsection.2.23}%
+\contentsline {subsection}{\numberline {B.24}{\ttfamily custom\_04} Pedestrian Traffic Light Sequence}{20}{subsection.2.24}%
+\contentsline {subsection}{\numberline {B.25}{\ttfamily custom\_05} Dual Pump Duty Standby}{21}{subsection.2.25}%
+\contentsline {subsection}{\numberline {B.26}{\ttfamily custom\_06} Batch Fill Mix Drain}{22}{subsection.2.26}%
+\contentsline {subsection}{\numberline {B.27}{\ttfamily custom\_07} Pressure Signal Scaling}{22}{subsection.2.27}%
+\contentsline {subsection}{\numberline {B.28}{\ttfamily custom\_08} Two Door Airlock Interlock}{23}{subsection.2.28}%
+\contentsline {subsection}{\numberline {B.29}{\ttfamily custom\_09} Conveyor Jam Detection}{23}{subsection.2.29}%
+\contentsline {subsection}{\numberline {B.30}{\ttfamily custom\_10} Two Stage Boiler Heating}{24}{subsection.2.30}%
+\contentsline {section}{\numberline {C}逐题测试用例}{24}{section.3}%
+\contentsline {subsection}{\numberline {C.1}{\ttfamily public\_01} Automated Filling Line Control}{25}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {C.1.1}{\ttfamily public\_01\_tc01} 完整生产循环}{25}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {C.1.2}{\ttfamily public\_01\_tc02} 越序确认无效}{26}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {C.1.3}{\ttfamily public\_01\_tc03} 完成灯保持到确认}{26}{subsubsection.3.1.3}%
+\contentsline {subsection}{\numberline {C.2}{\ttfamily public\_02} Dual-Word Edge Detection}{27}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {C.2.1}{\ttfamily public\_02\_tc01} 混合上升与下降位}{27}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {C.2.2}{\ttfamily public\_02\_tc02} 输入保持不变}{27}{subsubsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {C.2.3}{\ttfamily public\_02\_tc03} 全部位下降}{28}{subsubsection.3.2.3}%
+\contentsline {subsection}{\numberline {C.3}{\ttfamily public\_03} Alarm Handling}{28}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {C.3.1}{\ttfamily public\_03\_tc01} 高报警滞回}{28}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {C.3.2}{\ttfamily public\_03\_tc02} 低报警滞回}{29}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {C.3.3}{\ttfamily public\_03\_tc03} 配置错误优先级}{29}{subsubsection.3.3.3}%
+\contentsline {subsection}{\numberline {C.4}{\ttfamily public\_04} Jam Pump Debouncing and Runtime Maintenance}{29}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {C.4.1}{\ttfamily public\_04\_tc01} 粘度防抖后启动}{29}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {C.4.2}{\ttfamily public\_04\_tc02} 急停立即停止并重置防抖}{30}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {C.4.3}{\ttfamily public\_04\_tc03} 累计 500 小时提示维护}{30}{subsubsection.3.4.3}%
+\contentsline {subsection}{\numberline {C.5}{\ttfamily public\_05} Weld Gap Alarm and Startup Inhibition}{31}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {C.5.1}{\ttfamily public\_05\_tc01} 上电五秒抑制}{31}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {C.5.2}{\ttfamily public\_05\_tc02} 正常监控防抖报警}{31}{subsubsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {C.5.3}{\ttfamily public\_05\_tc03} 急停清除未完成防抖}{31}{subsubsection.3.5.3}%
+\contentsline {subsection}{\numberline {C.6}{\ttfamily public\_06} Aeration Blower Delayed Start}{32}{subsection.3.6}%
+\contentsline {subsubsection}{\numberline {C.6.1}{\ttfamily public\_06\_tc01} 低氧延时启动}{32}{subsubsection.3.6.1}%
+\contentsline {subsubsection}{\numberline {C.6.2}{\ttfamily public\_06\_tc02} 需求消失后重新完整延时}{32}{subsubsection.3.6.2}%
+\contentsline {subsubsection}{\numberline {C.6.3}{\ttfamily public\_06\_tc03} 急停优先}{33}{subsubsection.3.6.3}%
+\contentsline {subsection}{\numberline {C.7}{\ttfamily public\_07} Multi-Pump Switching Control System}{33}{subsection.3.7}%
+\contentsline {subsubsection}{\numberline {C.7.1}{\ttfamily public\_07\_tc01} 手动选择泵启停}{33}{subsubsection.3.7.1}%
+\contentsline {subsubsection}{\numberline {C.7.2}{\ttfamily public\_07\_tc02} 自动选择三个最高优先级泵}{34}{subsubsection.3.7.2}%
+\contentsline {subsubsection}{\numberline {C.7.3}{\ttfamily public\_07\_tc03} 相同优先级按下标选择}{35}{subsubsection.3.7.3}%
+\contentsline {subsection}{\numberline {C.8}{\ttfamily public\_08} Analog Batch Processing}{35}{subsection.3.8}%
+\contentsline {subsubsection}{\numberline {C.8.1}{\ttfamily public\_08\_tc01} 线性单极性与双极性换算}{35}{subsubsection.3.8.1}%
+\contentsline {subsubsection}{\numberline {C.8.2}{\ttfamily public\_08\_tc02} 两种温度换算}{36}{subsubsection.3.8.2}%
+\contentsline {subsubsection}{\numberline {C.8.3}{\ttfamily public\_08\_tc03} 禁用和错误配置}{36}{subsubsection.3.8.3}%
+\contentsline {subsection}{\numberline {C.9}{\ttfamily public\_09} Calculate Moving Average}{37}{subsection.3.9}%
+\contentsline {subsubsection}{\numberline {C.9.1}{\ttfamily public\_09\_tc01} 循环采样与滑动窗口}{37}{subsubsection.3.9.1}%
+\contentsline {subsubsection}{\numberline {C.9.2}{\ttfamily public\_09\_tc02} 触发沿采样}{37}{subsubsection.3.9.2}%
+\contentsline {subsubsection}{\numberline {C.9.3}{\ttfamily public\_09\_tc03} 窗口大小非法}{38}{subsubsection.3.9.3}%
+\contentsline {subsection}{\numberline {C.10}{\ttfamily public\_10} Temperature Logic Control}{38}{subsection.3.10}%
+\contentsline {subsubsection}{\numberline {C.10.1}{\ttfamily public\_10\_tc01} 正常温控}{38}{subsubsection.3.10.1}%
+\contentsline {subsubsection}{\numberline {C.10.2}{\ttfamily public\_10\_tc02} 连续加热触发并保持保护}{39}{subsubsection.3.10.2}%
+\contentsline {subsubsection}{\numberline {C.10.3}{\ttfamily public\_10\_tc03} 传感器越界故障}{39}{subsubsection.3.10.3}%
+\contentsline {subsection}{\numberline {C.11}{\ttfamily public\_11} Automated Production Line Control}{40}{subsection.3.11}%
+\contentsline {subsubsection}{\numberline {C.11.1}{\ttfamily public\_11\_tc01} 手动正反转互锁}{40}{subsubsection.3.11.1}%
+\contentsline {subsubsection}{\numberline {C.11.2}{\ttfamily public\_11\_tc02} 自动经过三个工位}{40}{subsubsection.3.11.2}%
+\contentsline {subsubsection}{\numberline {C.11.3}{\ttfamily public\_11\_tc03} 产品离开后完成灯熄灭}{42}{subsubsection.3.11.3}%
+\contentsline {subsection}{\numberline {C.12}{\ttfamily public\_12} Slab Thickness Alarm and Fault History}{43}{subsection.3.12}%
+\contentsline {subsubsection}{\numberline {C.12.1}{\ttfamily public\_12\_tc01} 报警最短保持 500 毫秒}{43}{subsubsection.3.12.1}%
+\contentsline {subsubsection}{\numberline {C.12.2}{\ttfamily public\_12\_tc02} 故障历史新记录置顶}{44}{subsubsection.3.12.2}%
+\contentsline {subsubsection}{\numberline {C.12.3}{\ttfamily public\_12\_tc03} 仅正常切割累计运行时间}{44}{subsubsection.3.12.3}%
+\contentsline {subsection}{\numberline {C.13}{\ttfamily public\_13} Office HVAC Multi-mode Energy-Saving Control}{45}{subsection.3.13}%
+\contentsline {subsubsection}{\numberline {C.13.1}{\ttfamily public\_13\_tc01} 有人时延时启动风机}{45}{subsubsection.3.13.1}%
+\contentsline {subsubsection}{\numberline {C.13.2}{\ttfamily public\_13\_tc02} 无人时各模式温度修正}{45}{subsubsection.3.13.2}%
+\contentsline {subsubsection}{\numberline {C.13.3}{\ttfamily public\_13\_tc03} 夜间模式停止并重置启动延时}{46}{subsubsection.3.13.3}%
+\contentsline {subsection}{\numberline {C.14}{\ttfamily public\_14} IPv4 Parsing with Format and Range Checks}{46}{subsection.3.14}%
+\contentsline {subsubsection}{\numberline {C.14.1}{\ttfamily public\_14\_tc01} 解析常用 IPv4 地址}{46}{subsubsection.3.14.1}%
+\contentsline {subsubsection}{\numberline {C.14.2}{\ttfamily public\_14\_tc02} 合法边界地址}{47}{subsubsection.3.14.2}%
+\contentsline {subsubsection}{\numberline {C.14.3}{\ttfamily public\_14\_tc03} 非法文本输出零}{47}{subsubsection.3.14.3}%
+\contentsline {subsection}{\numberline {C.15}{\ttfamily public\_15} Material Proportioning Process Control}{47}{subsection.3.15}%
+\contentsline {subsubsection}{\numberline {C.15.1}{\ttfamily public\_15\_tc01} 手动按钮上升沿切换与急停}{47}{subsubsection.3.15.1}%
+\contentsline {subsubsection}{\numberline {C.15.2}{\ttfamily public\_15\_tc02} 自动两种物料流程}{48}{subsubsection.3.15.2}%
+\contentsline {subsubsection}{\numberline {C.15.3}{\ttfamily public\_15\_tc03} 自动三种物料流程}{49}{subsubsection.3.15.3}%
+\contentsline {subsection}{\numberline {C.16}{\ttfamily public\_16} Flexible Processing Control}{51}{subsection.3.16}%
+\contentsline {subsubsection}{\numberline {C.16.1}{\ttfamily public\_16\_tc01} 按顺序向右输送}{51}{subsubsection.3.16.1}%
+\contentsline {subsubsection}{\numberline {C.16.2}{\ttfamily public\_16\_tc02} 包含反向移动的工艺顺序}{52}{subsubsection.3.16.2}%
+\contentsline {subsubsection}{\numberline {C.16.3}{\ttfamily public\_16\_tc03} 未启动时保持停止}{54}{subsubsection.3.16.3}%
+\contentsline {subsection}{\numberline {C.17}{\ttfamily public\_17} Recipe Management System}{54}{subsection.3.17}%
+\contentsline {subsubsection}{\numberline {C.17.1}{\ttfamily public\_17\_tc01} 新增并查询配方}{54}{subsubsection.3.17.1}%
+\contentsline {subsubsection}{\numberline {C.17.2}{\ttfamily public\_17\_tc02} 重复编号与满库错误}{56}{subsubsection.3.17.2}%
+\contentsline {subsubsection}{\numberline {C.17.3}{\ttfamily public\_17\_tc03} 修改、删除和不存在错误}{58}{subsubsection.3.17.3}%
+\contentsline {subsection}{\numberline {C.18}{\ttfamily public\_18} FIFO First-In-First-Out Queue}{61}{subsection.3.18}%
+\contentsline {subsubsection}{\numberline {C.18.1}{\ttfamily public\_18\_tc01} 入队沿与先进先出}{61}{subsubsection.3.18.1}%
+\contentsline {subsubsection}{\numberline {C.18.2}{\ttfamily public\_18\_tc02} 空队列出队和复位优先}{62}{subsubsection.3.18.2}%
+\contentsline {subsubsection}{\numberline {C.18.3}{\ttfamily public\_18\_tc03} 满队列拒绝入队}{62}{subsubsection.3.18.3}%
+\contentsline {subsection}{\numberline {C.19}{\ttfamily public\_19} Mechanical Arm Control}{64}{subsection.3.19}%
+\contentsline {subsubsection}{\numberline {C.19.1}{\ttfamily public\_19\_tc01} 手动互锁、限位与急停}{64}{subsubsection.3.19.1}%
+\contentsline {subsubsection}{\numberline {C.19.2}{\ttfamily public\_19\_tc02} 单步执行前两个动作}{66}{subsubsection.3.19.2}%
+\contentsline {subsubsection}{\numberline {C.19.3}{\ttfamily public\_19\_tc03} 单周期完整动作序列}{68}{subsubsection.3.19.3}%
+\contentsline {subsubsection}{\numberline {C.19.4}{\ttfamily public\_19\_tc04} 连续模式完成后重新开始}{76}{subsubsection.3.19.4}%
+\contentsline {subsection}{\numberline {C.20}{\ttfamily public\_20} Production Control}{79}{subsection.3.20}%
+\contentsline {subsubsection}{\numberline {C.20.1}{\ttfamily public\_20\_tc01} 手动正反转互锁}{79}{subsubsection.3.20.1}%
+\contentsline {subsubsection}{\numberline {C.20.2}{\ttfamily public\_20\_tc02} 合格产品完整自动流程}{80}{subsubsection.3.20.2}%
+\contentsline {subsubsection}{\numberline {C.20.3}{\ttfamily public\_20\_tc03} 低于下限产品剔除}{83}{subsubsection.3.20.3}%
+\contentsline {subsubsection}{\numberline {C.20.4}{\ttfamily public\_20\_tc04} 高于上限产品剔除}{83}{subsubsection.3.20.4}%
+\contentsline {subsection}{\numberline {C.21}{\ttfamily custom\_01} Conveyor Motor Safety Latch}{84}{subsection.3.21}%
+\contentsline {subsubsection}{\numberline {C.21.1}{\ttfamily custom\_01\_tc01} 启动保持与停止}{84}{subsubsection.3.21.1}%
+\contentsline {subsubsection}{\numberline {C.21.2}{\ttfamily custom\_01\_tc02} 过载锁存与安全复位}{84}{subsubsection.3.21.2}%
+\contentsline {subsubsection}{\numberline {C.21.3}{\ttfamily custom\_01\_tc03} 急停锁存与防自动重启}{85}{subsubsection.3.21.3}%
+\contentsline {subsection}{\numberline {C.22}{\ttfamily custom\_02} Tank Level Pump Hysteresis}{85}{subsection.3.22}%
+\contentsline {subsubsection}{\numberline {C.22.1}{\ttfamily custom\_02\_tc01} 泵滞回控制}{85}{subsubsection.3.22.1}%
+\contentsline {subsubsection}{\numberline {C.22.2}{\ttfamily custom\_02\_tc02} 高高报警锁存与安全复位}{85}{subsubsection.3.22.2}%
+\contentsline {subsubsection}{\numberline {C.22.3}{\ttfamily custom\_02\_tc03} 阈值配置错误}{86}{subsubsection.3.22.3}%
+\contentsline {subsection}{\numberline {C.23}{\ttfamily custom\_03} Compressor Restart Delay}{86}{subsection.3.23}%
+\contentsline {subsubsection}{\numberline {C.23.1}{\ttfamily custom\_03\_tc01} 跳闸后延迟重启}{86}{subsubsection.3.23.1}%
+\contentsline {subsubsection}{\numberline {C.23.2}{\ttfamily custom\_03\_tc02} 带故障复位无效}{87}{subsubsection.3.23.2}%
+\contentsline {subsubsection}{\numberline {C.23.3}{\ttfamily custom\_03\_tc03} 正常停机后的防短周期重启}{87}{subsubsection.3.23.3}%
+\contentsline {subsection}{\numberline {C.24}{\ttfamily custom\_04} Pedestrian Traffic Light Sequence}{87}{subsection.3.24}%
+\contentsline {subsubsection}{\numberline {C.24.1}{\ttfamily custom\_04\_tc01} 完整行人通行周期}{87}{subsubsection.3.24.1}%
+\contentsline {subsubsection}{\numberline {C.24.2}{\ttfamily custom\_04\_tc02} 禁用安全灯态}{88}{subsubsection.3.24.2}%
+\contentsline {subsubsection}{\numberline {C.24.3}{\ttfamily custom\_04\_tc03} 周期中重复请求不冲突}{88}{subsubsection.3.24.3}%
+\contentsline {subsection}{\numberline {C.25}{\ttfamily custom\_05} Dual Pump Duty Standby}{88}{subsection.3.25}%
+\contentsline {subsubsection}{\numberline {C.25.1}{\ttfamily custom\_05\_tc01} 相邻周期轮值}{88}{subsubsection.3.25.1}%
+\contentsline {subsubsection}{\numberline {C.25.2}{\ttfamily custom\_05\_tc02} 运行中故障切换}{89}{subsubsection.3.25.2}%
+\contentsline {subsubsection}{\numberline {C.25.3}{\ttfamily custom\_05\_tc03} 双泵故障}{89}{subsubsection.3.25.3}%
+\contentsline {subsection}{\numberline {C.26}{\ttfamily custom\_06} Batch Fill Mix Drain}{90}{subsection.3.26}%
+\contentsline {subsubsection}{\numberline {C.26.1}{\ttfamily custom\_06\_tc01} 完整批处理周期}{90}{subsubsection.3.26.1}%
+\contentsline {subsubsection}{\numberline {C.26.2}{\ttfamily custom\_06\_tc02} 灌装中止}{90}{subsubsection.3.26.2}%
+\contentsline {subsubsection}{\numberline {C.26.3}{\ttfamily custom\_06\_tc03} 搅拌未满时间不排放}{90}{subsubsection.3.26.3}%
+\contentsline {subsection}{\numberline {C.27}{\ttfamily custom\_07} Pressure Signal Scaling}{91}{subsection.3.27}%
+\contentsline {subsubsection}{\numberline {C.27.1}{\ttfamily custom\_07\_tc01} 线性缩放关键点}{91}{subsubsection.3.27.1}%
+\contentsline {subsubsection}{\numberline {C.27.2}{\ttfamily custom\_07\_tc02} 上下越界钳位}{91}{subsubsection.3.27.2}%
+\contentsline {subsubsection}{\numberline {C.27.3}{\ttfamily custom\_07\_tc03} 报警阈值边界}{91}{subsubsection.3.27.3}%
+\contentsline {subsection}{\numberline {C.28}{\ttfamily custom\_08} Two Door Airlock Interlock}{92}{subsection.3.28}%
+\contentsline {subsubsection}{\numberline {C.28.1}{\ttfamily custom\_08\_tc01} 内门释放与超时复锁}{92}{subsubsection.3.28.1}%
+\contentsline {subsubsection}{\numberline {C.28.2}{\ttfamily custom\_08\_tc02} 双请求内门优先}{92}{subsubsection.3.28.2}%
+\contentsline {subsubsection}{\numberline {C.28.3}{\ttfamily custom\_08\_tc03} 紧急锁定与传感器故障}{93}{subsubsection.3.28.3}%
+\contentsline {subsection}{\numberline {C.29}{\ttfamily custom\_09} Conveyor Jam Detection}{93}{subsection.3.29}%
+\contentsline {subsubsection}{\numberline {C.29.1}{\ttfamily custom\_09\_tc01} 脉冲重启看门狗}{93}{subsubsection.3.29.1}%
+\contentsline {subsubsection}{\numberline {C.29.2}{\ttfamily custom\_09\_tc02} 堵料复位条件}{93}{subsubsection.3.29.2}%
+\contentsline {subsubsection}{\numberline {C.29.3}{\ttfamily custom\_09\_tc03} 急停优先}{94}{subsubsection.3.29.3}%
+\contentsline {subsection}{\numberline {C.30}{\ttfamily custom\_10} Two Stage Boiler Heating}{94}{subsection.3.30}%
+\contentsline {subsubsection}{\numberline {C.30.1}{\ttfamily custom\_10\_tc01} 两级温区控制}{94}{subsubsection.3.30.1}%
+\contentsline {subsubsection}{\numberline {C.30.2}{\ttfamily custom\_10\_tc02} 超温跳闸与受限复位}{95}{subsubsection.3.30.2}%
+\contentsline {subsubsection}{\numberline {C.30.3}{\ttfamily custom\_10\_tc03} 配置错误优先}{95}{subsubsection.3.30.3}%

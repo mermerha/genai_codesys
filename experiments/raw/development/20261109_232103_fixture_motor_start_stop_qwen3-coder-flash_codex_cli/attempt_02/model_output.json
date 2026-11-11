@@ -1,6 +1,0 @@
-{
-  "pou_name": "MotorControl",
-  "pou_type": "FUNCTION_BLOCK",
-  "declaration": "VAR_INPUT\n  StartBtn : BOOL;\n  StopBtn : BOOL;\n  EStop : BOOL;\nEND_VAR\n\nVAR_OUTPUT\n  Motor : BOOL;\nEND_VAR",
-  "implementation": "IF EStop THEN\n  Motor := FALSE;\nELSIF StopBtn THEN\n  Motor := FALSE;\nELSIF StartBtn THEN\n  Motor := TRUE;\nELSE\n  (* 保持当前状态 *)\nEND_IF;"
-}

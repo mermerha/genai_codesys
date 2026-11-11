@@ -1,8 +1,0 @@
-{
-  "model": "fixture-model",
-  "max_repairs": 0,
-  "model_timeout_seconds": 120.0,
-  "reasoning_effort": null,
-  "template_project": "G:\\Genai_codesys\\codesys\\template\\测试工程.project",
-  "automatic_tests": true
-}

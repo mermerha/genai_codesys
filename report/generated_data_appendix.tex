@@ -1,0 +1,6059 @@
+% Generated from the frozen task, specification, and test JSON files.
+
+\begingroup
+
+\small
+
+\section{自建题构建与审核记录}
+
+10道自建题均按来源记录、PLC合理性和多样性三方面审核。其中自主构思2道、经验改编6道、规则合成2道；难度分布为easy 3道、medium 4道、hard 3道。自建题没有直接复制网络题目，因此没有外部链接；规则合成题在构建过程中明确记录了规则组合和人工修改。
+
+\subsection{{\ttfamily custom\_01} Conveyor Motor Safety Latch}
+
+\begin{longtable}{L{3.0cm}L{10.3cm}}
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endhead
+
+难度 & easy\\
+
+来源类型 & 自主构思\\
+
+来源说明 & 自主构思：输送线电机启停与安全联锁\\
+
+构建或改编过程 & 从常见输送线启停回路抽象出启动保持、停止和过载保护\\
+
+人工修改 & 将急停与过载统一为锁存安全故障，并规定安全输入解除后仍需人工复位和再次启动\\
+
+审核过程 & 检查所有输入均可由常见 PLC 数字量模块提供；逐项检查停止、急停、过载、复位和重新启动的优先级，确认安全输入解除不会导致自动重启\\
+
+PLC场景合理性 & 输送线电机是典型 PLC 离散控制对象，启停保持、安全联锁和故障锁存可直接映射到现场 I/O。\\
+
+多样性标签 & 离散控制、安全联锁、故障锁存、人工复位、easy\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_02} Tank Level Pump Hysteresis}
+
+\begin{longtable}{L{3.0cm}L{10.3cm}}
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endhead
+
+难度 & easy\\
+
+来源类型 & 经验改编\\
+
+来源说明 & 经验改编：储液罐补液泵控制\\
+
+构建或改编过程 & 根据液位开关控制经验整理补液泵滞回逻辑\\
+
+人工修改 & 增加阈值合法性检查，并将高高报警改为带安全复位液位的锁存报警\\
+
+审核过程 & 核对泵在低液位启动、高液位停止的物理方向；检查异常阈值时泵安全停止，并检查高高报警在液位降到 90\% 以下且人工复位前保持锁存\\
+
+PLC场景合理性 & 液位滞回可避免泵在阈值附近频繁启停，配置检查和高高报警符合储罐现场控制需求。\\
+
+多样性标签 & 模拟量、滞回控制、报警锁存、配置校验、easy\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_03} Compressor Restart Delay}
+
+\begin{longtable}{L{3.0cm}L{10.3cm}}
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endhead
+
+难度 & easy\\
+
+来源类型 & 经验改编\\
+
+来源说明 & 经验改编：压缩机停机后的防频繁启动\\
+
+构建或改编过程 & 从制冷与气源设备常见防短周期需求提炼固定最小停机时间控制\\
+
+人工修改 & 固定延时为 5 秒，明确首次启动不等待，并将跳闸和正常需求撤销后的再次启动都纳入防短周期约束\\
+
+审核过程 & 分别检查跳闸停机与正常停机的定时起点、复位条件和启动计数边沿；确认题目可用 TON、运行边沿和少量内部状态在单个功能块中实现\\
+
+PLC场景合理性 & 压缩机停机后延迟重启可减小机械和电气冲击，PLC 定时器与启动计数均为常见功能。\\
+
+多样性标签 & 定时控制、防短周期、故障锁存、计数、easy\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_04} Pedestrian Traffic Light Sequence}
+
+\begin{longtable}{L{3.0cm}L{10.3cm}}
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endhead
+
+难度 & medium\\
+
+来源类型 & 规则合成\\
+
+来源说明 & 规则合成：行人请求触发的交通灯时序\\
+
+构建或改编过程 & 组合请求锁存、两段固定定时和互斥输出三个规则生成题目；将阶段顺序限定为绿色、黄色、全红行人绿、恢复绿色\\
+
+人工修改 & 增加禁用安全状态和绿灯互斥要求\\
+
+审核过程 & 逐阶段检查灯色无冲突；核对短按请求能够被锁存至完整周期结束\\
+
+PLC场景合理性 & 交通灯是典型 PLC 定时状态机，可检验请求锁存、阶段迁移与安全互锁。\\
+
+多样性标签 & 时序状态机、定时控制、互斥输出、medium\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_05} Dual Pump Duty Standby}
+
+\begin{longtable}{L{3.0cm}L{10.3cm}}
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endhead
+
+难度 & medium\\
+
+来源类型 & 经验改编\\
+
+来源说明 & 经验改编：双泵轮值与故障切换\\
+
+构建或改编过程 & 根据集水井双泵控制经验整理轮值、备用切换和双故障规则\\
+
+人工修改 & 把轮值切换点限定在一次需求结束时，明确初始首选泵\\
+
+审核过程 & 检查任何状态下两泵不同时运行；检查故障泵不会收到运行命令\\
+
+PLC场景合理性 & 双泵轮值用于均衡磨损，故障切换提高可用性，属于水处理 PLC 的常见控制任务。\\
+
+多样性标签 & 冗余控制、轮值、故障切换、medium\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_06} Batch Fill Mix Drain}
+
+\begin{longtable}{L{3.0cm}L{10.3cm}}
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endhead
+
+难度 & medium\\
+
+来源类型 & 经验改编\\
+
+来源说明 & 经验改编：批处理罐进料、搅拌、排料顺序\\
+
+构建或改编过程 & 从批处理设备常见顺序抽象出四状态流程\\
+
+人工修改 & 固定搅拌时间为 5 秒，增加停止中止和单扫描完成脉冲\\
+
+审核过程 & 检查液位输入对应的阶段迁移方向；检查各执行器输出互斥\\
+
+PLC场景合理性 & 灌装、搅拌和排放是典型批处理顺控，能真实检验 PLC 状态机、定时器与中止逻辑。\\
+
+多样性标签 & 批处理、顺序控制、定时状态机、medium\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_07} Pressure Signal Scaling}
+
+\begin{longtable}{L{3.0cm}L{10.3cm}}
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endhead
+
+难度 & medium\\
+
+来源类型 & 规则合成\\
+
+来源说明 & 规则合成：模拟量线性缩放与诊断\\
+
+构建或改编过程 & 组合标准模拟量计数范围、线性换算、越界钳位和阈值报警规则；选取 0 到 16 bar 便于构造可核对的中点\\
+
+人工修改 & 明确故障时禁止高报警，避免钳位上限造成误报警\\
+
+审核过程 & 手工核对原始中点 13824 对应 8 bar；检查上下越界的故障与钳位结果\\
+
+PLC场景合理性 & 将模拟量模块计数换算为工程量并做断线/越界诊断，是 PLC 采集压力信号的常见前处理。\\
+
+多样性标签 & 模拟量缩放、算术计算、传感器诊断、medium\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_08} Two Door Airlock Interlock}
+
+\begin{longtable}{L{3.0cm}L{10.3cm}}
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endhead
+
+难度 & hard\\
+
+来源类型 & 自主构思\\
+
+来源说明 & 自主构思：洁净区双门互锁气闸\\
+
+构建或改编过程 & 围绕双门不能同时释放的安全约束设计请求状态机\\
+
+人工修改 & 增加双请求优先级、超时复锁、紧急锁定和传感器故障规则\\
+
+审核过程 & 枚举空闲、内门释放、外门释放和紧急状态；检查所有分支均满足双门不同时解锁\\
+
+PLC场景合理性 & 洁净区或安全区气闸需要 PLC 实现双门互锁、超时复锁和异常处理，具有明确现场输入输出。\\
+
+多样性标签 & 安全状态机、互锁、优先级、定时、hard\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_09} Conveyor Jam Detection}
+
+\begin{longtable}{L{3.0cm}L{10.3cm}}
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endhead
+
+难度 & hard\\
+
+来源类型 & 经验改编\\
+
+来源说明 & 经验改编：输送机到位脉冲看门狗\\
+
+构建或改编过程 & 根据输送机运动传感器看门狗逻辑定义两秒无脉冲故障\\
+
+人工修改 & 明确每次脉冲重启计时，增加安全复位条件和急停优先级\\
+
+审核过程 & 用正常周期脉冲、超时和复位三个场景检查；确认报警锁存后电机不能自行恢复\\
+
+PLC场景合理性 & 运动脉冲看门狗可发现堵料、皮带打滑或传感器异常，是输送系统常见 PLC 诊断方式。\\
+
+多样性标签 & 看门狗、故障诊断、定时、状态锁存、hard\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_10} Two Stage Boiler Heating}
+
+\begin{longtable}{L{3.0cm}L{10.3cm}}
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+项目 & 记录内容\\
+
+\midrule
+
+\endhead
+
+难度 & hard\\
+
+来源类型 & 经验改编\\
+
+来源说明 & 经验改编：两级加热与超温跳闸\\
+
+构建或改编过程 & 从分级加热控制抽象出双级输出、设定点停机和独立超温保护\\
+
+人工修改 & 增加配置错误、跳闸锁存和受限复位条件\\
+
+审核过程 & 检查三个温度区间的输出；检查超温和配置错误均优先关闭加热器\\
+
+PLC场景合理性 & 分级加热可降低功率冲击，独立超温跳闸和受限复位符合工业加热设备的安全控制思路。\\
+
+多样性标签 & 模拟量分段控制、安全跳闸、配置校验、hard\\
+
+\bottomrule
+
+\end{longtable}
+
+\section{逐题LTL规约}
+
+本附录列出30道题的全部LTL性质。公式中的$G$表示始终成立，$X$表示一次PLC扫描后的状态。这些性质用于需求整理、测试覆盖检查和模型上下文，尚未接入形式化验证工具。
+
+\subsection{{\ttfamily public\_01} Automated Filling Line Control}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily bottle} & 检测到瓶子\\
+
+{\ttfamily clean\_ok} & 清洗确认\\
+
+{\ttfamily fill\_ok} & 灌装确认\\
+
+{\ttfamily cap\_ok} & 旋盖确认\\
+
+{\ttfamily pack\_ok} & 包装确认\\
+
+{\ttfamily finished} & 成品取走确认\\
+
+{\ttfamily pump} & 清洗泵运行\\
+
+{\ttfamily filling} & 灌装阀运行\\
+
+{\ttfamily capping} & 旋盖机运行\\
+
+{\ttfamily packing} & 包装机运行\\
+
+{\ttfamily complete} & 完成灯亮\\
+
+{\ttfamily all\_off} & 四个执行设备均停止\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_01\_p01} & safety & 任意时刻最多一个工序执行设备运行 & {\ttfamily G(!((pump \&\& filling) || (pump \&\& capping) || (pump \&\& packing) || (filling \&\& capping) || (filling \&\& packing) || (capping \&\& packing)))}\\
+
+{\ttfamily public\_01\_p02} & response & 检测到新瓶后启动清洗 & {\ttfamily G((bottle \&\& all\_off \&\& !complete) -> X(pump))}\\
+
+{\ttfamily public\_01\_p03} & transition & 各确认信号使流程进入下一工序 & {\ttfamily G((pump \&\& clean\_ok) -> X(!pump \&\& filling)) \&\& G((filling \&\& fill\_ok) -> X(!filling \&\& capping)) \&\& G((capping \&\& cap\_ok) -> X(!capping \&\& packing))}\\
+
+{\ttfamily public\_01\_p04} & response & 包装确认后停止设备并点亮完成灯 & {\ttfamily G((packing \&\& pack\_ok) -> X(all\_off \&\& complete))}\\
+
+{\ttfamily public\_01\_p05} & reset & 成品取走确认复位流程 & {\ttfamily G(finished -> X(all\_off \&\& !complete))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_02} Dual-Word Edge Detection}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily changed} & 当前 value 与上一扫描不同\\
+
+{\ttfamily rising\_exists} & 至少一位从 0 变为 1\\
+
+{\ttfamily falling\_exists} & 至少一位从 1 变为 0\\
+
+{\ttfamily has\_changed} & hasChanged 输出\\
+
+{\ttfamily has\_rising} & hasRisingEdges 输出\\
+
+{\ttfamily has\_falling} & hasFallingEdges 输出\\
+
+{\ttfamily rising\_report\_correct} & risingBits 与上升位及数量一致\\
+
+{\ttfamily falling\_report\_correct} & fallingBits 与下降位及数量一致\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_02\_p01} & invariant & 变化标志准确反映输入是否变化 & {\ttfamily G(changed <-> X(has\_changed))}\\
+
+{\ttfamily public\_02\_p02} & invariant & 上升沿存在标志准确 & {\ttfamily G(rising\_exists <-> X(has\_rising))}\\
+
+{\ttfamily public\_02\_p03} & invariant & 下降沿存在标志准确 & {\ttfamily G(falling\_exists <-> X(has\_falling))}\\
+
+{\ttfamily public\_02\_p04} & functional & 上升位图和数量正确 & {\ttfamily G(X(rising\_report\_correct))}\\
+
+{\ttfamily public\_02\_p05} & functional & 下降位图和数量正确 & {\ttfamily G(X(falling\_report\_correct))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_03} Alarm Handling}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily invalid\_levels} & loLevel >= hiLevel\\
+
+{\ttfamily invalid\_window} & hystWindow >= hiLevel - loLevel\\
+
+{\ttfamily valid} & 配置合法\\
+
+{\ttfamily above\_hi} & Value > hiLevel\\
+
+{\ttfamily below\_hi\_clear} & Value < hiLevel - hystWindow\\
+
+{\ttfamily below\_lo} & Value < loLevel\\
+
+{\ttfamily above\_lo\_clear} & Value > loLevel + hystWindow\\
+
+{\ttfamily hi\_alarm} & 高报警\\
+
+{\ttfamily lo\_alarm} & 低报警\\
+
+{\ttfamily error} & 错误输出\\
+
+{\ttfamily status\_8001} & 状态 16\#8001\\
+
+{\ttfamily status\_8002} & 状态 16\#8002\\
+
+{\ttfamily status\_ok} & 状态 16\#0000\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_03\_p01} & priority & 上下限非法优先返回 16\#8001 & {\ttfamily G(invalid\_levels -> X(error \&\& status\_8001))}\\
+
+{\ttfamily public\_03\_p02} & safety & 滞回窗口非法返回 16\#8002 & {\ttfamily G((!invalid\_levels \&\& invalid\_window) -> X(error \&\& status\_8002))}\\
+
+{\ttfamily public\_03\_p03} & response & 合法配置下越过高限触发高报警并按滞回清除 & {\ttfamily G((valid \&\& above\_hi) -> X(hi\_alarm)) \&\& G((valid \&\& below\_hi\_clear) -> X(!hi\_alarm))}\\
+
+{\ttfamily public\_03\_p04} & response & 合法配置下越过低限触发低报警并按滞回清除 & {\ttfamily G((valid \&\& below\_lo) -> X(lo\_alarm)) \&\& G((valid \&\& above\_lo\_clear) -> X(!lo\_alarm))}\\
+
+{\ttfamily public\_03\_p05} & invariant & 合法配置清除错误并返回成功状态 & {\ttfamily G(valid -> X(!error \&\& status\_ok))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_04} Jam Pump Debouncing and Runtime Maintenance}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily permit} & PASTE\_E\_STOP\_NC 为 TRUE\\
+
+{\ttfamily viscosity\_raw} & VISCOSITY\_OK 为 TRUE\\
+
+{\ttfamily viscosity\_valid} & 粘度信号已连续满足 DebounceTime\\
+
+{\ttfamily run} & VFD\_RUN\\
+
+{\ttfamily runtime\_unchanged} & 累计运行时间未改变\\
+
+{\ttfamily runtime\_incremented} & 累计时间增加 CycleTime\\
+
+{\ttfamily runtime\_500h} & 累计时间至少 500 小时\\
+
+{\ttfamily maint\_due} & 维护提示\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_04\_p01} & priority & 急停立即停止泵 & {\ttfamily G(!permit -> X(!run))}\\
+
+{\ttfamily public\_04\_p02} & safety & 运行必须同时满足急停许可和防抖完成 & {\ttfamily G(run -> (permit \&\& viscosity\_valid))}\\
+
+{\ttfamily public\_04\_p03} & response & 粘度持续有效达到防抖时间后运行 & {\ttfamily G((permit \&\& viscosity\_valid) -> X(run))}\\
+
+{\ttfamily public\_04\_p04} & accounting & 仅运行时累计 CycleTime，停止时保持 & {\ttfamily G(run -> X(runtime\_incremented)) \&\& G(!run -> X(runtime\_unchanged))}\\
+
+{\ttfamily public\_04\_p05} & response & 累计达到 500 小时后维护提示置位 & {\ttfamily G(runtime\_500h -> X(maint\_due))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_05} Weld Gap Alarm and Startup Inhibition}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily permit} & Weld\_E\_Stop\_NC 为 TRUE\\
+
+{\ttfamily init\_active} & 上电抑制期未满 5 秒\\
+
+{\ttfamily gap\_raw} & Gap\_Exceeded\\
+
+{\ttfamily gap\_valid} & 超差信号连续满足 DebounceTime\\
+
+{\ttfamily alert} & Operator\_Alert\\
+
+{\ttfamily soft\_start} & Weld\_Soft\_Start\_Active\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_05\_p01} & priority & 急停立即清除报警 & {\ttfamily G(!permit -> X(!alert))}\\
+
+{\ttfamily public\_05\_p02} & safety & 初始化抑制期内不报警且软启动标志有效 & {\ttfamily G(init\_active -> X(!alert \&\& soft\_start))}\\
+
+{\ttfamily public\_05\_p03} & response & 正常监控时防抖完成触发报警 & {\ttfamily G((permit \&\& !init\_active \&\& gap\_valid) -> X(alert))}\\
+
+{\ttfamily public\_05\_p04} & reset & 超差信号恢复后立即清除报警和防抖 & {\ttfamily G(!gap\_raw -> X(!alert))}\\
+
+{\ttfamily public\_05\_p05} & invariant & 软启动标志只表示初始化抑制期 & {\ttfamily G(soft\_start <-> init\_active)}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_06} Aeration Blower Delayed Start}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily permit} & AERATION\_E\_STOP\_NC 为 TRUE\\
+
+{\ttfamily demand} & DO\_LOW\\
+
+{\ttfamily delay\_done} & 需求与许可连续保持 5 秒\\
+
+{\ttfamily run} & BLOWER\_RUN\\
+
+{\ttfamily run\_rise} & BLOWER\_RUN 从 FALSE 变 TRUE\\
+
+{\ttfamily count\_incremented} & 启动计数增加 1\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_06\_p01} & priority & 急停或需求消失立即停止风机 & {\ttfamily G((!permit || !demand) -> X(!run))}\\
+
+{\ttfamily public\_06\_p02} & response & 需求和许可持续 5 秒后启动 & {\ttfamily G((permit \&\& demand \&\& delay\_done) -> X(run))}\\
+
+{\ttfamily public\_06\_p03} & safety & 延时未完成前不得启动 & {\ttfamily G((permit \&\& demand \&\& !delay\_done) -> X(!run))}\\
+
+{\ttfamily public\_06\_p04} & accounting & 每次实际启动仅增加一次计数 & {\ttfamily G(run\_rise -> X(count\_incremented))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_07} Multi-Pump Switching Control System}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily manual} & mode 为 FALSE\\
+
+{\ttfamily automatic} & mode 为 TRUE\\
+
+{\ttfamily start} & 启动按钮\\
+
+{\ttfamily stop} & 停止按钮\\
+
+{\ttfamily selected\_runs} & 手动选择的泵运行且未选择泵停止\\
+
+{\ttfamily top\_three\_run} & 优先级最高的三台泵运行\\
+
+{\ttfamily at\_most\_three\_run} & 运行泵数量不超过三台\\
+
+{\ttfamily all\_stopped} & 五台泵均停止\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_07\_p01} & priority & 停止按钮使所有泵停止 & {\ttfamily G(stop -> X(all\_stopped))}\\
+
+{\ttfamily public\_07\_p02} & functional & 手动启动时只运行已选择泵 & {\ttfamily G((manual \&\& start \&\& !stop) -> X(selected\_runs))}\\
+
+{\ttfamily public\_07\_p03} & functional & 自动启动时运行优先级最高的三台泵 & {\ttfamily G((automatic \&\& start \&\& !stop) -> X(top\_three\_run))}\\
+
+{\ttfamily public\_07\_p04} & safety & 自动模式最多运行三台泵 & {\ttfamily G(automatic -> X(at\_most\_three\_run))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_08} Analog Batch Processing}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily enabled} & 当前通道 enable 为 TRUE\\
+
+{\ttfamily disabled} & 当前通道 enable 为 FALSE\\
+
+{\ttfamily mode\_linear} & measuringMode=0\\
+
+{\ttfamily mode\_tenth} & measuringMode=1\\
+
+{\ttfamily mode\_hundredth} & measuringMode=2\\
+
+{\ttfamily mode\_invalid} & measuringMode 不在 0..2\\
+
+{\ttfamily limits\_invalid} & hiLIM <= loLIM\\
+
+{\ttfamily conversion\_correct} & outputValue 符合对应换算\\
+
+{\ttfamily result\_unchanged} & 该通道结果未修改\\
+
+{\ttfamily status\_8001} & retVal=16\#8001\\
+
+{\ttfamily status\_8002} & retVal=16\#8002\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_08\_p01} & safety & 禁用通道不修改结果 & {\ttfamily G(disabled -> X(result\_unchanged))}\\
+
+{\ttfamily public\_08\_p02} & functional & 三种合法测量模式按规则换算 & {\ttfamily G((enabled \&\& !limits\_invalid \&\& (mode\_linear || mode\_tenth || mode\_hundredth)) -> X(conversion\_correct))}\\
+
+{\ttfamily public\_08\_p03} & error & 非法测量模式返回 16\#8001 & {\ttfamily G((enabled \&\& mode\_invalid) -> X(status\_8001))}\\
+
+{\ttfamily public\_08\_p04} & error & 上下限非法返回 16\#8002 & {\ttfamily G((enabled \&\& !mode\_invalid \&\& limits\_invalid) -> X(status\_8002))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_09} Calculate Moving Average}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily reset} & reset 为 TRUE\\
+
+{\ttfamily invalid\_window} & windowSize 不在 1..100\\
+
+{\ttfamily valid\_window} & windowSize 在 1..100\\
+
+{\ttfamily sample\_accepted} & 本扫描接受一个样本\\
+
+{\ttfamily average\_correct} & average 等于当前窗口内样本均值\\
+
+{\ttfamily window\_full} & 已存样本数达到 windowSize\\
+
+{\ttfamily error} & error\\
+
+{\ttfamily status\_8200} & 状态 16\#8200\\
+
+{\ttfamily status\_ok} & 状态 16\#0000\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_09\_p01} & priority & 复位清空样本、均值和满窗标志 & {\ttfamily G(reset -> X(!window\_full \&\& average\_correct))}\\
+
+{\ttfamily public\_09\_p02} & safety & 窗口大小非法时报错且不接受样本 & {\ttfamily G(invalid\_window -> X(error \&\& status\_8200 \&\& !sample\_accepted))}\\
+
+{\ttfamily public\_09\_p03} & invariant & 窗口合法时清除错误 & {\ttfamily G(valid\_window -> X(!error \&\& status\_ok))}\\
+
+{\ttfamily public\_09\_p04} & functional & 接受样本后均值正确 & {\ttfamily G(sample\_accepted -> X(average\_correct))}\\
+
+{\ttfamily public\_09\_p05} & response & 样本数达到窗口大小后置位满窗标志 & {\ttfamily G(window\_full -> X(window\_full))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_10} Temperature Logic Control}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily sensor\_fault} & 温度小于 0 或大于 100\\
+
+{\ttfamily below\_set} & 实际温度低于设定值\\
+
+{\ttfamily above\_set} & 实际温度高于设定值\\
+
+{\ttfamily heater} & HeaterOutput\\
+
+{\ttfamily protection} & OverheatProtection\\
+
+{\ttfamily heated\_5s} & 加热连续达到 5 秒\\
+
+{\ttfamily cooldown\_3s} & 保护持续达到 3 秒\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_10\_p01} & priority & 传感器故障时加热器关闭 & {\ttfamily G(sensor\_fault -> X(!heater))}\\
+
+{\ttfamily public\_10\_p02} & safety & 过热保护期间加热器关闭 & {\ttfamily G(protection -> X(!heater))}\\
+
+{\ttfamily public\_10\_p03} & response & 低于设定值且无故障、无保护时启动加热 & {\ttfamily G((below\_set \&\& !sensor\_fault \&\& !protection) -> X(heater))}\\
+
+{\ttfamily public\_10\_p04} & response & 连续加热 5 秒触发保护 & {\ttfamily G(heated\_5s -> X(protection \&\& !heater))}\\
+
+{\ttfamily public\_10\_p05} & recovery & 保护至少保持 3 秒后解除 & {\ttfamily G((protection \&\& !cooldown\_3s) -> X(protection)) \&\& G((protection \&\& cooldown\_3s) -> X(!protection))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_11} Automated Production Line Control}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily manual} & Mode 为 FALSE\\
+
+{\ttfamily automatic} & Mode 为 TRUE\\
+
+{\ttfamily forward\_button} & ForwardButton\\
+
+{\ttfamily reverse\_button} & ReverseButton\\
+
+{\ttfamily motor\_forward} & MotorForward\\
+
+{\ttfamily motor\_reverse} & MotorReverse\\
+
+{\ttfamily at\_a\_done} & SensorA 与 ButtonA\\
+
+{\ttfamily at\_b} & SensorB\\
+
+{\ttfamily at\_b\_done} & SensorB 与 ButtonB\\
+
+{\ttfamily at\_c\_done} & SensorC 与 ButtonC\\
+
+{\ttfamily completion} & CompletionLight\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_11\_p01} & safety & 电机正反转永不同时输出 & {\ttfamily G(!(motor\_forward \&\& motor\_reverse))}\\
+
+{\ttfamily public\_11\_p02} & functional & 手动模式按互锁按钮控制方向 & {\ttfamily G((manual \&\& forward\_button \&\& !reverse\_button) -> X(motor\_forward \&\& !motor\_reverse)) \&\& G((manual \&\& reverse\_button \&\& !forward\_button) -> X(!motor\_forward \&\& motor\_reverse))}\\
+
+{\ttfamily public\_11\_p03} & transition & A 完成后前进，抵达 B 后停止 & {\ttfamily G((automatic \&\& at\_a\_done) -> X(motor\_forward)) \&\& G((automatic \&\& at\_b) -> X(!motor\_forward))}\\
+
+{\ttfamily public\_11\_p04} & transition & B 完成后前进到 C & {\ttfamily G((automatic \&\& at\_b\_done) -> X(motor\_forward))}\\
+
+{\ttfamily public\_11\_p05} & response & C 完成点亮完成灯，产品离开后熄灭 & {\ttfamily G((automatic \&\& at\_c\_done) -> X(completion)) \&\& G((automatic \&\& !at\_c\_done \&\& !completion) -> X(!completion))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_12} Slab Thickness Alarm and Fault History}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily valid} & THICKNESS\_SIGNAL\_VALID\\
+
+{\ttfamily fault} & THICKNESS\_FAULT\\
+
+{\ttfamily fault\_rise} & 有效故障上升沿\\
+
+{\ttfamily alarm} & THICKNESS\_ALARM\\
+
+{\ttfamily hold\_active} & 500 ms 最小保持时间未满\\
+
+{\ttfamily count\_incremented} & 故障计数增加 1\\
+
+{\ttfamily history\_updated} & 新时间戳写入索引 0 且旧记录后移\\
+
+{\ttfamily normal\_cutting} & CUTTING\_RUN 且信号有效且无故障\\
+
+{\ttfamily runtime\_incremented} & 累计时间增加 CycleTime\\
+
+{\ttfamily runtime\_unchanged} & 累计时间不变\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_12\_p01} & priority & 信号无效时清除报警且不记录 & {\ttfamily G(!valid -> X(!alarm \&\& runtime\_unchanged))}\\
+
+{\ttfamily public\_12\_p02} & response & 有效故障立即触发报警并至少保持 500 ms & {\ttfamily G((valid \&\& fault) -> X(alarm)) \&\& G(hold\_active -> X(alarm))}\\
+
+{\ttfamily public\_12\_p03} & accounting & 每个有效故障上升沿计数并更新历史 & {\ttfamily G((valid \&\& fault\_rise) -> X(count\_incremented \&\& history\_updated))}\\
+
+{\ttfamily public\_12\_p04} & accounting & 仅正常切割时累计运行时间 & {\ttfamily G(normal\_cutting -> X(runtime\_incremented)) \&\& G(!normal\_cutting -> X(runtime\_unchanged))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_13} Office HVAC Multi-mode Energy-Saving Control}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily occupied} & OCCUPANCY\_DETECTED\\
+
+{\ttfamily energy} & ENERGY\_SAVING\_MODE\\
+
+{\ttfamily auto\_mode} & 选择器为 0\\
+
+{\ttfamily comfort} & 选择器为 1\\
+
+{\ttfamily economy} & 选择器为 2\\
+
+{\ttfamily night} & 选择器为 3\\
+
+{\ttfamily delay\_done} & 占用且非夜间连续达到 30 秒\\
+
+{\ttfamily fan} & SUPPLY\_FAN\_RUN\\
+
+{\ttfamily adjust\_0} & 调节值为 0\\
+
+{\ttfamily adjust\_1} & 调节值为 1\\
+
+{\ttfamily adjust\_2} & 调节值为 2\\
+
+{\ttfamily adjust\_3} & 调节值为 3\\
+
+{\ttfamily adjust\_4} & 调节值为 4\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_13\_p01} & priority & 夜间模式或无人时风机停止 & {\ttfamily G((night || !occupied) -> X(!fan))}\\
+
+{\ttfamily public\_13\_p02} & response & 有人且非夜间持续 30 秒后风机运行 & {\ttfamily G((occupied \&\& !night \&\& delay\_done) -> X(fan))}\\
+
+{\ttfamily public\_13\_p03} & functional & 自动模式温度修正正确 & {\ttfamily G((auto\_mode \&\& occupied) -> X(adjust\_0)) \&\& G((auto\_mode \&\& !occupied \&\& energy) -> X(adjust\_3)) \&\& G((auto\_mode \&\& !occupied \&\& !energy) -> X(adjust\_2))}\\
+
+{\ttfamily public\_13\_p04} & functional & 舒适、经济和夜间模式修正正确 & {\ttfamily G((comfort \&\& !occupied) -> X(adjust\_1)) \&\& G((economy \&\& !occupied) -> X(adjust\_4)) \&\& G(night -> X(adjust\_4))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_14} IPv4 Parsing with Format and Range Checks}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily valid\_ipv4} & 文本为四段 0..255 的十进制数字\\
+
+{\ttfamily valid\_ipv4\_zero} & 文本为合法地址 0.0.0.0\\
+
+{\ttfamily invalid\_ipv4} & 格式、字符、段数或范围非法\\
+
+{\ttfamily network\_order\_correct} & ipValue 按网络字节序组装\\
+
+{\ttfamily zero\_output} & ipValue 为 0\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_14\_p01} & functional & 合法地址按网络字节序解析 & {\ttfamily G(valid\_ipv4 -> X(network\_order\_correct))}\\
+
+{\ttfamily public\_14\_p02} & safety & 任意非法地址输出 0 & {\ttfamily G(invalid\_ipv4 -> X(zero\_output))}\\
+
+{\ttfamily public\_14\_p03} & boundary & 合法地址 0.0.0.0 也输出 0 & {\ttfamily G(valid\_ipv4\_zero -> X(zero\_output))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_15} Material Proportioning Process Control}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily permit} & estop 为 TRUE\\
+
+{\ttfamily manual} & opeMode 为 FALSE\\
+
+{\ttfamily automatic} & opeMode 为 TRUE\\
+
+{\ttfamily auto\_start} & autoStart 上升沿\\
+
+{\ttfamily level50} & 液位至少 50\\
+
+{\ttfamily level80} & 液位至少 80\\
+
+{\ttfamily level100} & 液位至少 100\\
+
+{\ttfamily mode\_extra\_c} & processMode 为 TRUE\\
+
+{\ttfamily mix\_done} & mixMotorComplete\\
+
+{\ttfamily valve\_a} & valveARun\\
+
+{\ttfamily valve\_b} & valveBRun\\
+
+{\ttfamily valve\_c} & valveCRun\\
+
+{\ttfamily valve\_d} & valveDRun\\
+
+{\ttfamily mixer} & mixMotorRun\\
+
+{\ttfamily all\_off} & 全部五个输出关闭\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_15\_p01} & priority & 急停立即关闭全部设备 & {\ttfamily G(!permit -> X(all\_off))}\\
+
+{\ttfamily public\_15\_p02} & response & 自动启动首先打开 A 阀 & {\ttfamily G((permit \&\& automatic \&\& auto\_start) -> X(valve\_a))}\\
+
+{\ttfamily public\_15\_p03} & transition & 50 cm 时切换 A 到 B，80 cm 时关闭 B & {\ttfamily G((automatic \&\& level50 \&\& valve\_a) -> X(!valve\_a \&\& valve\_b)) \&\& G((automatic \&\& level80 \&\& valve\_b) -> X(!valve\_b))}\\
+
+{\ttfamily public\_15\_p04} & transition & 需要第三种物料时经 C 阀到 100 cm 后混合 & {\ttfamily G((automatic \&\& mode\_extra\_c \&\& level80) -> X(valve\_c)) \&\& G((automatic \&\& mode\_extra\_c \&\& level100) -> X(!valve\_c \&\& mixer))}\\
+
+{\ttfamily public\_15\_p05} & transition & 混合完成后停止电机并打开 D 阀 & {\ttfamily G((automatic \&\& mixer \&\& mix\_done) -> X(!mixer \&\& valve\_d))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_16} Flexible Processing Control}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily started} & sensor1 与 station1Start\\
+
+{\ttfamily target\_right} & 下一目标站在当前位置右侧\\
+
+{\ttfamily target\_left} & 下一目标站在当前位置左侧\\
+
+{\ttfamily at\_target} & 目标站传感器有效\\
+
+{\ttfamily station\_complete} & 当前加工站完成\\
+
+{\ttfamily left} & conveyorLeft\\
+
+{\ttfamily right} & conveyorRight\\
+
+{\ttfamily sequence\_done} & 已到最终站 5\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_16\_p01} & safety & 输送带左右方向永不同时输出 & {\ttfamily G(!(left \&\& right))}\\
+
+{\ttfamily public\_16\_p02} & response & 目标在右侧时向右输送 & {\ttfamily G((started || station\_complete) \&\& target\_right -> X(right \&\& !left))}\\
+
+{\ttfamily public\_16\_p03} & response & 目标在左侧时向左输送 & {\ttfamily G((started || station\_complete) \&\& target\_left -> X(left \&\& !right))}\\
+
+{\ttfamily public\_16\_p04} & transition & 到达目标站后停止输送 & {\ttfamily G(at\_target -> X(!left \&\& !right))}\\
+
+{\ttfamily public\_16\_p05} & completion & 到达最终站后保持停止 & {\ttfamily G(sequence\_done -> X(!left \&\& !right))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_17} Recipe Management System}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily add} & addRecipe\\
+
+{\ttfamily remove} & deleteRecipe\\
+
+{\ttfamily modify} & modifyRecipe\\
+
+{\ttfamily query} & queryRecipe\\
+
+{\ttfamily exists} & recipeIn.recipeID 已存在\\
+
+{\ttfamily space} & 存在 recipeID=0 的空槽\\
+
+{\ttfamily error} & error\\
+
+{\ttfamily status\_8001} & status=16\#8001\\
+
+{\ttfamily status\_8002} & status=16\#8002\\
+
+{\ttfamily status\_8003} & status=16\#8003\\
+
+{\ttfamily status\_8004} & status=16\#8004\\
+
+{\ttfamily status\_8005} & status=16\#8005\\
+
+{\ttfamily success\_status} & error=FALSE 且 status=16\#0000\\
+
+{\ttfamily smallest\_slot\_used} & 写入最小下标空槽\\
+
+{\ttfamily query\_correct} & 查询结果等于数据库记录\\
+
+{\ttfamily deleted} & 目标槽的 recipeID 已置为 0\\
+
+{\ttfamily modified} & 目标槽已被 recipeIn 完整替换\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_17\_p01} & functional & 查询存在的配方返回完整记录，不存在返回 16\#8001 & {\ttfamily G((query \&\& exists) -> X(success\_status \&\& query\_correct)) \&\& G((query \&\& !exists) -> X(error \&\& status\_8001))}\\
+
+{\ttfamily public\_17\_p02} & functional & 新增配方写入最小空槽，重复号和满库分别报错 & {\ttfamily G((add \&\& !exists \&\& space) -> X(success\_status \&\& smallest\_slot\_used)) \&\& G((add \&\& exists) -> X(error \&\& status\_8002)) \&\& G((add \&\& !exists \&\& !space) -> X(error \&\& status\_8003))}\\
+
+{\ttfamily public\_17\_p03} & functional & 删除存在记录成功，不存在返回 16\#8004 & {\ttfamily G((remove \&\& exists) -> X(success\_status \&\& deleted)) \&\& G((remove \&\& !exists) -> X(error \&\& status\_8004))}\\
+
+{\ttfamily public\_17\_p04} & functional & 修改存在记录成功，不存在返回 16\#8005 & {\ttfamily G((modify \&\& exists) -> X(success\_status \&\& modified)) \&\& G((modify \&\& !exists) -> X(error \&\& status\_8005))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_18} FIFO First-In-First-Out Queue}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily enqueue\_rise} & enqueue 上升沿\\
+
+{\ttfamily dequeue\_rise} & dequeue 上升沿\\
+
+{\ttfamily reset} & reset\\
+
+{\ttfamily empty} & elementCount=0\\
+
+{\ttfamily full} & elementCount=10\\
+
+{\ttfamily status\_ok} & status=16\#0000\\
+
+{\ttfamily status\_empty} & status=16\#8001\\
+
+{\ttfamily status\_full} & status=16\#8002\\
+
+{\ttfamily count\_incremented} & elementCount 增加 1\\
+
+{\ttfamily count\_decremented} & elementCount 减少 1\\
+
+{\ttfamily front\_returned} & item 返回最早入队值\\
+
+{\ttfamily queue\_unchanged} & 队列、计数和 item 不变\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_18\_p01} & priority & 复位清空队列并返回成功 & {\ttfamily G(reset -> X(empty \&\& status\_ok))}\\
+
+{\ttfamily public\_18\_p02} & functional & 非满队列入队成功并增加计数 & {\ttfamily G((enqueue\_rise \&\& !full \&\& !reset) -> X(count\_incremented \&\& status\_ok))}\\
+
+{\ttfamily public\_18\_p03} & functional & 非空队列出队返回队首并减少计数 & {\ttfamily G((dequeue\_rise \&\& !empty \&\& !reset) -> X(front\_returned \&\& count\_decremented \&\& status\_ok))}\\
+
+{\ttfamily public\_18\_p04} & error & 空队列出队返回 16\#8001 且不改变状态 & {\ttfamily G((dequeue\_rise \&\& empty \&\& !reset) -> X(status\_empty \&\& queue\_unchanged))}\\
+
+{\ttfamily public\_18\_p05} & error & 满队列入队返回 16\#8002 且不改变状态 & {\ttfamily G((enqueue\_rise \&\& full \&\& !reset) -> X(status\_full \&\& queue\_unchanged))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_19} Mechanical Arm Control}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily permit} & EmergencyStop 为 TRUE\\
+
+{\ttfamily manual} & ManualMode\\
+
+{\ttfamily single\_step} & SingleStepMode\\
+
+{\ttfamily single\_cycle} & SingleCycleMode\\
+
+{\ttfamily continuous} & ContinuousMode\\
+
+{\ttfamily start\_rise} & Start 上升沿\\
+
+{\ttfamily all\_off} & 六个动作输出均关闭\\
+
+{\ttfamily vertical\_conflict} & MoveDown 与 MoveUp 同时为 TRUE\\
+
+{\ttfamily horizontal\_conflict} & MoveLeft 与 MoveRight 同时为 TRUE\\
+
+{\ttfamily grip\_conflict} & ActivateGrip 与 ActivateRelease 同时为 TRUE\\
+
+{\ttfamily action\_done} & 当前动作限位到达\\
+
+{\ttfamily waiting} & 单步模式等待下一次启动\\
+
+{\ttfamily cycle\_complete} & 回到左上位置且本轮完成\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_19\_p01} & priority & 急停立即关闭全部动作且不推进序列 & {\ttfamily G(!permit -> X(all\_off))}\\
+
+{\ttfamily public\_19\_p02} & safety & 相反动作永不同时输出 & {\ttfamily G(!(vertical\_conflict || horizontal\_conflict || grip\_conflict))}\\
+
+{\ttfamily public\_19\_p03} & transition & 单步模式每次启动只完成一个动作后等待 & {\ttfamily G((single\_step \&\& start\_rise) -> F(action\_done \&\& waiting))}\\
+
+{\ttfamily public\_19\_p04} & completion & 单周期启动后完成一轮并停止 & {\ttfamily G((single\_cycle \&\& start\_rise) -> F(cycle\_complete \&\& all\_off))}\\
+
+{\ttfamily public\_19\_p05} & liveness & 连续模式启动后重复完成搬运循环 & {\ttfamily G((continuous \&\& start\_rise) -> GF(cycle\_complete))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_20} Production Control}
+
+\noindent\textbf{状态语义：}每个测试步骤设置一次 PLC 扫描的输入，输出在该次扫描执行后观察；LTL 中 X 表示该扫描后的状态。定时命题依据输入连续保持时间和测试步骤的 advance\_ms 判定。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily manual} & Mode 为 FALSE\\
+
+{\ttfamily automatic} & Mode 为 TRUE\\
+
+{\ttfamily ForwardButton} & 手动正转按钮\\
+
+{\ttfamily ReverseButton} & 手动反转按钮\\
+
+{\ttfamily forward} & MotorForward\\
+
+{\ttfamily reverse} & MotorReverse\\
+
+{\ttfamily qualified} & 100 <= weight <= 200\\
+
+{\ttfamily unqualified} & weight < 100 或 weight > 200\\
+
+{\ttfamily weight\_done} & SensorWeight 与 weightComplete\\
+
+{\ttfamily kick} & kick\\
+
+{\ttfamily temp\_correct} & firingTemp = 500 + (weight - 100) * 0.5\\
+
+{\ttfamily at\_output} & SensorOutput\\
+
+{\ttfamily complete} & CompletionLight\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily public\_20\_p01} & safety & 电机正反转永不同时输出 & {\ttfamily G(!(forward \&\& reverse))}\\
+
+{\ttfamily public\_20\_p02} & functional & 手动模式按互锁按钮控制电机 & {\ttfamily G((manual \&\& ForwardButton \&\& !ReverseButton) -> X(forward \&\& !reverse)) \&\& G((manual \&\& ReverseButton \&\& !ForwardButton) -> X(!forward \&\& reverse))}\\
+
+{\ttfamily public\_20\_p03} & safety & 称重不合格时剔除且不向烧制站输送 & {\ttfamily G((automatic \&\& weight\_done \&\& unqualified) -> X(kick \&\& !forward))}\\
+
+{\ttfamily public\_20\_p04} & functional & 称重合格时温度线性映射并向前输送 & {\ttfamily G((automatic \&\& weight\_done \&\& qualified) -> X(!kick \&\& temp\_correct \&\& forward))}\\
+
+{\ttfamily public\_20\_p05} & response & 成品到达点亮完成灯，离开后熄灭 & {\ttfamily G((automatic \&\& at\_output) -> X(complete)) \&\& G((automatic \&\& !at\_output) -> X(!complete))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_01} Conveyor Motor Safety Latch}
+
+\noindent\textbf{状态语义：}每个步骤执行一次 PLC 扫描，X 表示该扫描后的输出状态。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily safe\_start} & start 为真且 stop、emergencyStop、overload、reset 和 fault 均为假\\
+
+{\ttfamily stop\_request} & stop 为真\\
+
+{\ttfamily safety\_trip} & emergencyStop 或 overload 为真\\
+
+{\ttfamily valid\_reset} & reset 为真且 emergencyStop 和 overload 均为假\\
+
+{\ttfamily motor\_run} & motorRun 为真\\
+
+{\ttfamily fault} & fault 为真\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily custom\_01\_p01} & safety & 停止命令立即关闭电机 & {\ttfamily G(stop\_request -> X(!motor\_run))}\\
+
+{\ttfamily custom\_01\_p02} & safety & 急停或过载立即停机并锁存故障 & {\ttfamily G(safety\_trip -> X(!motor\_run \&\& fault))}\\
+
+{\ttfamily custom\_01\_p03} & response & 安全启动使电机运行 & {\ttfamily G(safe\_start -> X(motor\_run))}\\
+
+{\ttfamily custom\_01\_p04} & response & 有效复位清除故障但不在同一扫描启动 & {\ttfamily G(valid\_reset -> X(!fault \&\& !motor\_run)) \&\& G((fault \&\& !valid\_reset) -> X(fault))}\\
+
+{\ttfamily custom\_01\_p05} & safety & 故障锁存期间禁止电机运行 & {\ttfamily G(fault -> X(!motor\_run))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_02} Tank Level Pump Hysteresis}
+
+\noindent\textbf{状态语义：}每个步骤执行一次 PLC 扫描，X 表示该扫描后的输出状态。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily invalid\_config} & lowLevel >= highLevel\\
+
+{\ttfamily disabled} & enable 为假\\
+
+{\ttfamily low} & level <= lowLevel\\
+
+{\ttfamily high} & level >= highLevel\\
+
+{\ttfamily high\_high} & level >= 95.0\\
+
+{\ttfamily valid\_alarm\_reset} & alarmReset 为真且 level < 90.0\\
+
+{\ttfamily pump\_run} & pumpRun 为真\\
+
+{\ttfamily alarm} & highHighAlarm 为真\\
+
+{\ttfamily error} & configError 为真\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily custom\_02\_p01} & safety & 非法配置报错并停泵 & {\ttfamily G(invalid\_config -> X(error \&\& !pump\_run))}\\
+
+{\ttfamily custom\_02\_p02} & response & 低液位启动补液泵 & {\ttfamily G((!invalid\_config \&\& !disabled \&\& low) -> X(pump\_run))}\\
+
+{\ttfamily custom\_02\_p03} & response & 高液位或禁用停止泵 & {\ttfamily G((high || disabled) -> X(!pump\_run))}\\
+
+{\ttfamily custom\_02\_p04} & response & 高高液位锁存报警，只有低于安全复位液位时才允许人工清除 & {\ttfamily G(high\_high -> X(alarm)) \&\& G((alarm \&\& !valid\_alarm\_reset) -> X(alarm)) \&\& G(valid\_alarm\_reset -> X(!alarm))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_03} Compressor Restart Delay}
+
+\noindent\textbf{状态语义：}每个步骤执行一次 PLC 扫描；advance\_ms 表示扫描前经过的时间，X 表示扫描后的输出。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily initial\_demand} & 上电后尚未发生停机事件、tripLatched 为假且 demand 为真\\
+
+{\ttfamily trip} & trip 输入为真\\
+
+{\ttfamily valid\_reset} & reset 为真且 trip 为假\\
+
+{\ttfamily delay\_elapsed} & 尚未发生停机事件，或自最近一次 compressorRun 从真变假起已满 5 秒\\
+
+{\ttfamily restart\_ready} & demand 为真、tripLatched 为假且 delay\_elapsed 为真\\
+
+{\ttfamily demand} & demand 为真\\
+
+{\ttfamily run} & compressorRun 为真\\
+
+{\ttfamily latched} & tripLatched 为真\\
+
+{\ttfamily count\_inc} & startCount 在本扫描增加 1\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily custom\_03\_p01} & response & 首次需求立即启动并计数 & {\ttfamily G(initial\_demand -> X(run \&\& count\_inc))}\\
+
+{\ttfamily custom\_03\_p02} & safety & 跳闸立即停机并锁存 & {\ttfamily G(trip -> X(!run \&\& latched))}\\
+
+{\ttfamily custom\_03\_p03} & safety & 任一停机后的最小停机时间未到时不得重启 & {\ttfamily G((demand \&\& !delay\_elapsed) -> X(!run))}\\
+
+{\ttfamily custom\_03\_p04} & response & 无锁存故障且最小停机时间完成后允许按需求重启 & {\ttfamily G(restart\_ready -> X(run \&\& !latched))}\\
+
+{\ttfamily custom\_03\_p05} & response & 每次实际启动只增加一次启动计数 & {\ttfamily G((!run \&\& X(run)) -> X(count\_inc))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_04} Pedestrian Traffic Light Sequence}
+
+\noindent\textbf{状态语义：}每个步骤执行一次 PLC 扫描；advance\_ms 驱动阶段定时，X 表示扫描后的灯态。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily disabled} & enable 为假\\
+
+{\ttfamily request} & 请求已锁存\\
+
+{\ttfamily yellow\_stage} & 处于 3 秒车辆黄灯阶段\\
+
+{\ttfamily cross\_stage} & 处于 7 秒车辆红灯和行人绿灯阶段\\
+
+{\ttfamily cycle\_done} & 行人通行阶段完成\\
+
+{\ttfamily safe\_all\_red} & vehicleRed 且 pedestrianRed，其他灯灭\\
+
+{\ttfamily normal} & vehicleGreen 且 pedestrianRed，其他灯灭\\
+
+{\ttfamily yellow} & vehicleYellow 且 pedestrianRed，其他灯灭\\
+
+{\ttfamily pedestrian\_go} & vehicleRed 且 pedestrianGreen，其他灯灭\\
+
+{\ttfamily conflicting\_green} & vehicleGreen 且 pedestrianGreen\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily custom\_04\_p01} & safety & 禁用时进入安全灯态 & {\ttfamily G(disabled -> X(safe\_all\_red))}\\
+
+{\ttfamily custom\_04\_p02} & safety & 车辆与行人绿灯不冲突 & {\ttfamily G(!conflicting\_green)}\\
+
+{\ttfamily custom\_04\_p03} & sequence & 请求先进入黄灯再进入行人通行 & {\ttfamily G(request -> F(yellow\_stage)) \&\& G(yellow\_stage -> F(cross\_stage))}\\
+
+{\ttfamily custom\_04\_p04} & response & 通行周期完成后恢复正常 & {\ttfamily G(cycle\_done -> X(normal))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_05} Dual Pump Duty Standby}
+
+\noindent\textbf{状态语义：}每个步骤执行一次 PLC 扫描，X 表示该扫描后的泵输出。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily demand} & enable 且 levelHigh\\
+
+{\ttfamily p1\_fault} & pump1Fault 为真\\
+
+{\ttfamily p2\_fault} & pump2Fault 为真\\
+
+{\ttfamily p1\_run} & pump1Run 为真\\
+
+{\ttfamily p2\_run} & pump2Run 为真\\
+
+{\ttfamily both\_failed} & bothFailed 为真\\
+
+{\ttfamily cycle\_end} & levelHigh 从真变假\\
+
+{\ttfamily preferred\_alternated} & 下一周期首选泵已切换\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily custom\_05\_p01} & safety & 两泵永不同时运行 & {\ttfamily G(!(p1\_run \&\& p2\_run))}\\
+
+{\ttfamily custom\_05\_p02} & safety & 故障泵不得运行 & {\ttfamily G(p1\_fault -> X(!p1\_run)) \&\& G(p2\_fault -> X(!p2\_run))}\\
+
+{\ttfamily custom\_05\_p03} & response & 双故障产生不可用报警 & {\ttfamily G((p1\_fault \&\& p2\_fault) -> X(both\_failed \&\& !p1\_run \&\& !p2\_run))}\\
+
+{\ttfamily custom\_05\_p04} & response & 需求结束后轮换首选泵 & {\ttfamily G(cycle\_end -> X(preferred\_alternated))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_06} Batch Fill Mix Drain}
+
+\noindent\textbf{状态语义：}每个步骤执行一次 PLC 扫描；advance\_ms 驱动 5 秒搅拌定时，X 表示扫描后的状态。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily start\_idle} & IDLE 状态收到 start\\
+
+{\ttfamily high} & highLevel 为真\\
+
+{\ttfamily mix\_done} & 搅拌已满 5 秒\\
+
+{\ttfamily low} & lowLevel 为真\\
+
+{\ttfamily stop} & stop 为真\\
+
+{\ttfamily fill} & fillValve 为真\\
+
+{\ttfamily mix} & mixer 为真\\
+
+{\ttfamily drain} & drainValve 为真\\
+
+{\ttfamily done} & done 为真\\
+
+{\ttfamily multiple\_actuators} & fillValve、mixer、drainValve 中至少两个为真\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily custom\_06\_p01} & sequence & 启动后依次灌装、搅拌和排放 & {\ttfamily G(start\_idle -> X(fill)) \&\& G((fill \&\& high) -> X(mix)) \&\& G((mix \&\& mix\_done) -> X(drain))}\\
+
+{\ttfamily custom\_06\_p02} & response & 排空后发出单扫描完成脉冲 & {\ttfamily G((drain \&\& low) -> X(done \&\& !drain)) \&\& G(done -> X(!done))}\\
+
+{\ttfamily custom\_06\_p03} & safety & 执行器输出互斥 & {\ttfamily G(!multiple\_actuators)}\\
+
+{\ttfamily custom\_06\_p04} & safety & 停止中止并关闭全部执行器 & {\ttfamily G(stop -> X(!fill \&\& !mix \&\& !drain))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_07} Pressure Signal Scaling}
+
+\noindent\textbf{状态语义：}每个步骤执行一次 PLC 扫描，数值输出允许测试执行器使用小量浮点容差。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily below\_range} & rawValue < 0\\
+
+{\ttfamily above\_range} & rawValue > 27648\\
+
+{\ttfamily valid\_range} & 0 <= rawValue <= 27648\\
+
+{\ttfamily scaled} & pressure = rawValue * 16.0 / 27648.0\\
+
+{\ttfamily pressure\_zero} & pressure = 0.0\\
+
+{\ttfamily pressure\_full} & pressure = 16.0\\
+
+{\ttfamily high} & pressure >= highLimit\\
+
+{\ttfamily fault} & sensorFault 为真\\
+
+{\ttfamily alarm} & highAlarm 为真\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily custom\_07\_p01} & functional & 有效计数线性换算 & {\ttfamily G(valid\_range -> X(scaled \&\& !fault))}\\
+
+{\ttfamily custom\_07\_p02} & safety & 下越界故障并钳位为零 & {\ttfamily G(below\_range -> X(fault \&\& pressure\_zero \&\& !alarm))}\\
+
+{\ttfamily custom\_07\_p03} & safety & 上越界故障并钳位为满量程 & {\ttfamily G(above\_range -> X(fault \&\& pressure\_full \&\& !alarm))}\\
+
+{\ttfamily custom\_07\_p04} & response & 有效信号超过阈值时报警 & {\ttfamily G((valid\_range \&\& high) -> X(alarm))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_08} Two Door Airlock Interlock}
+
+\noindent\textbf{状态语义：}每个步骤执行一次 PLC 扫描；advance\_ms 驱动 5 秒释放超时，X 表示扫描后的锁状态。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily both\_request} & innerRequest 且 outerRequest\\
+
+{\ttfamily outer\_closed} & outerClosed 为真\\
+
+{\ttfamily inner\_allowed} & innerRequest 且 outerClosed\\
+
+{\ttfamily outer\_allowed} & outerRequest 且 innerClosed 且非 innerRequest\\
+
+{\ttfamily emergency} & emergency 为真\\
+
+{\ttfamily inner\_unlocked} & innerLock 为假\\
+
+{\ttfamily outer\_unlocked} & outerLock 为假\\
+
+{\ttfamily both\_open} & innerClosed 和 outerClosed 均为假\\
+
+{\ttfamily fault} & sensorFault 为真\\
+
+{\ttfamily timeout} & 当前释放已满 5 秒\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily custom\_08\_p01} & safety & 两门永不同时解锁 & {\ttfamily G(!(inner\_unlocked \&\& outer\_unlocked))}\\
+
+{\ttfamily custom\_08\_p02} & priority & 双请求时内门优先 & {\ttfamily G((both\_request \&\& outer\_closed) -> X(inner\_unlocked \&\& !outer\_unlocked))}\\
+
+{\ttfamily custom\_08\_p03} & safety & 紧急状态锁定双门 & {\ttfamily G(emergency -> X(!inner\_unlocked \&\& !outer\_unlocked))}\\
+
+{\ttfamily custom\_08\_p04} & response & 超时后重新锁门 & {\ttfamily G(timeout -> X(!inner\_unlocked \&\& !outer\_unlocked))}\\
+
+{\ttfamily custom\_08\_p05} & diagnostic & 双门均开时报传感器故障 & {\ttfamily G(both\_open -> X(fault))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_09} Conveyor Jam Detection}
+
+\noindent\textbf{状态语义：}每个步骤执行一次 PLC 扫描；advance\_ms 驱动 2 秒看门狗，X 表示扫描后的状态。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily safe\_run} & runCommand 且非 emergencyStop 且非 jamAlarm\\
+
+{\ttfamily pulse} & sensorPulse 为真\\
+
+{\ttfamily watchdog\_expired} & 运行期间距最近脉冲已满 2 秒\\
+
+{\ttfamily emergency} & emergencyStop 为真\\
+
+{\ttfamily valid\_reset} & reset 且非 runCommand 且非 emergencyStop\\
+
+{\ttfamily run} & motorRun 为真\\
+
+{\ttfamily jam} & jamAlarm 为真\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily custom\_09\_p01} & response & 安全运行命令启动电机 & {\ttfamily G(safe\_run -> X(run))}\\
+
+{\ttfamily custom\_09\_p02} & safety & 看门狗超时停机并锁存堵料 & {\ttfamily G(watchdog\_expired -> X(!run \&\& jam))}\\
+
+{\ttfamily custom\_09\_p03} & safety & 急停立即停机 & {\ttfamily G(emergency -> X(!run))}\\
+
+{\ttfamily custom\_09\_p04} & response & 仅安全静止时允许复位 & {\ttfamily G(valid\_reset -> X(!jam)) \&\& G((jam \&\& !valid\_reset) -> X(jam))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_10} Two Stage Boiler Heating}
+
+\noindent\textbf{状态语义：}每个步骤执行一次 PLC 扫描，X 表示该扫描后的加热与故障输出。
+
+\begin{longtable}{L{3.3cm}L{10.0cm}}
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+命题 & 含义\\
+
+\midrule
+
+\endhead
+
+{\ttfamily invalid\_config} & highTripLimit <= setpoint\\
+
+{\ttfamily trip\_temperature} & temperature >= highTripLimit\\
+
+{\ttfamily low\_band} & temperature < setpoint - 10.0\\
+
+{\ttfamily middle\_band} & setpoint - 10.0 <= temperature < setpoint\\
+
+{\ttfamily at\_setpoint} & temperature >= setpoint\\
+
+{\ttfamily enabled\_safe} & enable 且非 highTrip 且配置合法\\
+
+{\ttfamily valid\_reset} & reset 且非 enable 且 temperature < setpoint\\
+
+{\ttfamily h1} & heater1 为真\\
+
+{\ttfamily h2} & heater2 为真\\
+
+{\ttfamily trip} & highTrip 为真\\
+
+{\ttfamily error} & configError 为真\\
+
+\bottomrule
+
+\end{longtable}
+
+\begin{longtable}{L{2.3cm}L{1.7cm}L{4.1cm}L{5.2cm}}
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+性质编号 & 类型 & 说明 & LTL公式\\
+
+\midrule
+
+\endhead
+
+{\ttfamily custom\_10\_p01} & safety & 配置错误关闭加热 & {\ttfamily G(invalid\_config -> X(error \&\& !h1 \&\& !h2))}\\
+
+{\ttfamily custom\_10\_p02} & safety & 超温锁存跳闸并关闭加热 & {\ttfamily G(trip\_temperature -> X(trip \&\& !h1 \&\& !h2))}\\
+
+{\ttfamily custom\_10\_p03} & functional & 低温启用两级加热 & {\ttfamily G((enabled\_safe \&\& low\_band) -> X(h1 \&\& h2))}\\
+
+{\ttfamily custom\_10\_p04} & functional & 中间温区只启用一级 & {\ttfamily G((enabled\_safe \&\& middle\_band) -> X(h1 \&\& !h2))}\\
+
+{\ttfamily custom\_10\_p05} & response & 达到设定点停热且有效条件可复位 & {\ttfamily G(at\_setpoint -> X(!h1 \&\& !h2)) \&\& G(valid\_reset -> X(!trip))}\\
+
+\bottomrule
+
+\end{longtable}
+
+\section{逐题测试用例}
+
+测试用例按课程模板列出名称、所属题目、初始状态、输入步骤、等待时间、预期输出和覆盖内容。
+
+\subsection{{\ttfamily public\_01} Automated Filling Line Control}
+
+\subsubsection{{\ttfamily public\_01\_tc01} 完整生产循环}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}initialization、normal\_flow、reset
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & bottleSensor=FALSE, cleaningConfirmButton=FALSE, fillingConfirmButton=FALSE, cappingConfirmButton=FALSE, packingConfirmButton=FALSE, finishedButton=FALSE & 50 & Pump\_Motor=FALSE, Filling\_Valve=FALSE, Capping\_Machine=FALSE, Packing\_Machine=FALSE, Completion\_Light=FALSE & 初始停止\\
+
+1 & bottleSensor=TRUE, cleaningConfirmButton=FALSE, fillingConfirmButton=FALSE, cappingConfirmButton=FALSE, packingConfirmButton=FALSE, finishedButton=FALSE & 50 & Pump\_Motor=TRUE, Filling\_Valve=FALSE, Capping\_Machine=FALSE, Packing\_Machine=FALSE, Completion\_Light=FALSE & 检测到瓶子后清洗\\
+
+2 & bottleSensor=FALSE, cleaningConfirmButton=TRUE, fillingConfirmButton=FALSE, cappingConfirmButton=FALSE, packingConfirmButton=FALSE, finishedButton=FALSE & 50 & Pump\_Motor=FALSE, Filling\_Valve=TRUE & 清洗确认后灌装\\
+
+3 & bottleSensor=FALSE, cleaningConfirmButton=FALSE, fillingConfirmButton=TRUE, cappingConfirmButton=FALSE, packingConfirmButton=FALSE, finishedButton=FALSE & 50 & Filling\_Valve=FALSE, Capping\_Machine=TRUE & 灌装确认后旋盖\\
+
+4 & bottleSensor=FALSE, cleaningConfirmButton=FALSE, fillingConfirmButton=FALSE, cappingConfirmButton=TRUE, packingConfirmButton=FALSE, finishedButton=FALSE & 50 & Capping\_Machine=FALSE, Packing\_Machine=TRUE & 旋盖确认后包装\\
+
+5 & bottleSensor=FALSE, cleaningConfirmButton=FALSE, fillingConfirmButton=FALSE, cappingConfirmButton=FALSE, packingConfirmButton=TRUE, finishedButton=FALSE & 50 & Packing\_Machine=FALSE, Completion\_Light=TRUE & 包装确认后完成\\
+
+6 & bottleSensor=FALSE, cleaningConfirmButton=FALSE, fillingConfirmButton=FALSE, cappingConfirmButton=FALSE, packingConfirmButton=FALSE, finishedButton=TRUE & 50 & Completion\_Light=FALSE & 取走成品后复位\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_01\_tc02} 越序确认无效}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}invalid\_sequence
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & bottleSensor=FALSE, cleaningConfirmButton=FALSE, fillingConfirmButton=TRUE, cappingConfirmButton=TRUE, packingConfirmButton=TRUE, finishedButton=FALSE & 50 & Pump\_Motor=FALSE, Filling\_Valve=FALSE, Capping\_Machine=FALSE, Packing\_Machine=FALSE, Completion\_Light=FALSE & 未开始时忽略越序确认\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_01\_tc03} 完成灯保持到确认}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}latching、reset
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & bottleSensor=TRUE, cleaningConfirmButton=FALSE, fillingConfirmButton=FALSE, cappingConfirmButton=FALSE, packingConfirmButton=FALSE, finishedButton=FALSE & 50 & Pump\_Motor=TRUE, Completion\_Light=FALSE & 通过公开输入开始生产循环\\
+
+1 & bottleSensor=FALSE, cleaningConfirmButton=TRUE, fillingConfirmButton=FALSE, cappingConfirmButton=FALSE, packingConfirmButton=FALSE, finishedButton=FALSE & 50 & Pump\_Motor=FALSE, Filling\_Valve=TRUE & 进入灌装阶段\\
+
+2 & bottleSensor=FALSE, cleaningConfirmButton=FALSE, fillingConfirmButton=TRUE, cappingConfirmButton=FALSE, packingConfirmButton=FALSE, finishedButton=FALSE & 50 & Filling\_Valve=FALSE, Capping\_Machine=TRUE & 进入旋盖阶段\\
+
+3 & bottleSensor=FALSE, cleaningConfirmButton=FALSE, fillingConfirmButton=FALSE, cappingConfirmButton=TRUE, packingConfirmButton=FALSE, finishedButton=FALSE & 50 & Capping\_Machine=FALSE, Packing\_Machine=TRUE & 进入包装阶段\\
+
+4 & bottleSensor=FALSE, cleaningConfirmButton=FALSE, fillingConfirmButton=FALSE, cappingConfirmButton=FALSE, packingConfirmButton=TRUE, finishedButton=FALSE & 50 & Packing\_Machine=FALSE, Completion\_Light=TRUE & 通过公开输入到达完成状态\\
+
+5 & bottleSensor=FALSE, cleaningConfirmButton=FALSE, fillingConfirmButton=FALSE, cappingConfirmButton=FALSE, packingConfirmButton=FALSE, finishedButton=FALSE & 50 & Completion\_Light=TRUE & 未确认取走时保持完成灯\\
+
+6 & bottleSensor=FALSE, cleaningConfirmButton=FALSE, fillingConfirmButton=FALSE, cappingConfirmButton=FALSE, packingConfirmButton=FALSE, finishedButton=TRUE & 50 & Completion\_Light=FALSE & 确认后熄灭\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_02} Dual-Word Edge Detection}
+
+\subsubsection{{\ttfamily public\_02\_tc01} 混合上升与下降位}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}rising\_edges、falling\_edges、bit\_count
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & value=0 & 50 & hasChanged=FALSE, hasRisingEdges=FALSE, risingBits=0, noOfRisingBits=0, hasFallingEdges=FALSE, fallingBits=0, noOfFallingBits=0 & 零值初始化\\
+
+1 & value=5 & 50 & hasChanged=TRUE, hasRisingEdges=TRUE, risingBits=5, noOfRisingBits=2, hasFallingEdges=FALSE, fallingBits=0, noOfFallingBits=0 & 位 0 和 2 上升\\
+
+2 & value=2 & 50 & hasChanged=TRUE, hasRisingEdges=TRUE, risingBits=2, noOfRisingBits=1, hasFallingEdges=TRUE, fallingBits=5, noOfFallingBits=2 & 位 1 上升，位 0 和 2 下降\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_02\_tc02} 输入保持不变}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}no\_change
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & value=4294967295 & 50 & hasChanged=TRUE, hasRisingEdges=TRUE, risingBits=4294967295, noOfRisingBits=32, hasFallingEdges=FALSE, fallingBits=0, noOfFallingBits=0 & 先通过公开输入建立前值\\
+
+1 & value=4294967295 & 50 & hasChanged=FALSE, hasRisingEdges=FALSE, risingBits=0, noOfRisingBits=0, hasFallingEdges=FALSE, fallingBits=0, noOfFallingBits=0 & 输入保持不变时无边沿\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_02\_tc03} 全部位下降}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}boundary、falling\_edges
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & value=4294967295 & 50 & hasChanged=TRUE, hasRisingEdges=TRUE, risingBits=4294967295, noOfRisingBits=32, hasFallingEdges=FALSE, fallingBits=0, noOfFallingBits=0 & 先通过公开输入建立全一前值\\
+
+1 & value=0 & 50 & hasChanged=TRUE, hasRisingEdges=FALSE, risingBits=0, noOfRisingBits=0, hasFallingEdges=TRUE, fallingBits=4294967295, noOfFallingBits=32 & 32 位同时下降\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_03} Alarm Handling}
+
+\subsubsection{{\ttfamily public\_03\_tc01} 高报警滞回}
+
+\noindent\textbf{初始状态：}hiAlarm=FALSE, loAlarm=FALSE\\
+
+\textbf{覆盖内容：}high\_alarm、hysteresis
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Value=21, hiLevel=20, loLevel=10, hystWindow=2 & 50 & hiAlarm=TRUE, error=FALSE, status=16\#0000 & 超过高限触发\\
+
+1 & Value=19, hiLevel=20, loLevel=10, hystWindow=2 & 50 & hiAlarm=TRUE & 未低于清除阈值时保持\\
+
+2 & Value=17.9, hiLevel=20, loLevel=10, hystWindow=2 & 50 & hiAlarm=FALSE & 低于 18 后清除\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_03\_tc02} 低报警滞回}
+
+\noindent\textbf{初始状态：}hiAlarm=FALSE, loAlarm=FALSE\\
+
+\textbf{覆盖内容：}low\_alarm、hysteresis
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Value=9, hiLevel=20, loLevel=10, hystWindow=2 & 50 & loAlarm=TRUE, error=FALSE, status=16\#0000 & 低于低限触发\\
+
+1 & Value=11, hiLevel=20, loLevel=10, hystWindow=2 & 50 & loAlarm=TRUE & 未高于清除阈值时保持\\
+
+2 & Value=12.1, hiLevel=20, loLevel=10, hystWindow=2 & 50 & loAlarm=FALSE & 高于 12 后清除\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_03\_tc03} 配置错误优先级}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}invalid\_configuration、status\_codes
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Value=15, hiLevel=10, loLevel=10, hystWindow=1 & 50 & error=TRUE, status=16\#8001 & 上下限非法\\
+
+1 & Value=15, hiLevel=20, loLevel=10, hystWindow=10 & 50 & error=TRUE, status=16\#8002 & 滞回窗口过大\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_04} Jam Pump Debouncing and Runtime Maintenance}
+
+\subsubsection{{\ttfamily public\_04\_tc01} 粘度防抖后启动}
+
+\noindent\textbf{初始状态：}VFD\_RUN=FALSE, PUMP\_RUNTIME\_ACC=LTIME\#0s, PUMP\_MAINT\_DUE=FALSE\\
+
+\textbf{覆盖内容：}debounce、normal\_start
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & VISCOSITY\_OK=TRUE, PASTE\_E\_STOP\_NC=TRUE, DebounceTime=T\#2s, CycleTime=T\#1s & 50 & VFD\_RUN=FALSE & 开始防抖\\
+
+1 & VISCOSITY\_OK=TRUE, PASTE\_E\_STOP\_NC=TRUE, DebounceTime=T\#2s, CycleTime=T\#1s & 1000 & VFD\_RUN=FALSE & 1 秒未到\\
+
+2 & VISCOSITY\_OK=TRUE, PASTE\_E\_STOP\_NC=TRUE, DebounceTime=T\#2s, CycleTime=T\#1s & 1000 & VFD\_RUN=TRUE & 2 秒后运行\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_04\_tc02} 急停立即停止并重置防抖}
+
+\noindent\textbf{初始状态：}VFD\_RUN=FALSE\\
+
+\textbf{覆盖内容：}emergency\_stop、debounce\_reset
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & VISCOSITY\_OK=TRUE, PASTE\_E\_STOP\_NC=TRUE, DebounceTime=T\#1s, CycleTime=T\#1s & 50 & VFD\_RUN=FALSE & 开始防抖\\
+
+1 & VISCOSITY\_OK=TRUE, PASTE\_E\_STOP\_NC=TRUE, DebounceTime=T\#1s, CycleTime=T\#1s & 1000 & VFD\_RUN=TRUE & 防抖完成\\
+
+2 & VISCOSITY\_OK=TRUE, PASTE\_E\_STOP\_NC=FALSE, DebounceTime=T\#1s, CycleTime=T\#1s & 50 & VFD\_RUN=FALSE & 急停立即关闭\\
+
+3 & VISCOSITY\_OK=TRUE, PASTE\_E\_STOP\_NC=TRUE, DebounceTime=T\#1s, CycleTime=T\#1s & 50 & VFD\_RUN=FALSE & 恢复许可后重新防抖\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_04\_tc03} 累计 500 小时提示维护}
+
+\noindent\textbf{初始状态：}PUMP\_RUNTIME\_ACC=LTIME\#0s, PUMP\_MAINT\_DUE=FALSE\\
+
+\textbf{覆盖内容：}runtime\_accumulation、maintenance\_threshold
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & VISCOSITY\_OK=TRUE, PASTE\_E\_STOP\_NC=TRUE, DebounceTime=T\#500ms, CycleTime=T\#500h & 50 & VFD\_RUN=FALSE & 开始最短防抖\\
+
+1 & VISCOSITY\_OK=TRUE, PASTE\_E\_STOP\_NC=TRUE, DebounceTime=T\#500ms, CycleTime=T\#500h & 500 & VFD\_RUN=TRUE, PUMP\_RUNTIME\_ACC=LTIME\#500h, PUMP\_MAINT\_DUE=TRUE & 运行累计达到维护阈值\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_05} Weld Gap Alarm and Startup Inhibition}
+
+\subsubsection{{\ttfamily public\_05\_tc01} 上电五秒抑制}
+
+\noindent\textbf{初始状态：}Operator\_Alert=FALSE, Weld\_Soft\_Start\_Active=TRUE\\
+
+\textbf{覆盖内容：}initialization\_delay
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Gap\_Exceeded=TRUE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#1s & 50 & Operator\_Alert=FALSE, Weld\_Soft\_Start\_Active=TRUE & 上电仍抑制\\
+
+1 & Gap\_Exceeded=TRUE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#1s & 4000 & Operator\_Alert=FALSE, Weld\_Soft\_Start\_Active=TRUE & 未满 5 秒\\
+
+2 & Gap\_Exceeded=FALSE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#1s & 1000 & Operator\_Alert=FALSE, Weld\_Soft\_Start\_Active=FALSE & 5 秒后结束抑制\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_05\_tc02} 正常监控防抖报警}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}debounce、alarm\_clear
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Gap\_Exceeded=FALSE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#2s & 50 & Operator\_Alert=FALSE, Weld\_Soft\_Start\_Active=TRUE & 通过公开输入经历上电抑制\\
+
+1 & Gap\_Exceeded=FALSE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#2s & 5000 & Operator\_Alert=FALSE, Weld\_Soft\_Start\_Active=FALSE & 五秒后进入正常监控\\
+
+2 & Gap\_Exceeded=TRUE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#2s & 50 & Operator\_Alert=FALSE, Weld\_Soft\_Start\_Active=FALSE & 开始报警防抖\\
+
+3 & Gap\_Exceeded=TRUE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#2s & 2000 & Operator\_Alert=TRUE & 达到防抖时间\\
+
+4 & Gap\_Exceeded=FALSE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#2s & 50 & Operator\_Alert=FALSE & 信号恢复立即清除\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_05\_tc03} 急停清除未完成防抖}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}emergency\_stop、debounce\_reset
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Gap\_Exceeded=FALSE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#2s & 50 & Operator\_Alert=FALSE, Weld\_Soft\_Start\_Active=TRUE & 通过公开输入经历上电抑制\\
+
+1 & Gap\_Exceeded=FALSE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#2s & 5000 & Operator\_Alert=FALSE, Weld\_Soft\_Start\_Active=FALSE & 五秒后进入正常监控\\
+
+2 & Gap\_Exceeded=TRUE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#2s & 50 & Operator\_Alert=FALSE & 开始防抖\\
+
+3 & Gap\_Exceeded=TRUE, Weld\_E\_Stop\_NC=FALSE, DebounceTime=T\#2s & 1000 & Operator\_Alert=FALSE & 急停清除防抖\\
+
+4 & Gap\_Exceeded=TRUE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#2s & 50 & Operator\_Alert=FALSE & 恢复后重新计时\\
+
+5 & Gap\_Exceeded=TRUE, Weld\_E\_Stop\_NC=TRUE, DebounceTime=T\#2s & 2000 & Operator\_Alert=TRUE & 重新满 2 秒后报警\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_06} Aeration Blower Delayed Start}
+
+\subsubsection{{\ttfamily public\_06\_tc01} 低氧延时启动}
+
+\noindent\textbf{初始状态：}BLOWER\_RUN=FALSE, AERATION\_BLOWER\_CYCLE\_COUNT=0\\
+
+\textbf{覆盖内容：}start\_delay、start\_counter
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & DO\_LOW=TRUE, AERATION\_E\_STOP\_NC=TRUE & 50 & BLOWER\_RUN=FALSE, AERATION\_BLOWER\_CYCLE\_COUNT=0 & 开始 5 秒延时\\
+
+1 & DO\_LOW=TRUE, AERATION\_E\_STOP\_NC=TRUE & 4000 & BLOWER\_RUN=FALSE, AERATION\_BLOWER\_CYCLE\_COUNT=0 & 未满 5 秒\\
+
+2 & DO\_LOW=TRUE, AERATION\_E\_STOP\_NC=TRUE & 1000 & BLOWER\_RUN=TRUE, AERATION\_BLOWER\_CYCLE\_COUNT=1 & 延时完成并计一次启动\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_06\_tc02} 需求消失后重新完整延时}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}delay\_reset、cycle\_count
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & DO\_LOW=TRUE, AERATION\_E\_STOP\_NC=TRUE & 50 & BLOWER\_RUN=FALSE, AERATION\_BLOWER\_CYCLE\_COUNT=0 & 先通过公开输入建立第一次启动\\
+
+1 & DO\_LOW=TRUE, AERATION\_E\_STOP\_NC=TRUE & 5000 & BLOWER\_RUN=TRUE, AERATION\_BLOWER\_CYCLE\_COUNT=1 & 第一次延时完成并计数\\
+
+2 & DO\_LOW=FALSE, AERATION\_E\_STOP\_NC=TRUE & 50 & BLOWER\_RUN=FALSE, AERATION\_BLOWER\_CYCLE\_COUNT=1 & 需求消失立即停止\\
+
+3 & DO\_LOW=TRUE, AERATION\_E\_STOP\_NC=TRUE & 50 & BLOWER\_RUN=FALSE & 新需求重新计时\\
+
+4 & DO\_LOW=TRUE, AERATION\_E\_STOP\_NC=TRUE & 5000 & BLOWER\_RUN=TRUE, AERATION\_BLOWER\_CYCLE\_COUNT=2 & 再次满 5 秒后启动\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_06\_tc03} 急停优先}
+
+\noindent\textbf{初始状态：}BLOWER\_RUN=FALSE, AERATION\_BLOWER\_CYCLE\_COUNT=0\\
+
+\textbf{覆盖内容：}emergency\_stop、delay\_reset
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & DO\_LOW=TRUE, AERATION\_E\_STOP\_NC=TRUE & 50 & BLOWER\_RUN=FALSE & 开始延时\\
+
+1 & DO\_LOW=TRUE, AERATION\_E\_STOP\_NC=FALSE & 3000 & BLOWER\_RUN=FALSE, AERATION\_BLOWER\_CYCLE\_COUNT=0 & 急停保持停止\\
+
+2 & DO\_LOW=TRUE, AERATION\_E\_STOP\_NC=TRUE & 50 & BLOWER\_RUN=FALSE & 恢复后重新完整延时\\
+
+3 & DO\_LOW=TRUE, AERATION\_E\_STOP\_NC=TRUE & 5000 & BLOWER\_RUN=TRUE, AERATION\_BLOWER\_CYCLE\_COUNT=1 & 恢复 5 秒后启动\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_07} Multi-Pump Switching Control System}
+
+\subsubsection{{\ttfamily public\_07\_tc01} 手动选择泵启停}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}manual\_mode、stop\_priority
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & mode=FALSE, start=TRUE, stop=FALSE, pumpGroup=[priority=1, selection=TRUE, RunComd=FALSE, priority=2, selection=FALSE, RunComd=FALSE, priority=3, selection=TRUE, RunComd=FALSE, priority=4, selection=FALSE, RunComd=FALSE, priority=5, selection=FALSE, RunComd=FALSE] & 50 & pumpGroup=[priority=1, selection=TRUE, RunComd=TRUE, priority=2, selection=FALSE, RunComd=FALSE, priority=3, selection=TRUE, RunComd=TRUE, priority=4, selection=FALSE, RunComd=FALSE, priority=5, selection=FALSE, RunComd=FALSE] & 只运行手动选择的泵\\
+
+1 & mode=FALSE, start=TRUE, stop=TRUE, pumpGroup=[priority=1, selection=TRUE, RunComd=TRUE, priority=2, selection=FALSE, RunComd=FALSE, priority=3, selection=TRUE, RunComd=TRUE, priority=4, selection=FALSE, RunComd=FALSE, priority=5, selection=FALSE, RunComd=FALSE] & 50 & pumpGroup=[priority=1, selection=TRUE, RunComd=FALSE, priority=2, selection=FALSE, RunComd=FALSE, priority=3, selection=TRUE, RunComd=FALSE, priority=4, selection=FALSE, RunComd=FALSE, priority=5, selection=FALSE, RunComd=FALSE] & 停止优先关闭全部泵\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_07\_tc02} 自动选择三个最高优先级泵}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}automatic\_mode、priority\_selection
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & mode=TRUE, start=TRUE, stop=FALSE, pumpGroup=[priority=5, selection=FALSE, RunComd=FALSE, priority=10, selection=FALSE, RunComd=FALSE, priority=3, selection=FALSE, RunComd=FALSE, priority=8, selection=FALSE, RunComd=FALSE, priority=7, selection=FALSE, RunComd=FALSE] & 50 & pumpGroup=[priority=5, selection=FALSE, RunComd=FALSE, priority=10, selection=FALSE, RunComd=TRUE, priority=3, selection=FALSE, RunComd=FALSE, priority=8, selection=FALSE, RunComd=TRUE, priority=7, selection=FALSE, RunComd=TRUE] & 运行优先级 10、8、7 的三台泵\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_07\_tc03} 相同优先级按下标选择}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}tie\_break、determinism
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & mode=TRUE, start=TRUE, stop=FALSE, pumpGroup=[priority=10, selection=FALSE, RunComd=FALSE, priority=10, selection=FALSE, RunComd=FALSE, priority=10, selection=FALSE, RunComd=FALSE, priority=5, selection=FALSE, RunComd=FALSE, priority=1, selection=FALSE, RunComd=FALSE] & 50 & pumpGroup=[priority=10, selection=FALSE, RunComd=TRUE, priority=10, selection=FALSE, RunComd=TRUE, priority=10, selection=FALSE, RunComd=TRUE, priority=5, selection=FALSE, RunComd=FALSE, priority=1, selection=FALSE, RunComd=FALSE] & 并列时选择下标最小的三台\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_08} Analog Batch Processing}
+
+\subsubsection{{\ttfamily public\_08\_tc01} 线性单极性与双极性换算}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}linear\_scaling、unipolar、bipolar
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & count=2, analogValues=[13824, 0], channels=[enable=TRUE, hiLIM=100, loLIM=0, bipolar=FALSE, measuringMode=0, retVal=16\#0000, outputValue=0, enable=TRUE, hiLIM=10, loLIM=-10, bipolar=TRUE, measuringMode=0, retVal=16\#0000, outputValue=0] & 50 & channels=[enable=TRUE, hiLIM=100, loLIM=0, bipolar=FALSE, measuringMode=0, retVal=16\#0000, outputValue=50, enable=TRUE, hiLIM=10, loLIM=-10, bipolar=TRUE, measuringMode=0, retVal=16\#0000, outputValue=0] & 分别得到 50 和 0\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_08\_tc02} 两种温度换算}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}temperature\_modes
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & count=2, analogValues=[250, 2345], channels=[enable=TRUE, hiLIM=100, loLIM=0, bipolar=FALSE, measuringMode=1, retVal=16\#0000, outputValue=0, enable=TRUE, hiLIM=100, loLIM=0, bipolar=FALSE, measuringMode=2, retVal=16\#0000, outputValue=0] & 50 & channels=[enable=TRUE, hiLIM=100, loLIM=0, bipolar=FALSE, measuringMode=1, retVal=16\#0000, outputValue=25, enable=TRUE, hiLIM=100, loLIM=0, bipolar=FALSE, measuringMode=2, retVal=16\#0000, outputValue=23.45] & 标准温度除以 10，气候温度除以 100\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_08\_tc03} 禁用和错误配置}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}disabled\_channel、invalid\_mode、invalid\_limits
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & count=3, analogValues=[100, 100, 100], channels=[enable=FALSE, hiLIM=100, loLIM=0, bipolar=FALSE, measuringMode=0, retVal=16\#1111, outputValue=7, enable=TRUE, hiLIM=100, loLIM=0, bipolar=FALSE, measuringMode=9, retVal=16\#0000, outputValue=0, enable=TRUE, hiLIM=0, loLIM=0, bipolar=FALSE, measuringMode=0, retVal=16\#0000, outputValue=0] & 50 & channels=[enable=FALSE, hiLIM=100, loLIM=0, bipolar=FALSE, measuringMode=0, retVal=16\#1111, outputValue=7, enable=TRUE, hiLIM=100, loLIM=0, bipolar=FALSE, measuringMode=9, retVal=16\#8001, outputValue=0, enable=TRUE, hiLIM=0, loLIM=0, bipolar=FALSE, measuringMode=0, retVal=16\#8002, outputValue=0] & 禁用通道不变，非法模式和限值分别报错\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_09} Calculate Moving Average}
+
+\subsubsection{{\ttfamily public\_09\_tc01} 循环采样与滑动窗口}
+
+\noindent\textbf{初始状态：}average=0, windowSizeReached=FALSE\\
+
+\textbf{覆盖内容：}cyclic\_sampling、moving\_window
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & cyclicExecution=TRUE, trigger=FALSE, value=0, windowSize=3, reset=TRUE & 50 & average=0, windowSizeReached=FALSE, error=FALSE, status=16\#0000 & 复位\\
+
+1 & cyclicExecution=TRUE, trigger=FALSE, value=3, windowSize=3, reset=FALSE & 50 & average=3, windowSizeReached=FALSE & 第一个样本\\
+
+2 & cyclicExecution=TRUE, trigger=FALSE, value=6, windowSize=3, reset=FALSE & 50 & average=4.5, windowSizeReached=FALSE & 两个样本\\
+
+3 & cyclicExecution=TRUE, trigger=FALSE, value=9, windowSize=3, reset=FALSE & 50 & average=6, windowSizeReached=TRUE & 窗口填满\\
+
+4 & cyclicExecution=TRUE, trigger=FALSE, value=12, windowSize=3, reset=FALSE & 50 & average=9, windowSizeReached=TRUE & 替换最旧样本\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_09\_tc02} 触发沿采样}
+
+\noindent\textbf{初始状态：}average=0, windowSizeReached=FALSE\\
+
+\textbf{覆盖内容：}edge\_trigger、no\_repeat
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & cyclicExecution=FALSE, trigger=FALSE, value=2, windowSize=2, reset=FALSE & 50 & average=0, windowSizeReached=FALSE & 低电平不采样\\
+
+1 & cyclicExecution=FALSE, trigger=TRUE, value=2, windowSize=2, reset=FALSE & 50 & average=2, windowSizeReached=FALSE & 第一次上升沿采样\\
+
+2 & cyclicExecution=FALSE, trigger=TRUE, value=10, windowSize=2, reset=FALSE & 50 & average=2, windowSizeReached=FALSE & 保持高电平不重复采样\\
+
+3 & cyclicExecution=FALSE, trigger=FALSE, value=10, windowSize=2, reset=FALSE & 50 & average=2 & 释放触发\\
+
+4 & cyclicExecution=FALSE, trigger=TRUE, value=6, windowSize=2, reset=FALSE & 50 & average=4, windowSizeReached=TRUE & 第二次上升沿采样\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_09\_tc03} 窗口大小非法}
+
+\noindent\textbf{初始状态：}average=0\\
+
+\textbf{覆盖内容：}invalid\_window、recovery
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & cyclicExecution=TRUE, trigger=FALSE, value=5, windowSize=0, reset=FALSE & 50 & error=TRUE, status=16\#8200, average=0 & 窗口为 0 拒绝样本\\
+
+1 & cyclicExecution=TRUE, trigger=FALSE, value=5, windowSize=101, reset=FALSE & 50 & error=TRUE, status=16\#8200, average=0 & 窗口大于 100 拒绝样本\\
+
+2 & cyclicExecution=TRUE, trigger=FALSE, value=5, windowSize=1, reset=FALSE & 50 & error=FALSE, status=16\#0000, average=5, windowSizeReached=TRUE & 合法后恢复\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_10} Temperature Logic Control}
+
+\subsubsection{{\ttfamily public\_10\_tc01} 正常温控}
+
+\noindent\textbf{初始状态：}OverheatProtection=FALSE\\
+
+\textbf{覆盖内容：}normal\_heating、display
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & TemperatureSensorInput=20, SetTemperature=25 & 50 & CurrentTemperature=20, SetTempDisplay=25, HeaterOutput=TRUE, HeaterStatus=TRUE, OverheatProtection=FALSE & 低于设定值加热\\
+
+1 & TemperatureSensorInput=26, SetTemperature=25 & 50 & HeaterOutput=FALSE, HeaterStatus=FALSE, OverheatProtection=FALSE & 高于设定值停止\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_10\_tc02} 连续加热触发并保持保护}
+
+\noindent\textbf{初始状态：}OverheatProtection=FALSE\\
+
+\textbf{覆盖内容：}overheat\_protection、cooldown
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & TemperatureSensorInput=20, SetTemperature=25 & 50 & HeaterOutput=TRUE, OverheatProtection=FALSE & 开始加热\\
+
+1 & TemperatureSensorInput=20, SetTemperature=25 & 4000 & HeaterOutput=TRUE, OverheatProtection=FALSE & 未满 5 秒\\
+
+2 & TemperatureSensorInput=20, SetTemperature=25 & 1000 & HeaterOutput=FALSE, OverheatProtection=TRUE & 满 5 秒触发保护\\
+
+3 & TemperatureSensorInput=20, SetTemperature=25 & 2000 & HeaterOutput=FALSE, OverheatProtection=TRUE & 保护未满 3 秒\\
+
+4 & TemperatureSensorInput=20, SetTemperature=25 & 1000 & OverheatProtection=FALSE & 满 3 秒解除保护\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_10\_tc03} 传感器越界故障}
+
+\noindent\textbf{初始状态：}OverheatProtection=FALSE\\
+
+\textbf{覆盖内容：}sensor\_fault、recovery
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & TemperatureSensorInput=-1, SetTemperature=25 & 50 & HeaterOutput=FALSE, HeaterStatus=FALSE & 低于量程关闭\\
+
+1 & TemperatureSensorInput=101, SetTemperature=25 & 50 & HeaterOutput=FALSE, HeaterStatus=FALSE & 高于量程关闭\\
+
+2 & TemperatureSensorInput=20, SetTemperature=25 & 50 & HeaterOutput=TRUE, HeaterStatus=TRUE & 恢复有效值后按温控运行\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_11} Automated Production Line Control}
+
+\subsubsection{{\ttfamily public\_11\_tc01} 手动正反转互锁}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}manual\_mode、direction\_interlock
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Mode=FALSE, ForwardButton=TRUE, ReverseButton=FALSE, SensorA=FALSE, SensorB=FALSE, SensorC=FALSE, ButtonA=FALSE, ButtonB=FALSE, ButtonC=FALSE & 50 & MotorForward=TRUE, MotorReverse=FALSE & 仅正转按钮\\
+
+1 & Mode=FALSE, ForwardButton=FALSE, ReverseButton=TRUE, SensorA=FALSE, SensorB=FALSE, SensorC=FALSE, ButtonA=FALSE, ButtonB=FALSE, ButtonC=FALSE & 50 & MotorForward=FALSE, MotorReverse=TRUE & 仅反转按钮\\
+
+2 & Mode=FALSE, ForwardButton=TRUE, ReverseButton=TRUE, SensorA=FALSE, SensorB=FALSE, SensorC=FALSE, ButtonA=FALSE, ButtonB=FALSE, ButtonC=FALSE & 50 & MotorForward=FALSE, MotorReverse=FALSE & 冲突输入时均关闭\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_11\_tc02} 自动经过三个工位}
+
+\noindent\textbf{初始状态：}CompletionLight=FALSE\\
+
+\textbf{覆盖内容：}automatic\_sequence、station\_transitions
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=TRUE, SensorB=FALSE, SensorC=FALSE, ButtonA=TRUE, ButtonB=FALSE, ButtonC=FALSE & 50 & MotorForward=TRUE, MotorReverse=FALSE, CompletionLight=FALSE & A 完成后前进\\
+
+1 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=FALSE, SensorB=TRUE, SensorC=FALSE, ButtonA=FALSE, ButtonB=FALSE, ButtonC=FALSE & 50 & MotorForward=FALSE & 到达 B 停止\\
+
+2 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=FALSE, SensorB=TRUE, SensorC=FALSE, ButtonA=FALSE, ButtonB=TRUE, ButtonC=FALSE & 50 & MotorForward=TRUE & B 完成后前进\\
+
+3 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=FALSE, SensorB=FALSE, SensorC=TRUE, ButtonA=FALSE, ButtonB=FALSE, ButtonC=FALSE & 50 & MotorForward=FALSE, CompletionLight=FALSE & 到达 C 停止\\
+
+4 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=FALSE, SensorB=FALSE, SensorC=TRUE, ButtonA=FALSE, ButtonB=FALSE, ButtonC=TRUE & 50 & MotorForward=FALSE, CompletionLight=TRUE & C 完成点亮完成灯\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_11\_tc03} 产品离开后完成灯熄灭}
+
+\noindent\textbf{初始状态：}CompletionLight=FALSE\\
+
+\textbf{覆盖内容：}completion\_reset
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=TRUE, SensorB=FALSE, SensorC=FALSE, ButtonA=TRUE, ButtonB=FALSE, ButtonC=FALSE & 50 & MotorForward=TRUE, CompletionLight=FALSE & 通过公开输入从 A 站开始\\
+
+1 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=FALSE, SensorB=TRUE, SensorC=FALSE, ButtonA=FALSE, ButtonB=FALSE, ButtonC=FALSE & 50 & MotorForward=FALSE, CompletionLight=FALSE & 到达 B 站停止\\
+
+2 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=FALSE, SensorB=TRUE, SensorC=FALSE, ButtonA=FALSE, ButtonB=TRUE, ButtonC=FALSE & 50 & MotorForward=TRUE, CompletionLight=FALSE & B 站完成后继续\\
+
+3 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=FALSE, SensorB=FALSE, SensorC=TRUE, ButtonA=FALSE, ButtonB=FALSE, ButtonC=FALSE & 50 & MotorForward=FALSE, CompletionLight=FALSE & 到达 C 站停止\\
+
+4 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=FALSE, SensorB=FALSE, SensorC=TRUE, ButtonA=FALSE, ButtonB=FALSE, ButtonC=TRUE & 50 & MotorForward=FALSE, CompletionLight=TRUE & C 站完成后建立完成状态\\
+
+5 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=FALSE, SensorB=FALSE, SensorC=TRUE, ButtonA=FALSE, ButtonB=FALSE, ButtonC=FALSE & 50 & CompletionLight=TRUE & 产品仍在 C\\
+
+6 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorA=FALSE, SensorB=FALSE, SensorC=FALSE, ButtonA=FALSE, ButtonB=FALSE, ButtonC=FALSE & 50 & CompletionLight=FALSE & 产品离开\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_12} Slab Thickness Alarm and Fault History}
+
+\subsubsection{{\ttfamily public\_12\_tc01} 报警最短保持 500 毫秒}
+
+\noindent\textbf{初始状态：}THICKNESS\_ALARM=FALSE, Slab\_Fault\_Counter=0, Slab\_Fault\_History=[0, 0, 0, 0, 0]\\
+
+\textbf{覆盖内容：}alarm\_hold、fault\_counter、history
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & THICKNESS\_FAULT=TRUE, THICKNESS\_SIGNAL\_VALID=TRUE, CUTTING\_RUN=FALSE, FaultTimestamp=100, CycleTime=T\#100ms & 50 & THICKNESS\_ALARM=TRUE, Slab\_Fault\_Counter=1, Slab\_Fault\_History=[100, 0, 0, 0, 0] & 故障上升沿立即报警并记录\\
+
+1 & THICKNESS\_FAULT=FALSE, THICKNESS\_SIGNAL\_VALID=TRUE, CUTTING\_RUN=FALSE, FaultTimestamp=100, CycleTime=T\#100ms & 100 & THICKNESS\_ALARM=TRUE & 触发后 100 毫秒仍保持\\
+
+2 & THICKNESS\_FAULT=FALSE, THICKNESS\_SIGNAL\_VALID=TRUE, CUTTING\_RUN=FALSE, FaultTimestamp=100, CycleTime=T\#400ms & 400 & THICKNESS\_ALARM=FALSE & 累计 500 毫秒后清除\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_12\_tc02} 故障历史新记录置顶}
+
+\noindent\textbf{初始状态：}THICKNESS\_ALARM=FALSE, Slab\_Fault\_Counter=0, Slab\_Fault\_History=[0, 0, 0, 0, 0]\\
+
+\textbf{覆盖内容：}history\_shift、edge\_count
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & THICKNESS\_FAULT=TRUE, THICKNESS\_SIGNAL\_VALID=TRUE, CUTTING\_RUN=FALSE, FaultTimestamp=100, CycleTime=T\#500ms & 50 & Slab\_Fault\_Counter=1, Slab\_Fault\_History=[100, 0, 0, 0, 0] & 记录第一次故障\\
+
+1 & THICKNESS\_FAULT=FALSE, THICKNESS\_SIGNAL\_VALID=TRUE, CUTTING\_RUN=FALSE, FaultTimestamp=100, CycleTime=T\#500ms & 500 & THICKNESS\_ALARM=FALSE & 清除故障\\
+
+2 & THICKNESS\_FAULT=TRUE, THICKNESS\_SIGNAL\_VALID=TRUE, CUTTING\_RUN=FALSE, FaultTimestamp=200, CycleTime=T\#100ms & 50 & Slab\_Fault\_Counter=2, Slab\_Fault\_History=[200, 100, 0, 0, 0] & 第二次故障置顶并后移旧记录\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_12\_tc03} 仅正常切割累计运行时间}
+
+\noindent\textbf{初始状态：}Slab\_Runtime\_Accumulator=LTIME\#0s\\
+
+\textbf{覆盖内容：}runtime\_accumulation、invalid\_signal
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & THICKNESS\_FAULT=FALSE, THICKNESS\_SIGNAL\_VALID=TRUE, CUTTING\_RUN=TRUE, FaultTimestamp=0, CycleTime=T\#1s & 50 & Slab\_Runtime\_Accumulator=LTIME\#1s & 正常切割累计 1 秒\\
+
+1 & THICKNESS\_FAULT=TRUE, THICKNESS\_SIGNAL\_VALID=TRUE, CUTTING\_RUN=TRUE, FaultTimestamp=1, CycleTime=T\#1s & 50 & Slab\_Runtime\_Accumulator=LTIME\#1s & 故障时不累计\\
+
+2 & THICKNESS\_FAULT=FALSE, THICKNESS\_SIGNAL\_VALID=FALSE, CUTTING\_RUN=TRUE, FaultTimestamp=1, CycleTime=T\#1s & 50 & Slab\_Runtime\_Accumulator=LTIME\#1s, THICKNESS\_ALARM=FALSE & 信号无效时不累计并清除报警\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_13} Office HVAC Multi-mode Energy-Saving Control}
+
+\subsubsection{{\ttfamily public\_13\_tc01} 有人时延时启动风机}
+
+\noindent\textbf{初始状态：}SUPPLY\_FAN\_RUN=FALSE\\
+
+\textbf{覆盖内容：}fan\_delay、auto\_mode
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & OCCUPANCY\_DETECTED=TRUE, ENERGY\_SAVING\_MODE=FALSE, HVAC\_MODE\_SELECTOR=0 & 50 & SUPPLY\_FAN\_RUN=FALSE, TEMP\_SETPOINT\_ADJUST=0 & 开始 30 秒延时\\
+
+1 & OCCUPANCY\_DETECTED=TRUE, ENERGY\_SAVING\_MODE=FALSE, HVAC\_MODE\_SELECTOR=0 & 25000 & SUPPLY\_FAN\_RUN=FALSE, TEMP\_SETPOINT\_ADJUST=0 & 未满 30 秒\\
+
+2 & OCCUPANCY\_DETECTED=TRUE, ENERGY\_SAVING\_MODE=FALSE, HVAC\_MODE\_SELECTOR=0 & 5000 & SUPPLY\_FAN\_RUN=TRUE, TEMP\_SETPOINT\_ADJUST=0 & 满 30 秒启动\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_13\_tc02} 无人时各模式温度修正}
+
+\noindent\textbf{初始状态：}SUPPLY\_FAN\_RUN=FALSE\\
+
+\textbf{覆盖内容：}setpoint\_modes、unoccupied
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & OCCUPANCY\_DETECTED=FALSE, ENERGY\_SAVING\_MODE=FALSE, HVAC\_MODE\_SELECTOR=0 & 50 & SUPPLY\_FAN\_RUN=FALSE, TEMP\_SETPOINT\_ADJUST=2 & 自动标准模式 +2\\
+
+1 & OCCUPANCY\_DETECTED=FALSE, ENERGY\_SAVING\_MODE=TRUE, HVAC\_MODE\_SELECTOR=0 & 50 & SUPPLY\_FAN\_RUN=FALSE, TEMP\_SETPOINT\_ADJUST=3 & 自动节能模式 +3\\
+
+2 & OCCUPANCY\_DETECTED=FALSE, ENERGY\_SAVING\_MODE=FALSE, HVAC\_MODE\_SELECTOR=1 & 50 & SUPPLY\_FAN\_RUN=FALSE, TEMP\_SETPOINT\_ADJUST=1 & 舒适模式 +1\\
+
+3 & OCCUPANCY\_DETECTED=FALSE, ENERGY\_SAVING\_MODE=FALSE, HVAC\_MODE\_SELECTOR=2 & 50 & SUPPLY\_FAN\_RUN=FALSE, TEMP\_SETPOINT\_ADJUST=4 & 经济模式 +4\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_13\_tc03} 夜间模式停止并重置启动延时}
+
+\noindent\textbf{初始状态：}SUPPLY\_FAN\_RUN=FALSE\\
+
+\textbf{覆盖内容：}night\_mode、delay\_reset
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & OCCUPANCY\_DETECTED=TRUE, ENERGY\_SAVING\_MODE=FALSE, HVAC\_MODE\_SELECTOR=0 & 50 & SUPPLY\_FAN\_RUN=FALSE, TEMP\_SETPOINT\_ADJUST=0 & 通过公开输入开始启动延时\\
+
+1 & OCCUPANCY\_DETECTED=TRUE, ENERGY\_SAVING\_MODE=FALSE, HVAC\_MODE\_SELECTOR=0 & 30000 & SUPPLY\_FAN\_RUN=TRUE, TEMP\_SETPOINT\_ADJUST=0 & 建立风机运行状态\\
+
+2 & OCCUPANCY\_DETECTED=TRUE, ENERGY\_SAVING\_MODE=FALSE, HVAC\_MODE\_SELECTOR=3 & 50 & SUPPLY\_FAN\_RUN=FALSE, TEMP\_SETPOINT\_ADJUST=4 & 夜间立即停止\\
+
+3 & OCCUPANCY\_DETECTED=TRUE, ENERGY\_SAVING\_MODE=FALSE, HVAC\_MODE\_SELECTOR=0 & 50 & SUPPLY\_FAN\_RUN=FALSE, TEMP\_SETPOINT\_ADJUST=0 & 返回自动后重新延时\\
+
+4 & OCCUPANCY\_DETECTED=TRUE, ENERGY\_SAVING\_MODE=FALSE, HVAC\_MODE\_SELECTOR=0 & 30000 & SUPPLY\_FAN\_RUN=TRUE, TEMP\_SETPOINT\_ADJUST=0 & 重新满 30 秒后启动\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_14} IPv4 Parsing with Format and Range Checks}
+
+\subsubsection{{\ttfamily public\_14\_tc01} 解析常用 IPv4 地址}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}valid\_parse、network\_byte\_order
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & ipText=192.168.1.10 & 50 & ipValue=3232235786 & 按网络字节序解析\\
+
+1 & ipText=1.2.3.4 & 50 & ipValue=16909060 & 四段顺序正确\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_14\_tc02} 合法边界地址}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}boundary
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & ipText=0.0.0.0 & 50 & ipValue=0 & 全零地址合法但结果为零\\
+
+1 & ipText=255.255.255.255 & 50 & ipValue=4294967295 & 各段最大值\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_14\_tc03} 非法文本输出零}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}invalid\_format、invalid\_range
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & ipText=256.1.1.1 & 50 & ipValue=0 & 段值越界\\
+
+1 & ipText=1.2.3 & 50 & ipValue=0 & 段数不足\\
+
+2 & ipText=1.a.3.4 & 50 & ipValue=0 & 包含非数字\\
+
+3 & ipText=1..3.4 & 50 & ipValue=0 & 空段\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_15} Material Proportioning Process Control}
+
+\subsubsection{{\ttfamily public\_15\_tc01} 手动按钮上升沿切换与急停}
+
+\noindent\textbf{初始状态：}valveARun=FALSE, valveBRun=FALSE, valveCRun=FALSE, valveDRun=FALSE, mixMotorRun=FALSE\\
+
+\textbf{覆盖内容：}manual\_toggle、emergency\_stop
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & estop=TRUE, opeMode=FALSE, valveAStart=TRUE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=FALSE, levelSensor=0, mixMotorComplete=FALSE & 50 & valveARun=TRUE & 第一次上升沿打开 A\\
+
+1 & estop=TRUE, opeMode=FALSE, valveAStart=TRUE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=FALSE, levelSensor=0, mixMotorComplete=FALSE & 50 & valveARun=TRUE & 按住按钮不重复切换\\
+
+2 & estop=TRUE, opeMode=FALSE, valveAStart=FALSE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=FALSE, levelSensor=0, mixMotorComplete=FALSE & 50 & valveARun=TRUE & 释放按钮\\
+
+3 & estop=TRUE, opeMode=FALSE, valveAStart=TRUE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=FALSE, levelSensor=0, mixMotorComplete=FALSE & 50 & valveARun=FALSE & 第二次上升沿关闭 A\\
+
+4 & estop=FALSE, opeMode=FALSE, valveAStart=FALSE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=FALSE, levelSensor=0, mixMotorComplete=FALSE & 50 & valveARun=FALSE, valveBRun=FALSE, valveCRun=FALSE, valveDRun=FALSE, mixMotorRun=FALSE & 急停关闭全部设备\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_15\_tc02} 自动两种物料流程}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}automatic\_two\_material、stage\_transition
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & estop=TRUE, opeMode=TRUE, valveAStart=FALSE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=TRUE, processMode=FALSE, levelSensor=0, mixMotorComplete=FALSE & 50 & valveARun=TRUE, valveBRun=FALSE, valveCRun=FALSE, mixMotorRun=FALSE & 自动启动打开 A\\
+
+1 & estop=TRUE, opeMode=TRUE, valveAStart=FALSE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=FALSE, levelSensor=50, mixMotorComplete=FALSE & 50 & valveARun=FALSE, valveBRun=TRUE & 50 cm 切换到 B\\
+
+2 & estop=TRUE, opeMode=TRUE, valveAStart=FALSE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=FALSE, levelSensor=80, mixMotorComplete=FALSE & 50 & valveBRun=FALSE, valveCRun=FALSE, mixMotorRun=TRUE & 80 cm 直接混合\\
+
+3 & estop=TRUE, opeMode=TRUE, valveAStart=FALSE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=FALSE, levelSensor=80, mixMotorComplete=TRUE & 50 & mixMotorRun=FALSE, valveDRun=TRUE & 混合完成打开 D\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_15\_tc03} 自动三种物料流程}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}automatic\_three\_material、stage\_transition
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & estop=TRUE, opeMode=TRUE, valveAStart=FALSE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=TRUE, processMode=TRUE, levelSensor=0, mixMotorComplete=FALSE & 50 & valveARun=TRUE & 启动 A\\
+
+1 & estop=TRUE, opeMode=TRUE, valveAStart=FALSE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=TRUE, levelSensor=50, mixMotorComplete=FALSE & 50 & valveARun=FALSE, valveBRun=TRUE & 50 cm 切换 B\\
+
+2 & estop=TRUE, opeMode=TRUE, valveAStart=FALSE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=TRUE, levelSensor=80, mixMotorComplete=FALSE & 50 & valveBRun=FALSE, valveCRun=TRUE, mixMotorRun=FALSE & 80 cm 打开 C\\
+
+3 & estop=TRUE, opeMode=TRUE, valveAStart=FALSE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=TRUE, levelSensor=100, mixMotorComplete=FALSE & 50 & valveCRun=FALSE, mixMotorRun=TRUE & 100 cm 开始混合\\
+
+4 & estop=TRUE, opeMode=TRUE, valveAStart=FALSE, valveBStart=FALSE, valveCStart=FALSE, valveDStart=FALSE, mixMotorStart=FALSE, autoStart=FALSE, processMode=TRUE, levelSensor=100, mixMotorComplete=TRUE & 50 & mixMotorRun=FALSE, valveDRun=TRUE & 完成后打开 D\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_16} Flexible Processing Control}
+
+\subsubsection{{\ttfamily public\_16\_tc01} 按顺序向右输送}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}sequence、right\_motion、completion
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & processLength=2, sensor1=TRUE, sensor2=FALSE, sensor3=FALSE, sensor4=FALSE, sensor5=FALSE, station1Start=TRUE, station2Complete=FALSE, station3Complete=FALSE, station4Complete=FALSE, processSequence=[2, 5, 0, 0, 0, 0, 0, 0] & 50 & conveyorLeft=FALSE, conveyorRight=TRUE & 从 1 前往 2\\
+
+1 & processLength=2, sensor1=FALSE, sensor2=TRUE, sensor3=FALSE, sensor4=FALSE, sensor5=FALSE, station1Start=FALSE, station2Complete=FALSE, station3Complete=FALSE, station4Complete=FALSE, processSequence=[2, 5, 0, 0, 0, 0, 0, 0] & 50 & conveyorLeft=FALSE, conveyorRight=FALSE & 到达 2 停止\\
+
+2 & processLength=2, sensor1=FALSE, sensor2=TRUE, sensor3=FALSE, sensor4=FALSE, sensor5=FALSE, station1Start=FALSE, station2Complete=TRUE, station3Complete=FALSE, station4Complete=FALSE, processSequence=[2, 5, 0, 0, 0, 0, 0, 0] & 50 & conveyorLeft=FALSE, conveyorRight=TRUE & 2 完成后前往 5\\
+
+3 & processLength=2, sensor1=FALSE, sensor2=FALSE, sensor3=FALSE, sensor4=FALSE, sensor5=TRUE, station1Start=FALSE, station2Complete=FALSE, station3Complete=FALSE, station4Complete=FALSE, processSequence=[2, 5, 0, 0, 0, 0, 0, 0] & 50 & conveyorLeft=FALSE, conveyorRight=FALSE & 到达 5 结束\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_16\_tc02} 包含反向移动的工艺顺序}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}left\_motion、direction\_change
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & processLength=3, sensor1=TRUE, sensor2=FALSE, sensor3=FALSE, sensor4=FALSE, sensor5=FALSE, station1Start=TRUE, station2Complete=FALSE, station3Complete=FALSE, station4Complete=FALSE, processSequence=[4, 2, 5, 0, 0, 0, 0, 0] & 50 & conveyorLeft=FALSE, conveyorRight=TRUE & 从 1 前往 4\\
+
+1 & processLength=3, sensor1=FALSE, sensor2=FALSE, sensor3=FALSE, sensor4=TRUE, sensor5=FALSE, station1Start=FALSE, station2Complete=FALSE, station3Complete=FALSE, station4Complete=FALSE, processSequence=[4, 2, 5, 0, 0, 0, 0, 0] & 50 & conveyorLeft=FALSE, conveyorRight=FALSE & 到达 4\\
+
+2 & processLength=3, sensor1=FALSE, sensor2=FALSE, sensor3=FALSE, sensor4=TRUE, sensor5=FALSE, station1Start=FALSE, station2Complete=FALSE, station3Complete=FALSE, station4Complete=TRUE, processSequence=[4, 2, 5, 0, 0, 0, 0, 0] & 50 & conveyorLeft=TRUE, conveyorRight=FALSE & 4 完成后向左前往 2\\
+
+3 & processLength=3, sensor1=FALSE, sensor2=TRUE, sensor3=FALSE, sensor4=FALSE, sensor5=FALSE, station1Start=FALSE, station2Complete=FALSE, station3Complete=FALSE, station4Complete=FALSE, processSequence=[4, 2, 5, 0, 0, 0, 0, 0] & 50 & conveyorLeft=FALSE, conveyorRight=FALSE & 到达 2\\
+
+4 & processLength=3, sensor1=FALSE, sensor2=TRUE, sensor3=FALSE, sensor4=FALSE, sensor5=FALSE, station1Start=FALSE, station2Complete=TRUE, station3Complete=FALSE, station4Complete=FALSE, processSequence=[4, 2, 5, 0, 0, 0, 0, 0] & 50 & conveyorLeft=FALSE, conveyorRight=TRUE & 2 完成后向右前往 5\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_16\_tc03} 未启动时保持停止}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}idle、safety
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & processLength=2, sensor1=TRUE, sensor2=FALSE, sensor3=FALSE, sensor4=FALSE, sensor5=FALSE, station1Start=FALSE, station2Complete=FALSE, station3Complete=FALSE, station4Complete=FALSE, processSequence=[2, 5, 0, 0, 0, 0, 0, 0] & 50 & conveyorLeft=FALSE, conveyorRight=FALSE & 未按启动按钮不运行\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_17} Recipe Management System}
+
+\subsubsection{{\ttfamily public\_17\_tc01} 新增并查询配方}
+
+\noindent\textbf{初始状态：}recipe=[recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0]\\
+
+\textbf{覆盖内容：}add、query、smallest\_slot
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & addRecipe=TRUE, deleteRecipe=FALSE, modifyRecipe=FALSE, queryRecipe=FALSE, recipeIn=recipeID=1, ingredientType=2, ingredientRatio=0.4, productionTemperature=180, recipe=[recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0] & 50 & recipeAdded=TRUE, error=FALSE, status=16\#0000, recipe=[recipeID=1, ingredientType=2, ingredientRatio=0.4, productionTemperature=180, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0] & 新增写入最小空槽\\
+
+1 & addRecipe=FALSE, deleteRecipe=FALSE, modifyRecipe=FALSE, queryRecipe=TRUE, recipeIn=recipeID=1, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipe=[recipeID=1, ingredientType=2, ingredientRatio=0.4, productionTemperature=180, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0] & 50 & recipeQueryResult=recipeID=1, ingredientType=2, ingredientRatio=0.4, productionTemperature=180, error=FALSE, status=16\#0000 & 查询返回完整记录\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_17\_tc02} 重复编号与满库错误}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}duplicate、database\_full
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & addRecipe=TRUE, deleteRecipe=FALSE, modifyRecipe=FALSE, queryRecipe=FALSE, recipeIn=recipeID=1, ingredientType=9, ingredientRatio=0.9, productionTemperature=200, recipe=[recipeID=1, ingredientType=2, ingredientRatio=0.4, productionTemperature=180, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0] & 50 & recipeAdded=FALSE, error=TRUE, status=16\#8002 & 重复编号\\
+
+1 & addRecipe=TRUE, deleteRecipe=FALSE, modifyRecipe=FALSE, queryRecipe=FALSE, recipeIn=recipeID=11, ingredientType=1, ingredientRatio=0.1, productionTemperature=100, recipe=[recipeID=1, ingredientType=1, ingredientRatio=0.1, productionTemperature=100, recipeID=2, ingredientType=2, ingredientRatio=0.1, productionTemperature=101, recipeID=3, ingredientType=3, ingredientRatio=0.1, productionTemperature=102, recipeID=4, ingredientType=4, ingredientRatio=0.1, productionTemperature=103, recipeID=5, ingredientType=5, ingredientRatio=0.1, productionTemperature=104, recipeID=6, ingredientType=6, ingredientRatio=0.1, productionTemperature=105, recipeID=7, ingredientType=7, ingredientRatio=0.1, productionTemperature=106, recipeID=8, ingredientType=8, ingredientRatio=0.1, productionTemperature=107, recipeID=9, ingredientType=9, ingredientRatio=0.1, productionTemperature=108, recipeID=10, ingredientType=10, ingredientRatio=0.1, productionTemperature=109] & 50 & recipeAdded=FALSE, error=TRUE, status=16\#8003 & 数据库已满\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_17\_tc03} 修改、删除和不存在错误}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}modify、delete、not\_found
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & addRecipe=FALSE, deleteRecipe=FALSE, modifyRecipe=TRUE, queryRecipe=FALSE, recipeIn=recipeID=2, ingredientType=5, ingredientRatio=0.6, productionTemperature=210, recipe=[recipeID=1, ingredientType=2, ingredientRatio=0.4, productionTemperature=180, recipeID=2, ingredientType=3, ingredientRatio=0.5, productionTemperature=190, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0] & 50 & recipeModified=TRUE, error=FALSE, status=16\#0000, recipe=[recipeID=1, ingredientType=2, ingredientRatio=0.4, productionTemperature=180, recipeID=2, ingredientType=5, ingredientRatio=0.6, productionTemperature=210, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0] & 修改存在记录\\
+
+1 & addRecipe=FALSE, deleteRecipe=TRUE, modifyRecipe=FALSE, queryRecipe=FALSE, recipeIn=recipeID=2, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipe=[recipeID=1, ingredientType=2, ingredientRatio=0.4, productionTemperature=180, recipeID=2, ingredientType=5, ingredientRatio=0.6, productionTemperature=210, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0] & 50 & recipeDeleted=TRUE, error=FALSE, status=16\#0000, recipe=[recipeID=1, ingredientType=2, ingredientRatio=0.4, productionTemperature=180, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0] & 删除存在记录\\
+
+2 & addRecipe=FALSE, deleteRecipe=FALSE, modifyRecipe=TRUE, queryRecipe=FALSE, recipeIn=recipeID=9, ingredientType=1, ingredientRatio=0.1, productionTemperature=100, recipe=[recipeID=1, ingredientType=2, ingredientRatio=0.4, productionTemperature=180, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0, recipeID=0, ingredientType=0, ingredientRatio=0, productionTemperature=0] & 50 & recipeModified=FALSE, error=TRUE, status=16\#8005 & 修改不存在记录\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_18} FIFO First-In-First-Out Queue}
+
+\subsubsection{{\ttfamily public\_18\_tc01} 入队沿与先进先出}
+
+\noindent\textbf{初始状态：}elementCount=0, buffer=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]\\
+
+\textbf{覆盖内容：}enqueue\_edge、dequeue\_edge、fifo\_order
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=10, buffer=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0] & 50 & elementCount=1, status=16\#0000, buffer=[10, 0, 0, 0, 0, 0, 0, 0, 0, 0] & 10 入队\\
+
+1 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=10, buffer=[10, 0, 0, 0, 0, 0, 0, 0, 0, 0] & 50 & elementCount=1, buffer=[10, 0, 0, 0, 0, 0, 0, 0, 0, 0] & 按住 enqueue 不重复\\
+
+2 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=20, buffer=[10, 0, 0, 0, 0, 0, 0, 0, 0, 0] & 50 & elementCount=1 & 释放 enqueue\\
+
+3 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=20, buffer=[10, 0, 0, 0, 0, 0, 0, 0, 0, 0] & 50 & elementCount=2, status=16\#0000, buffer=[10, 20, 0, 0, 0, 0, 0, 0, 0, 0] & 20 入队\\
+
+4 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=0, buffer=[10, 20, 0, 0, 0, 0, 0, 0, 0, 0] & 50 & elementCount=2 & 释放 enqueue\\
+
+5 & enqueue=FALSE, dequeue=TRUE, reset=FALSE, item=0, buffer=[10, 20, 0, 0, 0, 0, 0, 0, 0, 0] & 50 & item=10, elementCount=1, status=16\#0000 & 先返回最早入队的 10\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_18\_tc02} 空队列出队和复位优先}
+
+\noindent\textbf{初始状态：}elementCount=0\\
+
+\textbf{覆盖内容：}empty\_error、reset\_priority
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enqueue=FALSE, dequeue=TRUE, reset=FALSE, item=7, buffer=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0] & 50 & item=7, elementCount=0, status=16\#8001 & 空队列拒绝出队\\
+
+1 & enqueue=TRUE, dequeue=TRUE, reset=TRUE, item=9, buffer=[1, 2, 3, 0, 0, 0, 0, 0, 0, 0] & 50 & elementCount=0, status=16\#0000 & 复位优先清空\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_18\_tc03} 满队列拒绝入队}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}full\_error、state\_preservation
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=1 & 50 & elementCount=1 & 入队 1\\
+
+1 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=1 & 50 & elementCount=1 & 释放入队信号\\
+
+2 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=2 & 50 & elementCount=2 & 入队 2\\
+
+3 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=2 & 50 & elementCount=2 & 释放入队信号\\
+
+4 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=3 & 50 & elementCount=3 & 入队 3\\
+
+5 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=3 & 50 & elementCount=3 & 释放入队信号\\
+
+6 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=4 & 50 & elementCount=4 & 入队 4\\
+
+7 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=4 & 50 & elementCount=4 & 释放入队信号\\
+
+8 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=5 & 50 & elementCount=5 & 入队 5\\
+
+9 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=5 & 50 & elementCount=5 & 释放入队信号\\
+
+10 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=6 & 50 & elementCount=6 & 入队 6\\
+
+11 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=6 & 50 & elementCount=6 & 释放入队信号\\
+
+12 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=7 & 50 & elementCount=7 & 入队 7\\
+
+13 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=7 & 50 & elementCount=7 & 释放入队信号\\
+
+14 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=8 & 50 & elementCount=8 & 入队 8\\
+
+15 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=8 & 50 & elementCount=8 & 释放入队信号\\
+
+16 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=9 & 50 & elementCount=9 & 入队 9\\
+
+17 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=9 & 50 & elementCount=9 & 释放入队信号\\
+
+18 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=10 & 50 & elementCount=10 & 入队 10，队列已满\\
+
+19 & enqueue=FALSE, dequeue=FALSE, reset=FALSE, item=10 & 50 & elementCount=10 & 释放入队信号\\
+
+20 & enqueue=TRUE, dequeue=FALSE, reset=FALSE, item=99, buffer=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10] & 50 & item=99, elementCount=10, status=16\#8002, buffer=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10] & 满队列保持不变\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_19} Mechanical Arm Control}
+
+\subsubsection{{\ttfamily public\_19\_tc01} 手动互锁、限位与急停}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}manual\_mode、interlock、limit、emergency\_stop
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & ManualMode=TRUE, SingleStepMode=FALSE, SingleCycleMode=FALSE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=TRUE, UpButton=TRUE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=FALSE, MoveUp=FALSE & 上下按钮冲突时均不动作\\
+
+1 & ManualMode=TRUE, SingleStepMode=FALSE, SingleCycleMode=FALSE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=TRUE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=TRUE, MoveUp=FALSE & 未到下限时下移\\
+
+2 & ManualMode=TRUE, SingleStepMode=FALSE, SingleCycleMode=FALSE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=TRUE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=TRUE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=FALSE & 到下限停止\\
+
+3 & ManualMode=TRUE, SingleStepMode=FALSE, SingleCycleMode=FALSE, ContinuousMode=FALSE, EmergencyStop=FALSE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=FALSE, MoveUp=FALSE, MoveLeft=FALSE, MoveRight=FALSE, ActivateGrip=FALSE, ActivateRelease=FALSE & 急停关闭所有动作\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_19\_tc02} 单步执行前两个动作}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}single\_step、start\_edge、feedback
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & ManualMode=FALSE, SingleStepMode=TRUE, SingleCycleMode=FALSE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=TRUE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=TRUE & 第一次启动执行下移\\
+
+1 & ManualMode=FALSE, SingleStepMode=TRUE, SingleCycleMode=FALSE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=TRUE & 未到限位继续下移\\
+
+2 & ManualMode=FALSE, SingleStepMode=TRUE, SingleCycleMode=FALSE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=TRUE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=FALSE, ActivateGrip=FALSE & 到位后等待\\
+
+3 & ManualMode=FALSE, SingleStepMode=TRUE, SingleCycleMode=FALSE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=TRUE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=TRUE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & ActivateGrip=TRUE & 第二次启动执行夹取\\
+
+4 & ManualMode=FALSE, SingleStepMode=TRUE, SingleCycleMode=FALSE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=TRUE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=FALSE & 50 & ActivateGrip=FALSE & 夹取完成后等待\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_19\_tc03} 单周期完整动作序列}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}single\_cycle、full\_sequence、cycle\_stop
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=TRUE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=TRUE & 启动下移\\
+
+1 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=TRUE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=FALSE & 下移完成\\
+
+2 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=TRUE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & ActivateGrip=TRUE & 夹取\\
+
+3 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=FALSE & 50 & ActivateGrip=FALSE & 夹取完成\\
+
+4 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=FALSE & 50 & MoveUp=TRUE & 上移\\
+
+5 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=TRUE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=FALSE & 50 & MoveUp=FALSE & 到上限\\
+
+6 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=TRUE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=FALSE & 50 & MoveRight=TRUE & 右移\\
+
+7 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=TRUE, LeftLimitSwitch=FALSE, RightLimitSwitch=TRUE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=FALSE & 50 & MoveRight=FALSE & 到右限停止\\
+
+8 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=TRUE, LeftLimitSwitch=FALSE, RightLimitSwitch=TRUE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=TRUE & 第二次下移\\
+
+9 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=TRUE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=TRUE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=FALSE & 到下限停止\\
+
+10 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=TRUE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=TRUE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=FALSE & 50 & ActivateRelease=TRUE & 释放\\
+
+11 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=TRUE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=TRUE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=TRUE & 50 & ActivateRelease=FALSE & 释放完成\\
+
+12 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=TRUE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=TRUE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=TRUE & 50 & MoveUp=TRUE & 第二次上移\\
+
+13 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=TRUE, LeftLimitSwitch=FALSE, RightLimitSwitch=TRUE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=TRUE & 50 & MoveUp=FALSE & 到上限停止\\
+
+14 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=TRUE, LeftLimitSwitch=FALSE, RightLimitSwitch=TRUE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=TRUE & 50 & MoveLeft=TRUE & 返回左侧\\
+
+15 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=TRUE, ContinuousMode=FALSE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=TRUE, LeftLimitSwitch=TRUE, RightLimitSwitch=FALSE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=TRUE & 50 & MoveDown=FALSE, MoveUp=FALSE, MoveLeft=FALSE, MoveRight=FALSE, ActivateGrip=FALSE, ActivateRelease=FALSE & 回到左上后单周期停止\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_19\_tc04} 连续模式完成后重新开始}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}continuous\_mode、cycle\_restart
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=FALSE, ContinuousMode=TRUE, EmergencyStop=TRUE, Start=TRUE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=FALSE, LeftLimitSwitch=FALSE, RightLimitSwitch=FALSE, GripLimitSwitch=FALSE, ReleaseLimitSwitch=FALSE & 50 & MoveDown=TRUE & 通过公开输入启动连续循环\\
+
+1 & Start=FALSE, DownLimitSwitch=TRUE & 50 & MoveDown=FALSE & 第一次下移完成\\
+
+2 &  & 50 & ActivateGrip=TRUE & 夹取\\
+
+3 & DownLimitSwitch=FALSE, GripLimitSwitch=TRUE & 50 & ActivateGrip=FALSE & 夹取完成\\
+
+4 &  & 50 & MoveUp=TRUE & 第一次上移\\
+
+5 & UpLimitSwitch=TRUE & 50 & MoveUp=FALSE & 第一次上移完成\\
+
+6 &  & 50 & MoveRight=TRUE & 右移\\
+
+7 & RightLimitSwitch=TRUE & 50 & MoveRight=FALSE & 右移完成\\
+
+8 &  & 50 & MoveDown=TRUE & 第二次下移\\
+
+9 & DownLimitSwitch=TRUE, UpLimitSwitch=FALSE & 50 & MoveDown=FALSE & 第二次下移完成\\
+
+10 &  & 50 & ActivateRelease=TRUE & 释放\\
+
+11 & ReleaseLimitSwitch=TRUE & 50 & ActivateRelease=FALSE & 释放完成\\
+
+12 &  & 50 & MoveUp=TRUE & 第二次上移\\
+
+13 & DownLimitSwitch=FALSE, UpLimitSwitch=TRUE & 50 & MoveUp=FALSE & 第二次上移完成\\
+
+14 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=FALSE, ContinuousMode=TRUE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=TRUE, LeftLimitSwitch=FALSE, RightLimitSwitch=TRUE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=TRUE & 50 & MoveLeft=TRUE & 循环末步左移\\
+
+15 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=FALSE, ContinuousMode=TRUE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=TRUE, LeftLimitSwitch=TRUE, RightLimitSwitch=FALSE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=TRUE & 50 & MoveLeft=FALSE & 到左限完成一轮\\
+
+16 & ManualMode=FALSE, SingleStepMode=FALSE, SingleCycleMode=FALSE, ContinuousMode=TRUE, EmergencyStop=TRUE, Start=FALSE, DownButton=FALSE, UpButton=FALSE, LeftButton=FALSE, RightButton=FALSE, GripButton=FALSE, ReleaseButton=FALSE, DownLimitSwitch=FALSE, UpLimitSwitch=TRUE, LeftLimitSwitch=TRUE, RightLimitSwitch=FALSE, GripLimitSwitch=TRUE, ReleaseLimitSwitch=TRUE & 50 & MoveDown=TRUE & 无需再次启动即开始下一轮\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily public\_20} Production Control}
+
+\subsubsection{{\ttfamily public\_20\_tc01} 手动正反转互锁}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}manual\_mode、direction\_interlock
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Mode=FALSE, ForwardButton=TRUE, ReverseButton=FALSE, SensorFeed=FALSE, SensorWash=FALSE, SensorWeight=FALSE, SensorFiring=FALSE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=FALSE, weight=0, firingComplete=FALSE & 50 & MotorForward=TRUE, MotorReverse=FALSE & 手动正转\\
+
+1 & Mode=FALSE, ForwardButton=FALSE, ReverseButton=TRUE, SensorFeed=FALSE, SensorWash=FALSE, SensorWeight=FALSE, SensorFiring=FALSE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=FALSE, weight=0, firingComplete=FALSE & 50 & MotorForward=FALSE, MotorReverse=TRUE & 手动反转\\
+
+2 & Mode=FALSE, ForwardButton=TRUE, ReverseButton=TRUE, SensorFeed=FALSE, SensorWash=FALSE, SensorWeight=FALSE, SensorFiring=FALSE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=FALSE, weight=0, firingComplete=FALSE & 50 & MotorForward=FALSE, MotorReverse=FALSE & 冲突时互锁\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_20\_tc02} 合格产品完整自动流程}
+
+\noindent\textbf{初始状态：}CompletionLight=FALSE\\
+
+\textbf{覆盖内容：}automatic\_sequence、qualified\_weight、temperature\_mapping、completion
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorFeed=TRUE, SensorWash=FALSE, SensorWeight=FALSE, SensorFiring=FALSE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=FALSE, weight=0, firingComplete=FALSE & 50 & MotorForward=TRUE, MotorReverse=FALSE, kick=FALSE, CompletionLight=FALSE & 上料后前进\\
+
+1 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorFeed=FALSE, SensorWash=TRUE, SensorWeight=FALSE, SensorFiring=FALSE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=FALSE, weight=0, firingComplete=FALSE & 50 & MotorForward=FALSE & 到清洗站停止\\
+
+2 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorFeed=FALSE, SensorWash=TRUE, SensorWeight=FALSE, SensorFiring=FALSE, SensorOutput=FALSE, washComplete=TRUE, weightComplete=FALSE, weight=0, firingComplete=FALSE & 50 & MotorForward=TRUE & 清洗完成后前进\\
+
+3 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorFeed=FALSE, SensorWash=FALSE, SensorWeight=TRUE, SensorFiring=FALSE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=FALSE, weight=150, firingComplete=FALSE & 50 & MotorForward=FALSE & 到称重站停止\\
+
+4 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorFeed=FALSE, SensorWash=FALSE, SensorWeight=TRUE, SensorFiring=FALSE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=TRUE, weight=150, firingComplete=FALSE & 50 & MotorForward=TRUE, kick=FALSE, firingTemp=525 & 合格品计算温度并前进\\
+
+5 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorFeed=FALSE, SensorWash=FALSE, SensorWeight=FALSE, SensorFiring=TRUE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=FALSE, weight=150, firingComplete=FALSE & 50 & MotorForward=FALSE & 到烧制站停止\\
+
+6 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorFeed=FALSE, SensorWash=FALSE, SensorWeight=FALSE, SensorFiring=TRUE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=FALSE, weight=150, firingComplete=TRUE & 50 & MotorForward=TRUE & 烧制完成后前进\\
+
+7 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorFeed=FALSE, SensorWash=FALSE, SensorWeight=FALSE, SensorFiring=FALSE, SensorOutput=TRUE, washComplete=FALSE, weightComplete=FALSE, weight=150, firingComplete=FALSE & 50 & MotorForward=FALSE, CompletionLight=TRUE & 到成品站点亮完成灯\\
+
+8 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorFeed=FALSE, SensorWash=FALSE, SensorWeight=FALSE, SensorFiring=FALSE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=FALSE, weight=150, firingComplete=FALSE & 50 & CompletionLight=FALSE & 产品取走后熄灭\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_20\_tc03} 低于下限产品剔除}
+
+\noindent\textbf{初始状态：}CompletionLight=FALSE\\
+
+\textbf{覆盖内容：}reject\_low
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorFeed=TRUE, SensorWash=FALSE, SensorWeight=FALSE, SensorFiring=FALSE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=FALSE, weight=0, firingComplete=FALSE & 50 & MotorForward=TRUE, kick=FALSE & 通过公开输入从上料站开始\\
+
+1 & SensorFeed=FALSE, SensorWash=TRUE & 50 & MotorForward=FALSE & 到达清洗站\\
+
+2 & washComplete=TRUE & 50 & MotorForward=TRUE & 清洗完成后前进\\
+
+3 & SensorWash=FALSE, washComplete=FALSE, SensorWeight=TRUE, weight=99 & 50 & MotorForward=FALSE & 到达称重站\\
+
+4 & weightComplete=TRUE & 50 & MotorForward=FALSE, kick=TRUE & 低于下限剔除\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily public\_20\_tc04} 高于上限产品剔除}
+
+\noindent\textbf{初始状态：}CompletionLight=FALSE\\
+
+\textbf{覆盖内容：}reject\_high
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & Mode=TRUE, ForwardButton=FALSE, ReverseButton=FALSE, SensorFeed=TRUE, SensorWash=FALSE, SensorWeight=FALSE, SensorFiring=FALSE, SensorOutput=FALSE, washComplete=FALSE, weightComplete=FALSE, weight=0, firingComplete=FALSE & 50 & MotorForward=TRUE, kick=FALSE & 通过公开输入从上料站开始\\
+
+1 & SensorFeed=FALSE, SensorWash=TRUE & 50 & MotorForward=FALSE & 到达清洗站\\
+
+2 & washComplete=TRUE & 50 & MotorForward=TRUE & 清洗完成后前进\\
+
+3 & SensorWash=FALSE, washComplete=FALSE, SensorWeight=TRUE, weight=201 & 50 & MotorForward=FALSE & 到达称重站\\
+
+4 & weightComplete=TRUE & 50 & MotorForward=FALSE, kick=TRUE & 高于上限剔除\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_01} Conveyor Motor Safety Latch}
+
+\subsubsection{{\ttfamily custom\_01\_tc01} 启动保持与停止}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}start\_latch、stop
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & start=TRUE, stop=FALSE, emergencyStop=FALSE, overload=FALSE, reset=FALSE & 50 & motorRun=TRUE, fault=FALSE & 安全条件下启动\\
+
+1 & start=FALSE, stop=FALSE, emergencyStop=FALSE, overload=FALSE, reset=FALSE & 50 & motorRun=TRUE & 启动保持\\
+
+2 & start=FALSE, stop=TRUE, emergencyStop=FALSE, overload=FALSE, reset=FALSE & 50 & motorRun=FALSE & 停止命令优先\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_01\_tc02} 过载锁存与安全复位}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}overload、fault\_latch、reset\_interlock
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & start=TRUE, stop=FALSE, emergencyStop=FALSE, overload=FALSE, reset=FALSE & 50 & motorRun=TRUE & 先运行\\
+
+1 & start=FALSE, stop=FALSE, emergencyStop=FALSE, overload=TRUE, reset=FALSE & 50 & motorRun=FALSE, fault=TRUE & 过载停机并锁存\\
+
+2 & start=FALSE, stop=FALSE, emergencyStop=FALSE, overload=TRUE, reset=TRUE & 50 & fault=TRUE & 过载仍在时不能复位\\
+
+3 & start=FALSE, stop=FALSE, emergencyStop=FALSE, overload=FALSE, reset=TRUE & 50 & motorRun=FALSE, fault=FALSE & 安全条件下复位且保持停机\\
+
+4 & start=TRUE, stop=FALSE, emergencyStop=FALSE, overload=FALSE, reset=FALSE & 50 & motorRun=TRUE, fault=FALSE & 复位后必须再次启动\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_01\_tc03} 急停锁存与防自动重启}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}emergency\_stop、fault\_latch、manual\_reset、anti\_automatic\_restart
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & start=TRUE, stop=FALSE, emergencyStop=TRUE, overload=FALSE, reset=FALSE & 50 & motorRun=FALSE, fault=TRUE & 急停时拒绝启动并锁存故障\\
+
+1 & start=TRUE, stop=FALSE, emergencyStop=FALSE, overload=FALSE, reset=FALSE & 50 & motorRun=FALSE, fault=TRUE & 急停解除后不得自动启动\\
+
+2 & start=FALSE, stop=FALSE, emergencyStop=FALSE, overload=FALSE, reset=TRUE & 50 & motorRun=FALSE, fault=FALSE & 人工复位保持停机\\
+
+3 & start=TRUE, stop=FALSE, emergencyStop=FALSE, overload=FALSE, reset=FALSE & 50 & motorRun=TRUE, fault=FALSE & 新的启动命令恢复运行\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_02} Tank Level Pump Hysteresis}
+
+\subsubsection{{\ttfamily custom\_02\_tc01} 泵滞回控制}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}hysteresis、boundary\_values
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=TRUE, level=20.0, lowLevel=20.0, highLevel=80.0, alarmReset=FALSE & 50 & pumpRun=TRUE, configError=FALSE & 低阈值启动\\
+
+1 & enable=TRUE, level=50.0, lowLevel=20.0, highLevel=80.0 & 50 & pumpRun=TRUE & 区间内保持运行\\
+
+2 & enable=TRUE, level=80.0, lowLevel=20.0, highLevel=80.0 & 50 & pumpRun=FALSE & 高阈值停止\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_02\_tc02} 高高报警锁存与安全复位}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}high\_high\_alarm、alarm\_latch、safe\_reset、disable
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=TRUE, level=96.0, lowLevel=20.0, highLevel=80.0, alarmReset=FALSE & 50 & pumpRun=FALSE, highHighAlarm=TRUE & 高高液位触发锁存报警\\
+
+1 & enable=TRUE, level=92.0, lowLevel=20.0, highLevel=80.0, alarmReset=FALSE & 50 & pumpRun=FALSE, highHighAlarm=TRUE & 离开触发点后报警保持\\
+
+2 & enable=TRUE, level=92.0, lowLevel=20.0, highLevel=80.0, alarmReset=TRUE & 50 & pumpRun=FALSE, highHighAlarm=TRUE & 液位未降到安全值时拒绝复位\\
+
+3 & enable=TRUE, level=85.0, lowLevel=20.0, highLevel=80.0, alarmReset=TRUE & 50 & pumpRun=FALSE, highHighAlarm=FALSE & 安全液位下人工复位\\
+
+4 & enable=FALSE, level=10.0, lowLevel=20.0, highLevel=80.0, alarmReset=FALSE & 50 & pumpRun=FALSE, highHighAlarm=FALSE & 禁用强制停泵\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_02\_tc03} 阈值配置错误}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}configuration\_error、recovery
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=TRUE, level=10.0, lowLevel=80.0, highLevel=80.0, alarmReset=FALSE & 50 & pumpRun=FALSE, configError=TRUE & 相等阈值非法\\
+
+1 & enable=TRUE, level=10.0, lowLevel=20.0, highLevel=80.0 & 50 & pumpRun=TRUE, configError=FALSE & 配置恢复后正常处理\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_03} Compressor Restart Delay}
+
+\subsubsection{{\ttfamily custom\_03\_tc01} 跳闸后延迟重启}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}restart\_delay、trip\_latch、start\_count
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & demand=TRUE, trip=FALSE, reset=FALSE & 50 & compressorRun=TRUE, tripLatched=FALSE, startCount=1 & 首次需求立即启动\\
+
+1 & demand=TRUE, trip=TRUE, reset=FALSE & 50 & compressorRun=FALSE, tripLatched=TRUE, startCount=1 & 跳闸停机\\
+
+2 & demand=TRUE, trip=FALSE, reset=TRUE & 4000 & compressorRun=FALSE, tripLatched=FALSE, startCount=1 & 复位但延时未完成\\
+
+3 & demand=TRUE, trip=FALSE, reset=FALSE & 1000 & compressorRun=TRUE, tripLatched=FALSE, startCount=2 & 五秒后重启\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_03\_tc02} 带故障复位无效}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}reset\_interlock
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & demand=FALSE, trip=TRUE, reset=FALSE & 50 & compressorRun=FALSE, tripLatched=TRUE & 锁存跳闸\\
+
+1 & demand=FALSE, trip=TRUE, reset=TRUE & 50 & tripLatched=TRUE & trip 仍在时不清除\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_03\_tc03} 正常停机后的防短周期重启}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}normal\_stop、minimum\_off\_time、counter\_edge
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & demand=TRUE, trip=FALSE, reset=FALSE & 50 & compressorRun=TRUE, startCount=1 & 第一次启动\\
+
+1 & demand=FALSE, trip=FALSE, reset=FALSE & 50 & compressorRun=FALSE, startCount=1 & 需求撤销停机\\
+
+2 & demand=TRUE, trip=FALSE, reset=FALSE & 50 & compressorRun=FALSE, startCount=1 & 五秒未到拒绝立即重启\\
+
+3 & demand=TRUE, trip=FALSE, reset=FALSE & 4000 & compressorRun=FALSE, startCount=1 & 四秒时继续等待\\
+
+4 & demand=TRUE, trip=FALSE, reset=FALSE & 1000 & compressorRun=TRUE, startCount=2 & 五秒后重启并计数\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_04} Pedestrian Traffic Light Sequence}
+
+\subsubsection{{\ttfamily custom\_04\_tc01} 完整行人通行周期}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}request\_latch、timed\_sequence、normal\_return
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=TRUE, pedestrianRequest=FALSE & 50 & vehicleRed=FALSE, vehicleYellow=FALSE, vehicleGreen=TRUE, pedestrianRed=TRUE, pedestrianGreen=FALSE & 正常车辆通行\\
+
+1 & enable=TRUE, pedestrianRequest=TRUE & 50 & vehicleRed=FALSE, vehicleYellow=TRUE, vehicleGreen=FALSE, pedestrianRed=TRUE, pedestrianGreen=FALSE & 请求进入黄灯\\
+
+2 & enable=TRUE, pedestrianRequest=FALSE & 3000 & vehicleRed=TRUE, vehicleYellow=FALSE, vehicleGreen=FALSE, pedestrianRed=FALSE, pedestrianGreen=TRUE & 进入行人绿灯\\
+
+3 & enable=TRUE, pedestrianRequest=FALSE & 7000 & vehicleRed=FALSE, vehicleYellow=FALSE, vehicleGreen=TRUE, pedestrianRed=TRUE, pedestrianGreen=FALSE & 周期完成恢复\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_04\_tc02} 禁用安全灯态}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}disabled\_safe\_state
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=FALSE, pedestrianRequest=TRUE & 50 & vehicleRed=TRUE, vehicleYellow=FALSE, vehicleGreen=FALSE, pedestrianRed=TRUE, pedestrianGreen=FALSE & 禁用时双红\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_04\_tc03} 周期中重复请求不冲突}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}mutual\_exclusion、repeated\_request
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=TRUE, pedestrianRequest=TRUE & 50 & vehicleYellow=TRUE, vehicleGreen=FALSE, pedestrianGreen=FALSE & 开始黄灯\\
+
+1 & enable=TRUE, pedestrianRequest=TRUE & 3000 & vehicleRed=TRUE, vehicleGreen=FALSE, pedestrianGreen=TRUE & 重复请求不造成绿灯冲突\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_05} Dual Pump Duty Standby}
+
+\subsubsection{{\ttfamily custom\_05\_tc01} 相邻周期轮值}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}duty\_alternation、mutual\_exclusion
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=TRUE, levelHigh=TRUE, pump1Fault=FALSE, pump2Fault=FALSE & 50 & pump1Run=TRUE, pump2Run=FALSE, bothFailed=FALSE & 首周期泵一运行\\
+
+1 & enable=TRUE, levelHigh=FALSE, pump1Fault=FALSE, pump2Fault=FALSE & 50 & pump1Run=FALSE, pump2Run=FALSE & 需求结束并轮换\\
+
+2 & enable=TRUE, levelHigh=TRUE, pump1Fault=FALSE, pump2Fault=FALSE & 50 & pump1Run=FALSE, pump2Run=TRUE & 次周期泵二运行\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_05\_tc02} 运行中故障切换}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}failover、fault\_interlock
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=TRUE, levelHigh=TRUE, pump1Fault=FALSE, pump2Fault=FALSE & 50 & pump1Run=TRUE, pump2Run=FALSE & 泵一运行\\
+
+1 & enable=TRUE, levelHigh=TRUE, pump1Fault=TRUE, pump2Fault=FALSE & 50 & pump1Run=FALSE, pump2Run=TRUE & 切换到健康备用泵\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_05\_tc03} 双泵故障}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}both\_failed、recovery
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=TRUE, levelHigh=TRUE, pump1Fault=TRUE, pump2Fault=TRUE & 50 & pump1Run=FALSE, pump2Run=FALSE, bothFailed=TRUE & 双故障停泵报警\\
+
+1 & enable=TRUE, levelHigh=TRUE, pump1Fault=FALSE, pump2Fault=TRUE & 50 & pump1Run=TRUE, pump2Run=FALSE, bothFailed=FALSE & 一台恢复后可运行\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_06} Batch Fill Mix Drain}
+
+\subsubsection{{\ttfamily custom\_06\_tc01} 完整批处理周期}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}full\_sequence、mix\_timer、done\_pulse
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & start=TRUE, stop=FALSE, highLevel=FALSE, lowLevel=FALSE & 50 & fillValve=TRUE, mixer=FALSE, drainValve=FALSE, done=FALSE & 开始灌装\\
+
+1 & start=FALSE, stop=FALSE, highLevel=TRUE, lowLevel=FALSE & 50 & fillValve=FALSE, mixer=TRUE, drainValve=FALSE & 满液位进入搅拌\\
+
+2 & start=FALSE, stop=FALSE, highLevel=TRUE, lowLevel=FALSE & 5000 & fillValve=FALSE, mixer=FALSE, drainValve=TRUE & 五秒后排放\\
+
+3 & start=FALSE, stop=FALSE, highLevel=FALSE, lowLevel=TRUE & 50 & drainValve=FALSE, done=TRUE & 排空完成\\
+
+4 & start=FALSE, stop=FALSE, highLevel=FALSE, lowLevel=TRUE & 50 & done=FALSE & 完成信号仅一扫描\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_06\_tc02} 灌装中止}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}abort、safe\_outputs
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & start=TRUE, stop=FALSE, highLevel=FALSE, lowLevel=FALSE & 50 & fillValve=TRUE & 开始灌装\\
+
+1 & start=FALSE, stop=TRUE, highLevel=FALSE, lowLevel=FALSE & 50 & fillValve=FALSE, mixer=FALSE, drainValve=FALSE, done=FALSE & 停止中止\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_06\_tc03} 搅拌未满时间不排放}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}timer\_boundary、actuator\_exclusion
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & start=TRUE, stop=FALSE, highLevel=FALSE, lowLevel=FALSE & 50 & fillValve=TRUE & 启动进入灌装\\
+
+1 & start=FALSE, stop=FALSE, highLevel=TRUE, lowLevel=FALSE & 50 & mixer=TRUE, drainValve=FALSE & 进入搅拌\\
+
+2 & start=FALSE, stop=FALSE, highLevel=TRUE, lowLevel=FALSE & 4000 & mixer=TRUE, drainValve=FALSE & 未满五秒保持搅拌\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_07} Pressure Signal Scaling}
+
+\subsubsection{{\ttfamily custom\_07\_tc01} 线性缩放关键点}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}linear\_scaling、boundary\_values、high\_alarm
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & rawValue=0, highLimit=12.0 & 50 & pressure=0.0, sensorFault=FALSE, highAlarm=FALSE & 零点\\
+
+1 & rawValue=13824, highLimit=12.0 & 50 & pressure=8.0, sensorFault=FALSE, highAlarm=FALSE & 中点\\
+
+2 & rawValue=27648, highLimit=12.0 & 50 & pressure=16.0, sensorFault=FALSE, highAlarm=TRUE & 满量程及高报警\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_07\_tc02} 上下越界钳位}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}range\_fault、clamping
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & rawValue=-1, highLimit=12.0 & 50 & pressure=0.0, sensorFault=TRUE, highAlarm=FALSE & 下越界\\
+
+1 & rawValue=27649, highLimit=12.0 & 50 & pressure=16.0, sensorFault=TRUE, highAlarm=FALSE & 上越界且禁止误报警\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_07\_tc03} 报警阈值边界}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}alarm\_boundary
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & rawValue=17280, highLimit=10.0 & 50 & pressure=10.0, sensorFault=FALSE, highAlarm=TRUE & 等于阈值报警\\
+
+1 & rawValue=17279, highLimit=10.0 & 50 & sensorFault=FALSE, highAlarm=FALSE & 略低于阈值不报警\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_08} Two Door Airlock Interlock}
+
+\subsubsection{{\ttfamily custom\_08\_tc01} 内门释放与超时复锁}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}inner\_release、timeout、mutual\_exclusion
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & innerRequest=TRUE, outerRequest=FALSE, innerClosed=TRUE, outerClosed=TRUE, emergency=FALSE & 50 & innerLock=FALSE, outerLock=TRUE, sensorFault=FALSE & 外门关闭时释放内门\\
+
+1 & innerRequest=FALSE, outerRequest=FALSE, innerClosed=TRUE, outerClosed=TRUE, emergency=FALSE & 4000 & innerLock=FALSE, outerLock=TRUE & 超时前保持释放\\
+
+2 & innerRequest=FALSE, outerRequest=FALSE, innerClosed=TRUE, outerClosed=TRUE, emergency=FALSE & 1000 & innerLock=TRUE, outerLock=TRUE & 五秒后复锁\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_08\_tc02} 双请求内门优先}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}request\_priority、door\_interlock
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & innerRequest=TRUE, outerRequest=TRUE, innerClosed=TRUE, outerClosed=TRUE, emergency=FALSE & 50 & innerLock=FALSE, outerLock=TRUE & 内门请求优先\\
+
+1 & innerRequest=FALSE, outerRequest=TRUE, innerClosed=FALSE, outerClosed=TRUE, emergency=FALSE & 50 & innerLock=TRUE, outerLock=TRUE & 内门打开时不得释放外门\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_08\_tc03} 紧急锁定与传感器故障}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}emergency、sensor\_fault
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & innerRequest=FALSE, outerRequest=TRUE, innerClosed=TRUE, outerClosed=TRUE, emergency=FALSE & 50 & innerLock=TRUE, outerLock=FALSE & 正常释放外门\\
+
+1 & innerRequest=FALSE, outerRequest=FALSE, innerClosed=FALSE, outerClosed=FALSE, emergency=TRUE & 50 & innerLock=TRUE, outerLock=TRUE, sensorFault=TRUE & 紧急时双锁且报告异常\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_09} Conveyor Jam Detection}
+
+\subsubsection{{\ttfamily custom\_09\_tc01} 脉冲重启看门狗}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}watchdog、pulse\_reset、timeout\_boundary
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & runCommand=TRUE, sensorPulse=FALSE, emergencyStop=FALSE, reset=FALSE & 50 & motorRun=TRUE, jamAlarm=FALSE & 启动看门狗\\
+
+1 & runCommand=TRUE, sensorPulse=TRUE, emergencyStop=FALSE, reset=FALSE & 1000 & motorRun=TRUE, jamAlarm=FALSE & 脉冲重启计时\\
+
+2 & runCommand=TRUE, sensorPulse=FALSE, emergencyStop=FALSE, reset=FALSE & 1500 & motorRun=TRUE, jamAlarm=FALSE & 未到两秒继续运行\\
+
+3 & runCommand=TRUE, sensorPulse=FALSE, emergencyStop=FALSE, reset=FALSE & 500 & motorRun=FALSE, jamAlarm=TRUE & 两秒超时锁存堵料\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_09\_tc02} 堵料复位条件}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}jam\_latch、safe\_reset
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & runCommand=TRUE, sensorPulse=FALSE, emergencyStop=FALSE, reset=FALSE & 50 & motorRun=TRUE, jamAlarm=FALSE & 通过公开输入启动看门狗\\
+
+1 & runCommand=TRUE, sensorPulse=FALSE, emergencyStop=FALSE, reset=FALSE & 2000 & motorRun=FALSE, jamAlarm=TRUE & 建立堵料锁存状态\\
+
+2 & runCommand=TRUE, sensorPulse=FALSE, emergencyStop=FALSE, reset=TRUE & 50 & motorRun=FALSE, jamAlarm=TRUE & 运行命令仍在时拒绝复位\\
+
+3 & runCommand=FALSE, sensorPulse=FALSE, emergencyStop=FALSE, reset=TRUE & 50 & motorRun=FALSE, jamAlarm=FALSE & 安全静止时复位\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_09\_tc03} 急停优先}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}emergency\_stop
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & runCommand=TRUE, sensorPulse=TRUE, emergencyStop=FALSE, reset=FALSE & 50 & motorRun=TRUE & 正常运行\\
+
+1 & runCommand=TRUE, sensorPulse=TRUE, emergencyStop=TRUE, reset=FALSE & 50 & motorRun=FALSE & 急停立即断开\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsection{{\ttfamily custom\_10} Two Stage Boiler Heating}
+
+\subsubsection{{\ttfamily custom\_10\_tc01} 两级温区控制}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}two\_stage\_control、temperature\_boundaries
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=TRUE, temperature=70.0, setpoint=100.0, highTripLimit=120.0, reset=FALSE & 50 & heater1=TRUE, heater2=TRUE, highTrip=FALSE, configError=FALSE & 低温两级加热\\
+
+1 & enable=TRUE, temperature=95.0, setpoint=100.0, highTripLimit=120.0, reset=FALSE & 50 & heater1=TRUE, heater2=FALSE & 接近设定点单级加热\\
+
+2 & enable=TRUE, temperature=100.0, setpoint=100.0, highTripLimit=120.0, reset=FALSE & 50 & heater1=FALSE, heater2=FALSE & 达到设定点停热\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_10\_tc02} 超温跳闸与受限复位}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}high\_trip、trip\_latch、reset\_interlock
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=TRUE, temperature=120.0, setpoint=100.0, highTripLimit=120.0, reset=FALSE & 50 & heater1=FALSE, heater2=FALSE, highTrip=TRUE & 超温跳闸\\
+
+1 & enable=TRUE, temperature=90.0, setpoint=100.0, highTripLimit=120.0, reset=TRUE & 50 & heater1=FALSE, heater2=FALSE, highTrip=TRUE & 启用状态不能复位\\
+
+2 & enable=FALSE, temperature=90.0, setpoint=100.0, highTripLimit=120.0, reset=TRUE & 50 & heater1=FALSE, heater2=FALSE, highTrip=FALSE & 禁用且降温后复位\\
+
+\bottomrule
+
+\end{longtable}
+
+\subsubsection{{\ttfamily custom\_10\_tc03} 配置错误优先}
+
+\noindent\textbf{初始状态：}冷复位后的默认状态\\
+
+\textbf{覆盖内容：}configuration\_error、recovery
+
+\begin{longtable}{L{1.0cm}L{4.7cm}L{1.4cm}L{4.0cm}L{2.1cm}}
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endfirsthead
+
+\toprule
+
+周期 & 输入 & 等待/ms & 预期输出 & 检查内容\\
+
+\midrule
+
+\endhead
+
+0 & enable=TRUE, temperature=50.0, setpoint=100.0, highTripLimit=100.0, reset=FALSE & 50 & heater1=FALSE, heater2=FALSE, configError=TRUE & 跳闸限值不高于设定点时停热\\
+
+1 & enable=TRUE, temperature=50.0, setpoint=100.0, highTripLimit=120.0, reset=FALSE & 50 & heater1=TRUE, heater2=TRUE, configError=FALSE & 配置恢复后正常控制\\
+
+\bottomrule
+
+\end{longtable}
+
+\endgroup

@@ -1,8 +1,0 @@
-{
-  "command": "\"F:\\genai\\CODESYS\\Common\\CODESYS.exe\" --profile=\"CODESYS V3.5 SP22 Patch 4\" --runscript=\"G:\\Genai_codesys\\codesys\\scripts\\compile_project.py\" --noUI",
-  "returncode": 0,
-  "elapsed_seconds": 32.718,
-  "stdout": "CODESYS_COMPILE_RESULT=G:\\Genai_codesys\\experiments\\raw\\development\\20261109_154946_public_19_qwen3-coder-flash_none\\attempt_01\\compile\\compile_result.json\r\nCODESYS_COMPILE_SUCCESS=True\r\n",
-  "stderr": "编译: Text: C0: ------ 开始构建应用程序 Device.Application -------\r\n编译: Text: C0: 代码典型化...\r\n附加代码检查: Text: SA0: 其他代码检查...\r\n附加代码检查: Text: SA0: 其他代码检查完成-0 个错误\r\n编译: Text: C0: 编译完成 -- 0错误,0警告\r\n",
-  "timed_out": false
-}

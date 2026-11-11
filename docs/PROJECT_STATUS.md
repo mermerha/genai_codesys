@@ -6,7 +6,7 @@
 
 题库、工具无关 LTL 和共享测试标准已冻结。自研 harness 的生成、接口预检、CODESYS 编译、错误反馈、修复和自动功能测试闭环可用；模型 A 为 `deepseek-v4.1-flash-1017`，模型 B 为 `qwen3-coder-flash`，使用默认推理配置，不传 `reasoning_effort`。
 
-现成 Agent 基线为 `Codex CLI 0.167.0-alpha.3.2`，并与自研 harness 共用 CODESYS Simulation 自动测试执行器。v1 正式实验 120/120 已完成；v2 120/120 已完成但整体效果低于 v1；v3 因进一步进行运行时间优化而停止，已有原始记录保留。
+现成 Agent 基线为 `Codex CLI 0.167.0-alpha.3.2`，并与自研 harness 共用 CODESYS Simulation 自动测试执行器。初始完整实验和最终正式实验均已完成 120/120；中间版本与预测试不用于报告结果，其原始 JSON 已在项目清理时删除。
 
 最终实现保持冻结题目、Spec、模型和修复策略，将编译与共享测试合并为一次 CODESYS 执行。120 条最终正式实验已完成，正在编写实验报告。
 
@@ -28,20 +28,16 @@
 - 原先依赖候选内部状态或非默认输出状态的测试已改为通过公开输入建立状态；脆弱的 1 ms 定时边界已改为带扫描裕量的检查。
 - Python 测试共 20 项：16 项通过，4 项真实 CODESYS 集成测试按默认配置跳过。
 - 真实自动测试验证：正确电机候选 2/2、`public_03` 3/3、FIFO 3/3、定时看门狗 3/3 通过；错误电机候选 0/2 且失败步骤和差异记录正确；完整自研 harness 2/2 通过。
-- `config/experiment.json` 已冻结模型、修复次数、超时、测试方式和 easy/medium/hard 预跑题；批量入口会依次执行四种设置并持续写入清单。
-- Codex CLI 模型 B 固定联调样例首次编译通过，共享测试 2/2 通过；此前未完成的 smolagents 预跑已停止，不计入实验结果。
-- 新预跑批次 12/12 完成：`public_03` 四组均为 3/3；`public_09` 的自研 deepseek、自研 qwen、Codex deepseek、Codex qwen 分别为 2/3、2/3、2/3、1/3；`public_19` 两个 deepseek 设置均为 4/4，两个 qwen 设置均为 0/4。
+- `config/experiment.json` 已冻结模型、修复次数、超时和测试方式；批量入口会依次执行四种设置并持续写入清单。
 - 正式实验支持在冻结配置不变的前提下续跑；只重跑有明确 SSL、连接重试或 CODESYS 执行器故障证据的条件，模型质量、编译失败和功能测试失败不重跑。
 - 正式实验 120/120 完成；最终状态为成功 43、功能测试失败 52、编译失败 25，无 `runner_error`。
 - 已生成逐任务 CSV/JSON、四种设置汇总 CSV/JSON 和报告用 Markdown 分析；测试通过率统一以每组固定的 92 个计划测试用例为分母。
-- 模型预验证与困难题对比已完成，模型 B 暂定为 `qwen3-coder-flash`；这些结果仅用于选型，不计入正式实验。
-- `formal_v2_harness` 已完成 120/120；最终成功 39、功能测试失败 58、编译失败 22、模型超时 1，整体任务成功与测试通过低于 v1，因此不替代 v1。
-- v3 保留接口预检，关闭重复错误重生成，并把逐题 LTL/Spec 作为共享任务上下文提供给两种框架；测试用例仍不向模型开放。
+- 模型 B 经选型后固定为 `qwen3-coder-flash`；选型预测试不计入正式实验。
 - `custom_01` 至 `custom_03` 已增加急停锁存、报警安全复位和完整最小停机时间等现场规则，并同步更新来源/改编、审核过程、LTL 和测试步骤。
-- v3 预跑批次 `experiments/raw/pre_run/20261111_003040_76f703/` 已完成 4/4，四组均通过 3/3 测试。
 - 最终正式实验 120/120 完成：成功 53、功能测试失败 43、编译失败 24，无模型错误、超时和运行器错误。
 - 最终总体首次编译率 75.00\%、最终编译率 80.00\%、测试通过率 55.71\%、任务成功率 44.17\%。
 - 已保留初始完整实验汇总，生成初始—最终对比数据和四张报告图表，报告 LaTeX 初稿已开始编写。
+- 原始实验 JSON 仅保留初始完整实验和最终正式实验；汇总文件仅保留最终结果及初始—最终对比所需内容。
 
 ## 数据集规模
 
@@ -51,7 +47,7 @@
 | 自建题 | 10 | 44 | 30 | 89 |
 | 合计 | 30 | 136 | 92 | 352 |
 
-冻结表示 v3 正式运行期间不再修改题面、规约、提示词和测试标准；LTL 尚未接入具体形式化验证工具。
+冻结表示最终正式实验期间不再修改题面、规约、提示词和测试标准；LTL 尚未接入具体形式化验证工具。
 
 ## 保留证据
 
@@ -59,24 +55,12 @@
 - 作业验收清单：[`REQUIREMENTS.md`](REQUIREMENTS.md)。
 - 数据接口：[`DATA_CONTRACT.md`](DATA_CONTRACT.md)。
 - 固定联调样例：`tests/fixtures/motor_start_stop_fixture.json`。
-- 纯 Python 正确/错误编译：`experiments/raw/environment_validation/20261105_104535_python_valid/`、`20261105_104535_python_invalid/`。
-- 功能块正确/错误编译：`experiments/raw/environment_validation/20261105_192949_function_block_valid/`、`20261105_192949_function_block_invalid/`。
-- DUT 与数组 `VAR_IN_OUT` 正确/错误编译：`experiments/raw/environment_validation/20261109_172822_special_interface_valid/`、`20261109_172822_special_interface_invalid/`。
-- 固定 DINT FIFO 正确/错误编译：`experiments/raw/environment_validation/20261109_173225_fifo_interface_valid/`、`20261109_173225_fifo_interface_invalid/`。
-- Codex CLI 模型 B 联调：`experiments/raw/development/20261109_232345_fixture_motor_start_stop_qwen3-coder-flash_codex_cli/`。
-- Codex CLI 替换后的完整预跑：`experiments/raw/pre_run/20261109_232534_341da0/`。
-- 正式实验批次：`experiments/raw/formal/20261109_234635_2ba96d/`。
-- v2 正式实验批次：`experiments/raw/formal/20261110_170900_572cc5/`。
-- v3 预跑批次：`experiments/raw/pre_run/20261111_003040_76f703/`。
-- v3 正式实验批次：`experiments/raw/formal/20261111_003814_v3/`。
+- 初始完整实验批次：`experiments/raw/formal/20261109_234635_2ba96d/`。
 - 最终正式实验批次：`experiments/raw/formal/20261111_102220_v4_formal/`。
 - 正式逐任务汇总：`experiments/processed/formal_runs.csv`、`formal_runs.json`。
 - 四种设置汇总：`experiments/processed/formal_summary.csv`、`formal_summary.json`。
+- 初始—最终对比：`experiments/processed/initial_final_comparison.csv`、`initial_final_comparison.json`。
 - 报告用分析表：`experiments/analysis/formal_analysis.md`。
-- 自动测试正确/错误样例：`experiments/raw/environment_validation/20261109_184703_auto_test_valid/`、`20261109_184738_auto_test_wrong/`。
-- 公共标量题、FIFO 和定时题：`experiments/raw/environment_validation/20261109_185616_public_03_auto_test/`、`20261109_185719_public_18_auto_test/`、`20261109_185944_custom_09_auto_test/`。
-- 完整 harness 自动测试：`experiments/raw/environment_validation/20261109_190157_harness_auto_test/`。
-- 模型选型原始记录保存在 `experiments/raw/development/`，不计入正式实验结果。
 
 正式证据只使用模型原始响应、提示词、候选 ST、配置和编译 JSON；可重新生成的工程文件和缓存由 Git 忽略。
 

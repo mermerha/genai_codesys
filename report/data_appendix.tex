@@ -1,0 +1,49 @@
+\documentclass[UTF8,a4paper,zihao=5]{ctexart}
+
+\usepackage[left=1.8cm,right=1.8cm,top=2.2cm,bottom=2.0cm]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\hypersetup{colorlinks=true,linkcolor=blue!50!black}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\LTpre}{0.3em}
+\setlength{\LTpost}{0.5em}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.1em}
+\setlength{\headheight}{15pt}
+\setlength{\emergencystretch}{3em}
+\xeCJKsetup{CJKecglue={}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{GenAI赋能工业编程}
+\fancyhead[R]{数据、LTL与测试用例附录}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\setcounter{tocdepth}{1}
+\renewcommand{\thesection}{\Alph{section}}
+
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  \vspace*{4cm}
+  {\zihao{1}\bfseries 数据、LTL与测试用例附录\par}
+  \vspace{1.2cm}
+  {\zihao{3}面向CODESYS的ST代码生成Agent\par}
+  \vfill
+  \vspace{2cm}
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+\input{generated_data_appendix.tex}
+
+\end{document}
